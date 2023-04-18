@@ -1,0 +1,24 @@
+{% extends "base.twig" %}
+
+{% block title %}Sign-in | PuzzleMania{% endblock %}
+
+{% block content %}
+    {% if notifs is not empty %}
+        {% for notif in notifs %}
+            <p data-cy="sign-in__message">{{ notif }}</p>
+        {% endfor %}
+    {% endif %}
+    <h1>Welcome to PuzzleMania</h1>
+    <form data-cy="sign-in" action="{{ formAction }}" method="POST">
+        <input data-cy="sign-in__email" type="text" name="email" placeholder="Enter your email"
+               value="{{ formData.email }}">
+        <input data-cy="sign-in__password" type="password" name="password" placeholder="Enter your password">
+        <input data-cy="sign-in__btn" type="submit" value="Sign-in">
+    </form>
+    {% if formErrors['email'] %}
+        <p data-cy="sign-in__wrongEmail">{{ formErrors['email'] }}</p>
+    {% endif %}
+    {% if formErrors['password'] %}
+        <p data-cy="sign-in__wrongPassword">{{ formErrors['password'] }}</p>
+    {% endif %}
+{% endblock %}

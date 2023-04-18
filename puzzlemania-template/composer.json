@@ -1,0 +1,27 @@
+{
+  "name": "student/puzzlemania",
+  "description": "Continuous Assessment 2",
+  "type": "project",
+  "autoload": {
+    "psr-4": {
+      "Salle\\PuzzleMania\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Student name",
+      "email": "student.email@students.salle.url.edu"
+    }
+  ],
+  "require": {
+    "ext-pdo": "*",
+    "slim/slim": "4.10.0",
+    "slim/psr7": "1.5",
+    "php-di/slim-bridge": "^3.1",
+    "dflydev/fig-cookies": "3.0.0",
+    "symfony/dotenv": "6.1",
+    "slim/twig-view": "3.3",
+    "ext-json": "*",
+    "slim/flash": "^0.4.0"
+  }
+}

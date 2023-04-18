@@ -1,0 +1,263 @@
+{
+  "openapi": "3.0.1",
+  "servers": [
+    {
+      "description": "Riddles API",
+      "url": "http://localhost:8030/api/"
+    }
+  ],
+  "info": {
+    "description": "This a simple API that allows CRUD operations to the riddles database",
+    "version": "1.0.0",
+    "title": "Riddles API",
+    "contact": {
+      "email": "nicolemarie.jimenez@salle.url.edu"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "tags": [
+    {
+      "name": "developers",
+      "description": "Operations available to regular developers"
+    }
+  ],
+  "paths": {
+    "/riddle": {
+      "get": {
+        "summary": "gets all riddles",
+        "operationId": "allRiddles",
+        "description": "Gets a list of riddles that are saved in the database",
+        "responses": {
+          "200": {
+            "description": "Riddle retrieval complete",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Riddle"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "adds a riddle",
+        "operationId": "addRiddle",
+        "description": "Adds a riddle to the database",
+        "responses": {
+          "201": {
+            "description": "Riddle created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Riddle"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Empty or wrong input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageMissingInput"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Riddle"
+              }
+            }
+          },
+          "description": "New riddle to store in the database"
+        }
+      }
+    },
+    "/riddle/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "Riddle identification",
+          "required": true,
+          "allowEmptyValue": false,
+          "schema": {
+            "type": "string",
+            "example": 1
+          }
+        }
+      ],
+      "get": {
+        "summary": "gets an existing riddles",
+        "operationId": "getRiddle",
+        "description": "Gets a list of riddles that are saved in the database",
+        "responses": {
+          "200": {
+            "description": "Riddle search complete",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Riddle"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Riddle does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageNotFound"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "updates a riddle",
+        "operationId": "updateRiddle",
+        "description": "Updates an existing riddle in the database",
+        "responses": {
+          "200": {
+            "description": "Riddle updated"
+          },
+          "400": {
+            "description": "Empty or wrong input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageInputEmpty"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Riddle does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageNotFound"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Riddle"
+              }
+            }
+          },
+          "description": "Riddle with new information to modify existing riddle"
+        }
+      },
+      "delete": {
+        "summary": "deletes a riddle",
+        "operationId": "deleteRiddle",
+        "description": "Deletes an existing riddle in the database",
+        "responses": {
+          "200": {
+            "description": "Riddle deleted"
+          },
+          "404": {
+            "description": "Riddle does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageNotFound"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Riddle": {
+        "type": "object",
+        "required": [
+          "id",
+          "riddle",
+          "answer",
+          "userId"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": "1"
+          },
+          "userId": {
+            "type": "integer",
+            "example": "1"
+          },
+          "riddle": {
+            "type": "string",
+            "example": "What has to be broken before you can use it?"
+          },
+          "answer": {
+            "type": "string",
+            "example": "Egg"
+          }
+        }
+      },
+      "MessageNotFound": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Riddle with id 3 does not exist"
+          }
+        }
+      },
+      "MessageMissingInput": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "'riddle' and/or 'answer' and/or 'userId' key missing"
+          }
+        }
+      },
+      "MessageInputEmpty": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "The riddle and/or answer cannot be empty"
+          }
+        }
+      }
+    }
+  }
+}

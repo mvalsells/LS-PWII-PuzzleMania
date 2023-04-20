@@ -1,5 +1,5 @@
 screenshots
 videos
-tmp/*
+tmp/.gitkeep
 !tmp/.gitkeep
 !tmp/.env.prod

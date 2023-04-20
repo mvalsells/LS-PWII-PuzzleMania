@@ -2,7 +2,7 @@ version: '3'
 
 services:
   nginx:
-    container_name: pw_local-server
+    container_name: pw_local-server_pjI
     image: nginx:1.23.3-alpine
     restart: unless-stopped
     ports:
@@ -14,7 +14,7 @@ services:
       - app
 
   app:
-    container_name: pw_local-php
+    container_name: pw_local-php_pjI
     image: vcaballerosalle/pwii-php-fpm:2.0
     restart: unless-stopped
     ports:
@@ -25,7 +25,7 @@ services:
       - db
 
   db:
-    container_name: pw_local-db
+    container_name: pw_local-db_pjI
     image: mysql:8.0.32
     restart: unless-stopped
     ports:
@@ -36,7 +36,7 @@ services:
       - .env
 
   admin:
-    container_name: pw_local-admin
+    container_name: pw_local-admin_pjI
     image: adminer:4.8.1-standalone
     restart: always
     ports:
@@ -45,7 +45,7 @@ services:
       - db
 
   barcode:
-    container_name: pw_barcode
+    container_name: pw_barcode_pjI
     restart: unless-stopped
     image: neodynamic/barcodeprowebapi:3.0.6
     ports:

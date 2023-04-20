@@ -31,7 +31,7 @@ final class SignUpController
     /**
      * Renders the form
      */
-    public function showSignUpForm(Request $request, Response $response): Response
+    public function show(Request $request, Response $response): Response
     {
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
 
@@ -44,7 +44,7 @@ final class SignUpController
         );
     }
 
-    public function signUp(Request $request, Response $response): Response
+    public function handleForm(Request $request, Response $response): Response
     {
         $data = $request->getParsedBody();
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();

@@ -20,6 +20,12 @@ function addRoutes(App $app, Container $container): void
 {
     $app->get('/', LandingPageController::class . ':show')->setName('loading');
 
+    $app->get('/sign-up', SignUpController::class . ':show')->setName('sign-up_get');
+    $app->post('/sign-up', SignUpController::class . ':handleForm')->setName('sign-up_post');
+
+    $app->get('/sign-in', SignInController::class . ':show')->setName('sign-in_get');
+    $app->post('/sign-in', SignInController::class . ':handleForm')->setName('sign-in_post');
+
     $app->get('/join', TeamsController::class . ':show')->setName('join_get');
     $app->post('/join', TeamsController::class . ':handleForm')->setName('join_post');
 
@@ -32,6 +38,7 @@ function addRoutes(App $app, Container $container): void
     $app->post('/profile', ProfileController::class . ':handleForm')->setName('profile_post');
 
 
+    //TODO: Mirar lo del ID.
     $app->group('/game', function (RouteCollectorProxy $group) {
 
         $group->get(

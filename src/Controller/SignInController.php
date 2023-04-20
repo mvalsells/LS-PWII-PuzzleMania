@@ -24,7 +24,7 @@ class SignInController
         $this->validator = new ValidatorService();
     }
 
-    public function showSignInForm(Request $request, Response $response): Response
+    public function show(Request $request, Response $response): Response
     {
         $messages = $this->flash->getMessages();
 
@@ -33,20 +33,7 @@ class SignInController
         return $this->twig->render($response, 'sign-in.twig', ["notifs" => $notifications]);
     }
 
-    public function showHome(Request $request, Response $response): Response
-    {
-        if (!isset($_SESSION['user_id'])) {
-            $username = "stranger";
-        } else {
-            $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
-            $username = explode('@', $user->email)[0];
-        }
-        return $this->twig->render($response, 'home.twig', [
-            "username" => $username
-        ]);
-    }
-
-    public function signIn(Request $request, Response $response): Response
+    public function handleForm(Request $request, Response $response): Response
     {
         $data = $request->getParsedBody();
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();

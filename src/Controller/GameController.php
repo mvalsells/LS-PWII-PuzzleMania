@@ -21,7 +21,7 @@ class GameController
 
         return $this->twig->render(
             $response,
-            'base.twig',
+            'game.twig',
             [
             ]
         );
@@ -30,7 +30,7 @@ class GameController
     {
         return $this->twig->render(
             $response,
-            'base.twig',
+            'game.twig',
             [
             ]
         );
@@ -40,7 +40,7 @@ class GameController
 
         return $this->twig->render(
             $response,
-            'base.twig',
+            'riddle.twig',
             [
             ]
         );
@@ -49,7 +49,7 @@ class GameController
     {
         return $this->twig->render(
             $response,
-            'base.twig',
+            'riddle.twig',
             [
             ]
         );

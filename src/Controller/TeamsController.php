@@ -21,7 +21,7 @@ class TeamsController
 
         return $this->twig->render(
             $response,
-            'base.twig',
+            'join.twig',
             [
             ]
         );
@@ -30,7 +30,7 @@ class TeamsController
     {
         return $this->twig->render(
             $response,
-            'base.twig',
+            'join.twig',
             [
             ]
         );
@@ -41,7 +41,7 @@ class TeamsController
 
         return $this->twig->render(
             $response,
-            'base.twig',
+            'join.twig',
             [
             ]
         );
@@ -50,7 +50,7 @@ class TeamsController
     {
         return $this->twig->render(
             $response,
-            'base.twig',
+            'stats.twig',
             [
             ]
         );

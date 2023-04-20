@@ -21,7 +21,7 @@ class ProfileController
 
         return $this->twig->render(
             $response,
-            'base.twig',
+            'profile.twig',
             [
             ]
         );
@@ -30,7 +30,7 @@ class ProfileController
     {
         return $this->twig->render(
             $response,
-            'base.twig',
+            'profile.twig',
             [
             ]
         );

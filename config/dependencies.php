@@ -5,8 +5,14 @@ declare(strict_types=1);
 use Psr\Container\ContainerInterface;
 use Salle\PuzzleMania\Controller\API\RiddlesAPIController;
 use Salle\PuzzleMania\Controller\API\UsersAPIController;
+use Salle\PuzzleMania\Controller\GameController;
+use Salle\PuzzleMania\Controller\LandingPageController;
+use Salle\PuzzleMania\Controller\ProfileController;
+use Salle\PuzzleMania\Controller\RiddleController;
 use Salle\PuzzleMania\Controller\SignUpController;
 use Salle\PuzzleMania\Controller\SignInController;
+use Salle\PuzzleMania\Controller\TeamsController;
+use Salle\PuzzleMania\Middleware\AuthorizationMiddleware;
 use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
 use Salle\PuzzleMania\Repository\MySQLUserRepository;
 use Salle\PuzzleMania\Repository\PDOConnectionBuilder;
@@ -40,10 +46,26 @@ function addDependencies(ContainerInterface $container): void
         }
     );
 
+    /*
+     *  Declare the AuthorizationMiddleware dependency, to show the flash message if the user access specific
+     *  pages without being logged in
+    */
+    $container->set(
+        'authorizationMiddleware',
+        function (ContainerInterface $c) {
+            return new AuthorizationMiddleware($c->get('flash'));
+        }
+    );
+
     $container->set('user_repository', function (ContainerInterface $container) {
         return new MySQLUserRepository($container->get('db'));
     });
 
+    $container->set('riddle_repository', function (ContainerInterface $container) {
+        return new MySQLRiddleRepository($container->get('db'));
+    });
+
+    // Controller dependencies
     $container->set(
         SignInController::class,
         function (ContainerInterface $c) {
@@ -57,4 +79,57 @@ function addDependencies(ContainerInterface $container): void
             return new SignUpController($c->get('view'), $c->get('user_repository'));
         }
     );
+
+    $container->set(
+        GameController::class,
+        function (ContainerInterface $c) {
+            return new GameController($c->get('view'));
+        }
+    );
+
+    $container->set(
+        LandingPageController::class,
+        function (ContainerInterface $c) {
+            return new LandingPageController($c->get('view'));
+        }
+    );
+
+    $container->set(
+        ProfileController::class,
+        function (ContainerInterface $c) {
+            return new ProfileController($c->get('view'));
+        }
+    );
+
+    $container->set(
+        RiddleController::class,
+        function (ContainerInterface $c) {
+            return new RiddleController($c->get('view'));
+        }
+    );
+
+    $container->set(
+        TeamsController::class,
+        function (ContainerInterface $c) {
+            return new TeamsController($c->get('view'));
+        }
+    );
+
+
+    // API dependencies
+    $container->set(
+        RiddlesAPIController::class,
+        function (ContainerInterface $c) {
+            return new RiddlesAPIController($c->get('view'));
+        }
+    );
+
+    $container->set(
+        UsersAPIController::class,
+        function (ContainerInterface $c) {
+            return new UsersAPIController($c->get('view'));
+        }
+    );
+
+
 }

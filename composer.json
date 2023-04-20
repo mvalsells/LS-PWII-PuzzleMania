@@ -30,6 +30,7 @@
     "symfony/dotenv": "6.1",
     "slim/twig-view": "3.3",
     "ext-json": "*",
-    "slim/flash": "^0.4.0"
+    "slim/flash": "^0.4.0",
+    "ext-http": "*"
   }
 }

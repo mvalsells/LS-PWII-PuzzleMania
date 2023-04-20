@@ -1,6 +1,6 @@
 {
   "name": "student/puzzlemania",
-  "description": "Continuous Assessment 2",
+  "description": "Final project",
   "type": "project",
   "autoload": {
     "psr-4": {
@@ -9,8 +9,16 @@
   },
   "authors": [
     {
-      "name": "Student name",
-      "email": "student.email@students.salle.url.edu"
+      "name": "David Larrosa Camps",
+      "email": "david.larrosa@students.salle.url.edu"
+    },
+    {
+      "name": "Marc Valsells Niubó",
+      "email": "marc.valsells@students.salle.url.edu"
+    },
+    {
+      "name": "Òscar de Jesús Ruiz",
+      "email": "oscar.dejesus@students.salle.url.edu"
     }
   ],
   "require": {

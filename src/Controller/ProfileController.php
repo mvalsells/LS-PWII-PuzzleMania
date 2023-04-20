@@ -2,8 +2,8 @@
 
 namespace Salle\PuzzleMania\Controller;
 
-use http\Client\Request;
-use http\Client\Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Views\Twig;
 
 class ProfileController

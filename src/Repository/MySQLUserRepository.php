@@ -60,6 +60,8 @@ final class MySQLUserRepository implements UserRepository
             $row = $statement->fetch(PDO::FETCH_OBJ);
             return $row;
         }
+
+        //TODO: Podriem fer flash messages per enviar controlar l'error de que apareguin varis emails iguals (aka si es lia parda perque no hauria de passar). -David
         return null;
     }
 

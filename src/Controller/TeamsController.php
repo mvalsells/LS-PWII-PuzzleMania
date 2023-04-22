@@ -29,7 +29,8 @@ class TeamsController
         print_r("Probes BBDD");
 
         $u = new User("prova", "pass", new \DateTime(),new \DateTime());
-        $this->userRepository->createUser($u);
+
+        print_r($this->userRepository->getUserByEmail("prova"));
 
         return $this->twig->render(
             $response,

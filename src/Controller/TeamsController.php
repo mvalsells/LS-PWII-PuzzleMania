@@ -32,6 +32,8 @@ class TeamsController
 
         print_r($this->userRepository->getUserByEmail("prova"));
 
+        $this->userRepository->isRegistered($u);
+
         return $this->twig->render(
             $response,
             'join.twig',

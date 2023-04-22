@@ -113,4 +113,53 @@ final class MySQLUserRepository implements UserRepository
         }
         return $users;
     }
+
+    public function getTeamByID(int $id)
+    {
+
+    }
+
+    /*public function addUserToTeam(int $id)
+    {
+        INSERT INTO teams (team_id, user_id, score) VALUES
+    (1, (SELECT users.id FROM users WHERE users.email = 'prova' LIMIT 1), 0)
+    }*/
+
+    public function createTeam(User $u1, User $u2){
+
+        // Mirem si l'usuari està registrat en un equip.
+        //if($this->isRegistered($u1) ||
+
+    }
+
+    public function isRegistered(User $u)
+    {
+        // Busquem l'usuari a la BBDD per a aconseguir l'ID.
+        $user = $this->getUserByEmail($u->email());
+
+        // Mirem si hi ha algun equip amb l'usuari que estem registrant.
+        $query = <<<'QUERY'
+            SELECT COUNT(*) FROM teams WHERE user_id_1 = :id OR user_id_2 = :id
+        QUERY;
+
+        $statement = $this->databaseConnection->prepare($query);
+
+        // Busquem la id de l'usuari.
+        $id = $user->id;
+
+        $statement->bindParam('id', $id, PDO::PARAM_INT);
+
+        $statement->execute();
+
+        // Mirem quants equips tenen aquest usuari.
+        $count = $statement->fetch(PDO::FETCH_ASSOC);
+
+        // Si l'usuari ja està registrat tornem true.
+        if($count['COUNT(*)'] > 0) return true;
+        return false;
+
+    }
+
+
+
 }

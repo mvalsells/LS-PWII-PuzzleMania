@@ -27,3 +27,14 @@ CREATE TABLE `riddles`
     PRIMARY KEY (`riddle_id`),
     FOREIGN KEY (user_id) REFERENCES users (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `teams`;
+CREATE TABLE `teams`
+(
+    `team_id`   INT NOT NULL,
+    `user_id_1`    INT,
+    `user_id_2`    INT,
+    `score`      INT NOT NULL,
+    FOREIGN KEY (user_id_1) REFERENCES users (id),
+    FOREIGN KEY (user_id_2) REFERENCES users (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

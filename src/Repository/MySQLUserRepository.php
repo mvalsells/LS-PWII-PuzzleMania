@@ -125,17 +125,53 @@ final class MySQLUserRepository implements UserRepository
     (1, (SELECT users.id FROM users WHERE users.email = 'prova' LIMIT 1), 0)
     }*/
 
+    /***
+     * Function that creates a team given 2 users.
+     * @param User $u1
+     * @param User $u2
+     * @return void
+     */
     public function createTeam(User $u1, User $u2){
 
         // Mirem si l'usuari està registrat en un equip.
-        //if($this->isRegistered($u1) ||
+        if($this->isRegistered($u1) || $this->isRegistered($u2)){
+            print_r("USER ALREADY REGISTERED"); //TODO: Flash message.
+        }
+
+        // Creem l'equip.
+        $query = <<<'QUERY'
+            INSERT INTO teams (team_id, user_id_1, user_id_2, score) VALUES
+            (1, (SELECT users.id FROM users WHERE users.email = :email1 LIMIT 1),   
+            (SELECT users.id FROM users WHERE users.email = :email2 LIMIT 1), 0);
+        QUERY;
+
+        $statement = $this->databaseConnection->prepare($query);
+
+        // Posem els paràmetres.
+        $email1 = $u1->email();
+        $email2 = $u2->email();
+        $statement->bindParam(':email1', $email1, PDO::PARAM_STR);
+        $statement->bindParam(':email2', $email2, PDO::PARAM_STR);
+
+        $statement->execute();
 
     }
 
+    /***
+     * Function that checks if a user is registered on a tema or not
+     * @param User $u
+     * @return bool
+     */
     public function isRegistered(User $u)
     {
         // Busquem l'usuari a la BBDD per a aconseguir l'ID.
         $user = $this->getUserByEmail($u->email());
+
+        // Mirem si l'usuari està a la BBDD.
+        if($user == null){
+            echo "User not created"; //TODO: Flash message.
+            return false;
+        }
 
         // Mirem si hi ha algun equip amb l'usuari que estem registrant.
         $query = <<<'QUERY'

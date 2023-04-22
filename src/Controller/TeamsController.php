@@ -26,13 +26,19 @@ class TeamsController
     public function show(Request $request, Response $response): Response
     {
 
-        print_r("Probes BBDD");
+        print_r("Probes BBDD" . "<br>");
 
         $u = new User("prova", "pass", new \DateTime(),new \DateTime());
+        $u2 = new User("prova3", "pass", new \DateTime(),new \DateTime());
+        $u3 = new User("prova4", "pass", new \DateTime(),new \DateTime());
 
         print_r($this->userRepository->getUserByEmail("prova"));
+        print_r("<br>");
 
-        $this->userRepository->isRegistered($u);
+        $this->userRepository->createUser($u2);
+        $this->userRepository->createUser($u3);
+
+        $this->userRepository->createTeam($u2, $u3);
 
         return $this->twig->render(
             $response,

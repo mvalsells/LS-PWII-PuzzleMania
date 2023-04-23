@@ -2,26 +2,56 @@
 
 {% block title %}Sign-up | PuzzleMania{% endblock %}
 
+{% block header %}Sign up here!{% endblock %}
+
 {% block content %}
-    <h1>Sign up here!</h1>
-    <form data-cy="sign-up" action="{{ formAction }}" method="POST">
-
-        <label> Email </label>
-        <input data-cy="sign-up__email" type="text" name="email" placeholder="Enter your email"
-               value="{{ formData.email }}">
-        {% if formErrors['email'] %}
-            <p data-cy="sign-up__wrongEmail">{{ formErrors['email'] }}</p>
-        {% endif %}
-
-        <label> Password </label>
-        <input data-cy="sign-up__password" type="password" name="password" placeholder="Enter your password">
-        <label> Repeat Password </label>
-        <input data-cy="sign-up__repeatPassword" type="password" name="repeatPassword"
-               placeholder="Repeat your password">
-        {% if formErrors['password'] %}
-            <p data-cy="sign-up__wrongPassword">{{ formErrors['password'] }}</p>
-        {% endif %}
-
-        <input data-cy="sign-up__btn" type="submit" value="Sign-up">
-    </form>
+    <div class = "box">
+        <div class = "page" style = "background: white; padding: 40px 60px 60px 60px; border-radius: 10px; border: 2px solid #000;">
+            <h1 style="text-align: center;">Register</h1>
+            <form data-cy="sign-up" action="{{ formAction }}" method="POST" id="register" accept-charset="utf-8" style="text-align: center;">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label"> Email </label>
+                    <div class="col-sm-10">
+                        <input data-cy="sign-up__email" type="text" name="email" placeholder="Enter your email"
+                               value="{{ formData.email }}">
+                    </div>
+                    {% if formErrors['email'] %}
+                        <p data-cy="sign-up__wrongEmail" class="error">{{ formErrors['email'] }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label"> Password</label>
+                    <div class="col-sm-10">
+                        <input data-cy="sign-up__password" type="password" name="password" placeholder="Enter your password">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label"> Repeat Password </label>
+                    <div class="col-sm-10">
+                        <input data-cy="sign-up__repeatPassword" type="password" name="repeatPassword"
+                               placeholder="Repeat your password">
+                    </div>
+                    {% if formErrors['password'] %}
+                        <p data-cy="sign-up__wrongPassword" class="error">{{ formErrors['password'] }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label"> LSCoins to deposit </label>
+                    <div class="col-sm-10">
+                        <input data-cy="sign-up__coins" type="text" name="coins" placeholder="Enter your LSCoins"
+                               value="{{ formData.coins }}"/>
+                    </div>
+                    {% if formErrors['coins'] %}
+                        <p data-cy="sign-up__wrongCoins" class="error">{{ formErrors['coins'] }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group row">
+                    <input data-cy="sign-up__btn" type="submit" value="Sign-up">
+                </div>
+                <div style = "margin-top: 15px; font-size: 13px;">
+                    <a href="/sign-in">Already have an account? Click here to sign in.</a>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}

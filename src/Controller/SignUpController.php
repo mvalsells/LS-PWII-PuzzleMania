@@ -39,7 +39,7 @@ final class SignUpController
             $response,
             'sign-up.twig',
             [
-                'formAction' => $routeParser->urlFor('signUp')
+                'formAction' => $routeParser->urlFor('sign-up_get')
             ]
         );
     }
@@ -85,7 +85,7 @@ final class SignUpController
             [
                 'formErrors' => $errors,
                 'formData' => $data,
-                'formAction' => $routeParser->urlFor('signUp')
+                'formAction' => $routeParser->urlFor('sign-up_get')
             ]
         );
     }

@@ -66,7 +66,7 @@ class SignInController
             [
                 'formErrors' => $errors,
                 'formData' => $data,
-                'formAction' => $routeParser->urlFor('signIn')
+                'formAction' => $routeParser->urlFor('sign-in_get')
             ]
         );
     }

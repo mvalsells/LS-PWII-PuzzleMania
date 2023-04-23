@@ -18,7 +18,7 @@ use Slim\Routing\RouteCollectorProxy;
 
 function addRoutes(App $app, Container $container): void
 {
-    $app->get('/', LandingPageController::class . ':show')->setName('loading');
+    $app->get('/', LandingPageController::class . ':show')->setName('home');
 
     $app->get('/sign-up', SignUpController::class . ':show')->setName('sign-up_get');
     $app->post('/sign-up', SignUpController::class . ':handleForm')->setName('sign-up_post');

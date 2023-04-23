@@ -2,23 +2,39 @@
 
 {% block title %}Sign-in | PuzzleMania{% endblock %}
 
+{% block header %}Welcome to PuzzleMania{% endblock %}
+
 {% block content %}
     {% if notifs is not empty %}
         {% for notif in notifs %}
-            <p data-cy="sign-in__message">{{ notif }}</p>
+            <p data-cy="sign-in__message" class="error">{{ notif }}</p>
         {% endfor %}
     {% endif %}
-    <h1>Welcome to PuzzleMania</h1>
-    <form data-cy="sign-in" action="{{ formAction }}" method="POST">
-        <input data-cy="sign-in__email" type="text" name="email" placeholder="Enter your email"
-               value="{{ formData.email }}">
-        <input data-cy="sign-in__password" type="password" name="password" placeholder="Enter your password">
-        <input data-cy="sign-in__btn" type="submit" value="Sign-in">
-    </form>
-    {% if formErrors['email'] %}
-        <p data-cy="sign-in__wrongEmail">{{ formErrors['email'] }}</p>
-    {% endif %}
-    {% if formErrors['password'] %}
-        <p data-cy="sign-in__wrongPassword">{{ formErrors['password'] }}</p>
-    {% endif %}
+    <div class = "box">
+        <div class = "page" style = "background: white; padding: 40px 60px 60px 60px; border-radius: 10px; border: 2px solid #000;">
+            <h1 style="text-align: center;">Login</h1>
+            <form data-cy="sign-in" action="{{ formAction }}" method="POST" id="login" accept-charset="utf-8" style="text-align: center;">
+                <div class="form-group row">
+                    <input data-cy="sign-in__email" type="text" name="email" placeholder="Enter your email"
+                           value="{{ formData.email }}">
+                    {% if formErrors['email'] %}
+                        <p data-cy="sign-in__wrongEmail" class="error">{{ formErrors['email'] }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group row">
+                    <input data-cy="sign-in__password" type="password" name="password" placeholder="Enter your password">
+                    {% if formErrors['password'] %}
+                        <p data-cy="sign-in__wrongPassword" class="error">{{ formErrors['password'] }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group row">
+                    <input data-cy="sign-in__btn" type="submit" value="Sign-in" class="submit-button">
+                </div>
+                <div style = "margin-top: 15px; font-size: 13px;">
+                    <a href="/sign-up">Don't have an account? Click here to register.</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
 {% endblock %}

@@ -64,3 +64,39 @@
     border-radius: 20px;
     color: white;
 }
+
+.home-button a {
+    display: block;
+    padding: 3px;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 20px;
+}
+
+.home-button {
+    font-size: 15px;
+    background: transparent;
+    border: 1px white;
+    border-radius: 20px;
+    color: white;
+}
+
+/* Navbar styles */
+.navbar {
+    display: flex;
+    align-items: center;
+    background-color: #333;
+    color: #fff;
+    height: 60px;
+    padding: 10px 20px;
+    margin-bottom: 30px;
+}
+
+/* Logo styles */
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    margin-right: auto;
+    font-size: 30px;
+    font-weight: bold;
+}

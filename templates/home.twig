@@ -1,7 +1,46 @@
 {% extends "base.twig" %}
 
-{% block title %}Home | PuzzleMania{% endblock %}
+{% block head %}
+    <title>Home | LSCoins</title>
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/navbar_styles.css"/>
+{% endblock %}
+
+{% block name %}Home{% endblock %}
+
+{% block header %}
+    <!-- Dropdown -->
+    <div class="dropdown">
+        <!-- Email -->
+        <button class="dropbtn">
+            {% if email is not defined %}
+                Menu
+            {% else %}
+                {{ email }}
+            {% endif %}
+        </button>
+        <!-- Logout suboption -->
+        <div class="dropdown-content">
+            {% if email is not defined %}
+                <a href="/sign-in">Sign in</a>
+                <a href="/sign-up">Sign up</a>
+            {% else %}
+                <a href="/profile">Your Profile</a>
+                {% if team is not defined %}
+                    <a href="/join">Join a Team</a>
+                {% else %}
+                    <a href="/teams-stats">Your Team Stats</a>
+                    <a href="/game">Start a game</a>
+                {% endif %}
+                <a href="/log-out">Logout</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
 
 {% block content %}
-<h1 data-cy="home__welcomeMsg">Hello {{ username }}!</h1>
+    <h1 data-cy="home__welcomeMsg" style = "text-align: center; ">Hello {{ username }}!</h1>
 {% endblock %}
+
+
+
+

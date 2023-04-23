@@ -1,6 +1,12 @@
 body {
     font-family:Arial, Sans-Serif;
-    background: #B9DFFF;
+    background: #ABAC9C;
+}
+
+label {
+    color: darkblue;
+    font-weight: bold;
+    margin-top: 10px;
 }
 
 .clearfix:before, .clearfix:after{
@@ -21,6 +27,23 @@ a:hover{
     width: 300px;
     margin: auto auto;
 }
+.error {
+    background-color: #ff6666;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px auto;
+    width: 300px;
+}
+
+.box {
+    position: absolute;
+    margin-top: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #CCC;
+}
 input[type='text'],
 input[type='email'],
 input[type='password'] {
@@ -31,6 +54,7 @@ input[type='password'] {
     color: #333;
     font-size: 14px;
     margin-top: 10px;
+    margin-bottom: 10px;
 }
 input[type='submit']{
     background: #016ABC;

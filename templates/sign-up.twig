@@ -1,8 +1,19 @@
 {% extends "base.twig" %}
 
-{% block title %}Sign-up | PuzzleMania{% endblock %}
+{% block head %}
+    <title>Sign-up | PuzzleMania</title>
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/navbar_styles.css"/>
+{% endblock %}
 
-{% block header %}Sign up here!{% endblock %}
+{% block name %}Sign up here!{% endblock %}
+
+{% block header %}
+    <div class="dropdown">
+        <button class = "home-button">
+            <a href="/">Go to Landing Page</a>
+        </button>
+    </div>
+{% endblock %}
 
 {% block content %}
     <div class = "box">

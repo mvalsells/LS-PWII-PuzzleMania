@@ -73,6 +73,14 @@
     border-radius: 20px;
 }
 
+.home-button a:hover {
+    display: block;
+    padding: 3px;
+    text-decoration: none;
+    color: #DFDFDF;
+    border-radius: 20px;
+}
+
 .home-button {
     font-size: 15px;
     background: transparent;

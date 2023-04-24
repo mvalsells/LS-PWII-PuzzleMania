@@ -78,3 +78,9 @@ input[type='submit']:hover {
     box-shadow: 5px 5px 5px #eee;
     text-shadow: none;
 }
+
+.info {
+    text-align: center;
+    line-height: 1.5;
+    margin-top: 20px;
+}

@@ -1,8 +1,20 @@
 {% extends "base.twig" %}
 
-{% block title %}Sign-in | PuzzleMania{% endblock %}
+{% block head %}
+    <title>Sign-in | PuzzleMania</title>
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/navbar_styles.css"/>
+{% endblock %}
 
-{% block header %}Welcome to PuzzleMania{% endblock %}
+{% block name %}Welcome to PuzzleMania{% endblock %}
+
+
+{% block header %}
+    <div class="dropdown">
+        <button class = "home-button">
+            <a href="/">Go to Landing Page</a>
+        </button>
+    </div>
+{% endblock %}
 
 {% block content %}
     {% if notifs is not empty %}

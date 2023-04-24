@@ -1,8 +1,19 @@
 {% extends "base.twig" %}
 
-{% block title %}Sign-up | PuzzleMania{% endblock %}
+{% block head %}
+    <title>Sign-up | PuzzleMania</title>
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/navbar_styles.css"/>
+{% endblock %}
 
-{% block header %}Sign up here!{% endblock %}
+{% block name %}Sign up here!{% endblock %}
+
+{% block header %}
+    <div class="dropdown">
+        <button class = "home-button">
+            <a href="/">Go to Landing Page</a>
+        </button>
+    </div>
+{% endblock %}
 
 {% block content %}
     <div class = "box">
@@ -33,16 +44,6 @@
                     </div>
                     {% if formErrors['password'] %}
                         <p data-cy="sign-up__wrongPassword" class="error">{{ formErrors['password'] }}</p>
-                    {% endif %}
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label"> LSCoins to deposit </label>
-                    <div class="col-sm-10">
-                        <input data-cy="sign-up__coins" type="text" name="coins" placeholder="Enter your LSCoins"
-                               value="{{ formData.coins }}"/>
-                    </div>
-                    {% if formErrors['coins'] %}
-                        <p data-cy="sign-up__wrongCoins" class="error">{{ formErrors['coins'] }}</p>
                     {% endif %}
                 </div>
                 <div class="form-group row">

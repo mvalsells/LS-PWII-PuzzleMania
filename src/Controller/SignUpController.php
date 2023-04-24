@@ -53,7 +53,6 @@ final class SignUpController
 
         $errors['email'] = $this->validator->validateEmail($data['email']);
         $errors['password'] = $this->validator->validatePassword($data['password']);
-        //$errors['birthday'] = $this->validator->validateBirthday($data['birthday']);
         if ($data['password'] != $data['repeatPassword']) {
             $errors['password'] = "Passwords do not match.";
         }

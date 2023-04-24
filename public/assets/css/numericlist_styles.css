@@ -1,0 +1,29 @@
+.feature-item {
+    margin: 20px 35%;
+    padding: 10px;
+    text-align: center;
+    border: 3px solid black;
+    border-radius: 20px;
+    color: white;
+    background: #2C2828;
+}
+
+.feature-item:hover {
+    margin: 20px 35%;
+    padding: 10px;
+    text-align: center;
+    border: 3px solid black;
+    border-radius: 20px;
+    color: white;
+    background: #7E7474;
+}
+
+.feature-item a {
+    color: white;
+    text-decoration: none;
+}
+
+.feature-item a:hover {
+    color: white;
+    text-decoration: none;
+}

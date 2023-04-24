@@ -30,7 +30,7 @@
                 {% if team is not defined %}
                     <a href="/join">Join a Team</a>
                 {% else %}
-                    <a href="/teams-stats">Your Team Stats</a>
+                    <a href="/team-stats">Your Team Stats</a>
                     <a href="/game">Start a game</a>
                 {% endif %}
                 <a href="/riddles">List riddles</a>
@@ -52,10 +52,12 @@
             </p>
             <br>
             <h3 class="title-info">Here are the main features of the webpage: </h3>
-            <div class ="feature-item">Join a Team and watch your Team stats to know how you're doing.</div>
-            <div class ="feature-item">Watch your profile and change your profile picture.</div>
-            <div class ="feature-item">Start a game with 3 riddles and get a score that will be added to your team stats.</div>
-            <div class ="feature-item">Create riddles, list them, update them and delete them.</div>
+
+            <div class ="feature-item" href="/join"><a href="/join">Join a Team.</a></div>
+            <div class ="feature-item"><a href="/team-stats">Watch your Team stats to know how you're doing.</a></div>
+            <div class ="feature-item"><a href="/profile">Watch your profile and change your profile picture.</a></div>
+            <div class ="feature-item"><a href="/game">Start a game with 3 riddles and get a score that will be added to your team stats.</a></div>
+            <div class ="feature-item"><a href="/riddles">Create riddles, list them, update them and delete them.</a></div>
         </div>
     </div>
 

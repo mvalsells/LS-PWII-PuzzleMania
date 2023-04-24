@@ -3,6 +3,7 @@
 {% block head %}
     <title>Home | LSCoins</title>
     <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/navbar_styles.css"/>
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/numericlist_styles.css"/>
 {% endblock %}
 
 {% block name %}Home{% endblock %}
@@ -23,6 +24,7 @@
             {% if email is not defined %}
                 <a href="/sign-in">Sign in</a>
                 <a href="/sign-up">Sign up</a>
+                <a href="/riddles">List riddles</a>
             {% else %}
                 <a href="/profile">Your Profile</a>
                 {% if team is not defined %}
@@ -31,6 +33,7 @@
                     <a href="/teams-stats">Your Team Stats</a>
                     <a href="/game">Start a game</a>
                 {% endif %}
+                <a href="/riddles">List riddles</a>
                 <a href="/log-out">Logout</a>
             {% endif %}
         </div>
@@ -38,13 +41,25 @@
 {% endblock %}
 
 {% block content %}
-    <h1 data-cy="home__welcomeMsg" style = "text-align: center; ">Hello {{ username }}!</h1>
-    <p class="info">
-        Here in PuzzleMania you can create riddles, join a team and guess riddles together with
-        your teammates, all with the purpose to solve a mystery puzzle.
-        <br><br>
-        Come on! We count on you :)
-    </p>
+    <div class = "parent-content">
+        <div class = "content">
+            <h1 data-cy="home__welcomeMsg" style = "text-align: center; ">Hello {{ username }}!</h1>
+            <p class="info">
+                Here in PuzzleMania you can create riddles, join a team and guess riddles together with
+                your teammates, all with the purpose to solve a mystery puzzle.
+                <br><br>
+                Come on! We count on you :)
+            </p>
+            <br>
+            <h3 class="title-info">Here are the main features of the webpage: </h3>
+            <div class ="feature-item">Join a Team and watch your Team stats to know how you're doing.</div>
+            <div class ="feature-item">Watch your profile and change your profile picture.</div>
+            <div class ="feature-item">Start a game with 3 riddles and get a score that will be added to your team stats.</div>
+            <div class ="feature-item">Create riddles, list them, update them and delete them.</div>
+        </div>
+    </div>
+
+
 {% endblock %}
 
 

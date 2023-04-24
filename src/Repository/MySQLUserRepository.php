@@ -20,6 +20,13 @@ final class MySQLUserRepository implements UserRepository
 
     public function createUser(User $user): void
     {
+
+        // Mirem si l'usuari està creat prèviament.
+        if($this->isRegistered($user)){
+            print_r("User already created");
+            return;
+        }
+
         // Fem la query.
         $query = <<<'QUERY'
             INSERT INTO users(email, password, createdAt, updatedAt)
@@ -134,7 +141,7 @@ final class MySQLUserRepository implements UserRepository
     public function createTeam(User $u1, User $u2){
 
         // Mirem si l'usuari està registrat en un equip.
-        if($this->isRegistered($u1) || $this->isRegistered($u2)){
+        if($this->hasTeam($u1) || $this->hasTeam($u2)){
             print_r("USER ALREADY REGISTERED"); //TODO: Flash message.
         }
 
@@ -160,7 +167,7 @@ final class MySQLUserRepository implements UserRepository
     public function createSoloTeam(User $u1){
 
         // Mirem si l'usuari està registrat en un equip.
-        if($this->isRegistered($u1)){
+        if($this->hasTeam($u1)){
             print_r("USER ALREADY REGISTERED"); //TODO: Flash message.
         }
 
@@ -184,7 +191,7 @@ final class MySQLUserRepository implements UserRepository
      * @param User $u
      * @return bool
      */
-    public function isRegistered(User $u)
+    public function hasTeam(User $u)
     {
         // Busquem l'usuari a la BBDD per a aconseguir l'ID.
         $user = $this->getUserByEmail($u->email());
@@ -218,6 +225,18 @@ final class MySQLUserRepository implements UserRepository
 
     }
 
+    private function isRegistered(User $user)
+    {
+        $user = $this->getUserByEmail($user->email());
+
+        // Mirem si l'usuari està a la BBDD.
+        if($user == null){
+            echo "User not created"; //TODO: Flash message.
+            return false;
+        }
+
+        return true;
+    }
 
 
 }

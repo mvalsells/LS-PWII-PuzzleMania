@@ -47,16 +47,6 @@
                     {% endif %}
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-2 col-form-label"> LSCoins to deposit </label>
-                    <div class="col-sm-10">
-                        <input data-cy="sign-up__coins" type="text" name="coins" placeholder="Enter your LSCoins"
-                               value="{{ formData.coins }}"/>
-                    </div>
-                    {% if formErrors['coins'] %}
-                        <p data-cy="sign-up__wrongCoins" class="error">{{ formErrors['coins'] }}</p>
-                    {% endif %}
-                </div>
-                <div class="form-group row">
                     <input data-cy="sign-up__btn" type="submit" value="Sign-up">
                 </div>
                 <div style = "margin-top: 15px; font-size: 13px;">

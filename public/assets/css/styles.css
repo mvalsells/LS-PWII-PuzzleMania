@@ -42,7 +42,7 @@ a:hover{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: #CCC;
+    background: transparent;
 }
 input[type='text'],
 input[type='email'],

@@ -29,7 +29,7 @@ class TeamsController
         print_r("Probes BBDD" . "<br>");
 
         $u = new User("prova", "pass", new \DateTime(),new \DateTime());
-        $u2 = new User("prova3", "pass", new \DateTime(),new \DateTime());
+        $u2 = new User("prova6", "pass", new \DateTime(),new \DateTime());
         $u3 = new User("prova4", "pass", new \DateTime(),new \DateTime());
 
         print_r($this->userRepository->getUserByEmail("prova"));
@@ -38,7 +38,7 @@ class TeamsController
         $this->userRepository->createUser($u2);
         $this->userRepository->createUser($u3);
 
-        $this->userRepository->createSoloTeam($u2);
+        $this->userRepository->createTeam($u, $u2);
 
         return $this->twig->render(
             $response,

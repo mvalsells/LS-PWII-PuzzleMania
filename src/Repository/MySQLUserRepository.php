@@ -143,6 +143,7 @@ final class MySQLUserRepository implements UserRepository
         // Mirem si l'usuari està registrat en un equip.
         if($this->hasTeam($u1) || $this->hasTeam($u2)){
             print_r("USER ALREADY REGISTERED"); //TODO: Flash message.
+            return;
         }
 
         // Creem l'equip.
@@ -164,11 +165,13 @@ final class MySQLUserRepository implements UserRepository
 
     }
 
-    public function createSoloTeam(User $u1){
+    public function createSoloTeam(User $u1): void
+    {
 
         // Mirem si l'usuari està registrat en un equip.
         if($this->hasTeam($u1)){
             print_r("USER ALREADY REGISTERED"); //TODO: Flash message.
+            return;
         }
 
         // Creem l'equip.
@@ -237,6 +240,7 @@ final class MySQLUserRepository implements UserRepository
 
         return true;
     }
+
 
 
 }

@@ -26,13 +26,25 @@ class MySQLRiddleRepository implements RiddleRepository
 
 
     public function exists(Riddle $r){
-
-
-
+        //TODO: Cal comprovar que existeixin les riddles?
     }
 
-    public function getRiddles(){
+    public function getRiddles(): array
+    {
 
+        // Fem la query
+        $query = <<<'QUERY'
+            SELECT * FROM riddles;
+        QUERY;
+
+        // Preparem la query
+        $statement = $this->databaseConnection->prepare($query);
+
+        // Executem la query
+        $statement->execute();
+
+        // Retornem els resultats de la query
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function addRiddle(Riddle $r){

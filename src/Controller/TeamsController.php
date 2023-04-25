@@ -38,7 +38,7 @@ class TeamsController
         $this->userRepository->createUser($u2);
         $this->userRepository->createUser($u3);
 
-        $this->userRepository->createTeam($u, $u2);
+        print_r($this->userRepository->getTeamID($u));
 
         return $this->twig->render(
             $response,

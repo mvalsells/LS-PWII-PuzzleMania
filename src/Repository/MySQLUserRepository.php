@@ -22,7 +22,7 @@ final class MySQLUserRepository implements UserRepository
     {
 
         // Mirem si l'usuari està creat prèviament.
-        if($this->isRegistered($user)){
+        if($this->exists($user)){
             print_r("User already created");
             return;
         }
@@ -228,7 +228,58 @@ final class MySQLUserRepository implements UserRepository
 
     }
 
-    private function isRegistered(User $user)
+    private function addToTeamByID(int $teamId, User $user){
+
+    }
+
+    /**
+     * Funció que afegeix un usuari a un equip ja existent.
+     * @param User $oldUser
+     * @param User $newUser
+     * @return void
+     */
+    private function addToTeam(User $oldUser, User $newUser){
+
+        //TODO: mirar que no hi hagi dues persones ja registrades.
+
+        // Mirem que els usuaris existeixin.
+        if($this->exists($oldUser) && $this->exists($newUser)){
+
+            // Mirem que el primer usuari tingui equip i que el segon no.
+            if($this->hasTeam($oldUser) && !$this->hasTeam($newUser)){
+
+
+                //TODO: agafar id d'equips
+                /*$this->getTeamID($u);
+
+                $query = <<<'QUERY'
+                    UPDATE teams
+                    SET user_id_2 = :id
+                    WHERE team_id = 1;
+                QUERY;
+
+                $statement = $this->databaseConnection->prepare($query);
+
+                // Busquem la id de l'usuari.
+                $id = $user->id;
+
+                $statement->bindParam('id', $id, PDO::PARAM_INT);
+
+                $statement->execute();
+
+                // Mirem quants equips tenen aquest usuari.
+                $count = $statement->fetch(PDO::FETCH_ASSOC);*/
+
+
+
+            }elseif ($this->hasTeam($newUser)){
+                print_r("The new user can't be added to the new team, it's already in one"); //TODO: flash message
+                return;
+            }
+        }
+    }
+
+    private function exists(User $user)
     {
         $user = $this->getUserByEmail($user->email());
 
@@ -241,6 +292,37 @@ final class MySQLUserRepository implements UserRepository
         return true;
     }
 
+    public function getTeamID(User $u)
+    {
+
+        // Busquem l'usuari a la BBDD per a aconseguir l'ID.
+        $user = $this->getUserByEmail($u->email());
+
+        // Mirem si l'usuari està a la BBDD.
+        if($user == null){
+            echo "User not created"; //TODO: Flash message.
+            return null;
+        }
+
+        $query = <<<'QUERY'
+            SELECT team_id FROM teams WHERE user_id_1 = :id1 OR user_id_2 = :id2 LIMIT 1;
+        QUERY;
+
+        $statement = $this->databaseConnection->prepare($query);
+
+        // Busquem la id de l'usuari.
+        $id = $user->id;
+
+        $statement->bindParam('id1', $id, PDO::PARAM_INT);
+        $statement->bindParam('id2', $id, PDO::PARAM_INT);
+
+
+        $statement->execute();
+
+        // Mirem quants equips tenen aquest usuari.
+        return $statement->fetch(PDO::FETCH_ASSOC);
+
+    }
 
 
 }

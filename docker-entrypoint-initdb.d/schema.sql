@@ -21,7 +21,7 @@ CREATE TABLE `users`
 CREATE TABLE `riddles`
 (
     `riddle_id`   INT          NOT NULL AUTO_INCREMENT,
-    `user_id`    INT          NOT NULL,
+    `user_id`    INT,
     `riddle`      VARCHAR(255) NOT NULL,
     `answer`    VARCHAR(255) NOT NULL,
     PRIMARY KEY (`riddle_id`),

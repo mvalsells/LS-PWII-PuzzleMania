@@ -7,6 +7,33 @@ namespace Salle\PuzzleMania\Repository;
 use PDO;
 use Salle\PuzzleMania\Model\User;
 
+/**
+ *  TODO: FER NOMS D'EQUP
+ *  TODO: Coses que cal fer a la BBDD (✔✖)
+ *
+ *      Login i register:
+ *      · Registre d'usuari --> ✔
+ *      · Comprovació existència d'usuari --> ✔
+ *
+ *      Teams:
+ *      · Creació d'equip sencer --> ✔
+ *      · Creació d'equip individual --> ✔
+ *      · Afegir usuari a equip
+ *          · Per usuari ja existent --> ✔
+ *          · Per ID d'equip --> ✔
+ *      · Buscar si un usuari té equip --> ✔
+ *      · Mostrar equips incomplets --> ✖
+ *      · Afegir puntuació --> ✖
+ *
+ *      Riddles:
+ *      · Llegir tots els riddles --> ✖
+ *      · Afegir riddles --> ✖
+ *
+ *
+ *  TODO: FLASH MESSAGES
+ */
+
+
 final class MySQLUserRepository implements UserRepository
 {
     private const DATE_FORMAT = 'Y-m-d H:i:s';

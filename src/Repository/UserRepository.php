@@ -26,7 +26,7 @@ interface UserRepository
      */
     public function createTeam(String $teamName, User $u1, User $u2);
 
-    public function createSoloTeam(User $u1): void;
+    public function createSoloTeam(String $teamName, User $u1): void;
 
     /***
      * Function that checks if a user is registered on a tema or not

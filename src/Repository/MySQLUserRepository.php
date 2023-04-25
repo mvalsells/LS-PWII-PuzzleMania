@@ -211,7 +211,7 @@ final class MySQLUserRepository implements UserRepository
 
     }
 
-    public function createSoloTeam(User $u1): void
+    public function createSoloTeam(String $teamName, User $u1): void
     {
 
         // Mirem si l'usuari està registrat en un equip.
@@ -222,14 +222,15 @@ final class MySQLUserRepository implements UserRepository
 
         // Creem l'equip.
         $query = <<<'QUERY'
-            INSERT INTO teams (user_id_1, user_id_2, score) VALUES
-            ((SELECT users.id FROM users WHERE users.email = :email LIMIT 1), null, 0);
+            INSERT INTO teams (team_name, user_id_1, user_id_2, score) VALUES
+            (:teamName, (SELECT users.id FROM users WHERE users.email = :email LIMIT 1), null, 0);
         QUERY;
 
         $statement = $this->databaseConnection->prepare($query);
 
         // Posem els paràmetres.
         $email1 = $u1->email();
+        $statement->bindParam(':teamName', $teamName, PDO::PARAM_STR);
         $statement->bindParam(':email', $email1, PDO::PARAM_STR);
 
         $statement->execute();

@@ -23,7 +23,7 @@ final class MySQLUserRepository implements UserRepository
 
         // Mirem si l'usuari està creat prèviament.
         if($this->exists($user)){
-            print_r("User already created");
+            print_r("User already created" . "\n\n");
             return;
         }
 
@@ -53,7 +53,7 @@ final class MySQLUserRepository implements UserRepository
     public function getUserByEmail(string $email)
     {
         $query = <<<'QUERY'
-        SELECT * FROM users WHERE email = :email
+        SELECT * FROM users WHERE email = :email LIMIT 1
         QUERY;
 
         $statement = $this->databaseConnection->prepare($query);
@@ -68,7 +68,6 @@ final class MySQLUserRepository implements UserRepository
             return $row;
         }
 
-        //TODO: Podriem fer flash messages per enviar controlar l'error de que apareguin varis emails iguals (aka si es lia parda perque no hauria de passar). -David
         return null;
     }
 
@@ -142,7 +141,7 @@ final class MySQLUserRepository implements UserRepository
 
         // Mirem si l'usuari està registrat en un equip.
         if($this->hasTeam($u1) || $this->hasTeam($u2)){
-            print_r("USER ALREADY REGISTERED"); //TODO: Flash message.
+            print_r("USER ALREADY REGISTERED \n\n"); //TODO: Flash message.
             return;
         }
 
@@ -170,7 +169,7 @@ final class MySQLUserRepository implements UserRepository
 
         // Mirem si l'usuari està registrat en un equip.
         if($this->hasTeam($u1)){
-            print_r("USER ALREADY REGISTERED"); //TODO: Flash message.
+            print_r("USER ALREADY REGISTERED \n\n"); //TODO: Flash message.
             return;
         }
 
@@ -201,7 +200,7 @@ final class MySQLUserRepository implements UserRepository
 
         // Mirem si l'usuari està a la BBDD.
         if($user == null){
-            echo "User not created"; //TODO: Flash message.
+            echo "User not created (team) \n"; //TODO: Flash message.
             return false;
         }
 
@@ -238,9 +237,7 @@ final class MySQLUserRepository implements UserRepository
      * @param User $newUser
      * @return void
      */
-    private function addToTeam(User $oldUser, User $newUser){
-
-        //TODO: mirar que no hi hagi dues persones ja registrades.
+    public function addToTeam(User $oldUser, User $newUser){
 
         // Mirem que els usuaris existeixin.
         if($this->exists($oldUser) && $this->exists($newUser)){
@@ -248,28 +245,33 @@ final class MySQLUserRepository implements UserRepository
             // Mirem que el primer usuari tingui equip i que el segon no.
             if($this->hasTeam($oldUser) && !$this->hasTeam($newUser)){
 
+                // Mirem si l'usuari està a la BBDD.
+                if(!$this->exists($oldUser) || !$this->exists($newUser)){
+                    print_r("USERS NOT CREATED, CANNOT JOIN TEAM"); //TODO: flash message
+                    return;
+                }
 
-                //TODO: agafar id d'equips
-                /*$this->getTeamID($u);
+                // Busquem l'usuari que té equip a la BBDD per a aconseguir l'ID.
+                $userNew = $this->getUserByEmail($newUser->email());
 
                 $query = <<<'QUERY'
                     UPDATE teams
-                    SET user_id_2 = :id
-                    WHERE team_id = 1;
+                    SET user_id_2 = :idNew
+                    WHERE team_id = :idTeam;
                 QUERY;
 
                 $statement = $this->databaseConnection->prepare($query);
 
                 // Busquem la id de l'usuari.
-                $id = $user->id;
+                $idNew = $userNew->id;
 
-                $statement->bindParam('id', $id, PDO::PARAM_INT);
+                // Guardem la id d'equip de l'usuari que ha té equip.
+                $idTeam = $this->getTeamID($oldUser);
+
+                $statement->bindParam('idNew', $idNew, PDO::PARAM_INT);
+                $statement->bindParam('idTeam', $idTeam['team_id'], PDO::PARAM_INT);
 
                 $statement->execute();
-
-                // Mirem quants equips tenen aquest usuari.
-                $count = $statement->fetch(PDO::FETCH_ASSOC);*/
-
 
 
             }elseif ($this->hasTeam($newUser)){
@@ -279,9 +281,9 @@ final class MySQLUserRepository implements UserRepository
         }
     }
 
-    private function exists(User $user)
+    private function exists(User $u)
     {
-        $user = $this->getUserByEmail($user->email());
+        $user = $this->getUserByEmail($u->email());
 
         // Mirem si l'usuari està a la BBDD.
         if($user == null){

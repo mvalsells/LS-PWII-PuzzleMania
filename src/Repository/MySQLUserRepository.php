@@ -409,7 +409,26 @@ final class MySQLUserRepository implements UserRepository
 
     public function getScore(User $u)
     {
-        // TODO: Implement getScore() method.
+        // Fem la query
+        $query = <<<'QUERY'
+            SELECT score FROM teams WHERE user_id_1 = :id OR user_id_2 = :id;
+        QUERY;
+
+        // Preparem la query
+        $statement = $this->databaseConnection->prepare($query);
+
+        $user = $this->getUserByEmail($u->email());
+        $id = $user->id;
+
+        $statement->bindParam('id', $id, PDO::PARAM_INT);
+        $statement->bindParam('id', $id, PDO::PARAM_INT);
+        // Executem la query
+        $statement->execute();
+
+        // Retornem els resultats de la query
+        $count = $statement->fetch(PDO::FETCH_ASSOC);
+        return $count['score'];
+
     }
 
     public function setScore(User $u)

@@ -29,11 +29,12 @@ class TeamsController
         print_r("Probes BBDD" . "<br>");
 
         $u2 = new User("prova2", "pass", new \DateTime(),new \DateTime());
+        $u = new User("prova", "pass", new \DateTime(),new \DateTime());
 
 
         //$this->userRepository->createUser($u4);
 
-        print_r($this->userRepository->getIncompleteTeams());
+        print_r($this->userRepository->getScore($u));
 
         return $this->twig->render(
             $response,

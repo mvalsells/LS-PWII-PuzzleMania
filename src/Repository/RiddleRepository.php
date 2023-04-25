@@ -10,7 +10,6 @@ use Salle\PuzzleMania\Model\User;
 interface RiddleRepository
 {
 
-    public function exists(Riddle $r);
     public function getRiddles();
     public function addRiddle(Riddle $r);
 }

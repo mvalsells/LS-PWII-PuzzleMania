@@ -25,10 +25,6 @@ use Salle\PuzzleMania\Model\User;
  *      · Mostrar equips incomplets --> ✖
  *      · Afegir puntuació --> ✖
  *
- *      Riddles:
- *      · Llegir tots els riddles --> ✖
- *      · Afegir riddles --> ✖
- *
  *
  *  TODO: FLASH MESSAGES
  */
@@ -171,17 +167,76 @@ final class MySQLUserRepository implements UserRepository
     // TEAM RELATED QUERIES
     //==========================================================================================
 
-    public function getTeamByID(int $id)
+    /**
+     * Funció que comprova si un usuari forma part d'un equip o no.
+     * @param User $u
+     * @return bool
+     */
+    public function hasTeam(User $u): bool {
+
+        // Busquem l'usuari a la BBDD per a aconseguir l'ID i per mirar que existeixi.
+        $user = $this->getUserByEmail($u->email());
+
+        // Mirem si l'usuari està a la BBDD.
+        if($user == null){
+            echo "User not created (team) \n"; //TODO: Flash message.
+            return false;
+        }
+
+        // Mirem si hi ha algun equip amb l'usuari que estem registrant.
+        $query = <<<'QUERY'
+            SELECT * FROM members WHERE user_id_1 = :id OR user_id_2 = :id LIMIT 1;
+        QUERY;
+
+        $statement = $this->databaseConnection->prepare($query);
+
+        // Busquem la id de l'usuari.
+        $id = $user->id;
+
+        $statement->bindParam('id', $id, PDO::PARAM_INT);
+
+        $statement->execute();
+
+        // Mirem quants equips tenen aquest usuari.
+        print_r($statement->rowCount());
+
+        // Si l'usuari ja està registrat tornem true.
+        if($statement->rowCount() >= 1) return true;
+        return false;
+    }
+
+    public function createTeam(User $u1, User $u2){
+        /*
+        -- Afegim un usuari
+
+            /*INSERT INTO users (email, password, createdAt, updatedAt)
+            VALUES ("mail1", "pass1", NOW(), NOW());
+
+                    SELECT * FROM users;
+
+            -- Creem un equip
+            /*INSERT INTO members (user_id_1, user_id_2) VALUES (2, null);
+
+            SELECT * FROM members;
+
+
+            INSERT INTO teamstemp (name, players_count, members_id, score)
+            VALUES ("Member 1", 1, (SELECT MAX(members_id) FROM members), 0);
+        */
+    }
+
+
+    /*public function getTeamByID(int $id)
     {
 
     }
 
-    /***
+    **
      * Function that creates a team given 2 users.
      * @param User $u1
      * @param User $u2
      * @return void
-     */
+
     public function createTeam(User $u1, User $u2){
 
         // Mirem si l'usuari està registrat en un equip.
@@ -233,11 +288,11 @@ final class MySQLUserRepository implements UserRepository
         $statement->execute();
     }
 
-    /***
+    ***
      * Function that checks if a user is registered on a tema or not
      * @param User $u
      * @return bool
-     */
+
     public function hasTeam(User $u)
     {
         // Busquem l'usuari a la BBDD per a aconseguir l'ID.
@@ -304,12 +359,12 @@ final class MySQLUserRepository implements UserRepository
 
     }
 
-    /**
+    **
      * Funció que afegeix un usuari a un equip ja existent.
      * @param User $oldUser
      * @param User $newUser
      * @return void
-     */
+
     public function addToTeam(User $oldUser, User $newUser){
 
         // Mirem que els usuaris existeixin.
@@ -384,7 +439,31 @@ final class MySQLUserRepository implements UserRepository
         // Mirem quants equips tenen aquest usuari.
         return $statement->fetch(PDO::FETCH_ASSOC);
 
+    } */
+
+
+    public function getTeamByID(int $id)
+    {
+        // TODO: Implement getTeamByID() method.
     }
 
+    public function createSoloTeam(User $u1): void
+    {
+        // TODO: Implement createSoloTeam() method.
+    }
 
+    public function addToTeamByID(int $teamId, User $u)
+    {
+        // TODO: Implement addToTeamByID() method.
+    }
+
+    public function addToTeam(User $oldUser, User $newUser)
+    {
+        // TODO: Implement addToTeam() method.
+    }
+
+    public function getTeamID(User $u)
+    {
+        // TODO: Implement getTeamID() method.
+    }
 }

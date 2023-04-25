@@ -6,6 +6,17 @@ namespace Salle\PuzzleMania\Repository;
 use PDO;
 use Salle\PuzzleMania\Model\Riddle;
 
+/**
+ *  TODO: Coses que cal fer a la BBDD (✔✖)
+ *
+ *      Riddles:
+ *      · Llegir tots els riddles --> ✔
+ *      · Afegir riddles --> ✔
+ *
+ *
+ *  TODO: FLASH MESSAGES
+ */
+
 class MySQLRiddleRepository implements RiddleRepository
 {
 
@@ -23,12 +34,10 @@ class MySQLRiddleRepository implements RiddleRepository
     // RIDDLES RELATED QUERIES
     //==========================================================================================
 
-
-
-    public function exists(Riddle $r){
-        //TODO: Cal comprovar que existeixin les riddles?
-    }
-
+    /**
+     * Funció que agafa totes les riddles de la BBDD i les retorna en forma d'array.
+     * @return array
+     */
     public function getRiddles(): array
     {
 
@@ -47,7 +56,13 @@ class MySQLRiddleRepository implements RiddleRepository
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function addRiddle(Riddle $r){
+    /**
+     * Funció que afegeix un riddle a la BBDD.
+     * @param Riddle $r
+     * @return void
+     */
+    public function addRiddle(Riddle $r): void
+    {
 
         // Fem la query
         $query = <<<'QUERY'

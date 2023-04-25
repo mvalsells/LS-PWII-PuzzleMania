@@ -194,18 +194,18 @@ final class MySQLUserRepository implements UserRepository
 
         // Creem l'equip.
         $query = <<<'QUERY'
-            INSERT INTO teams (team_name, user_id_1, user_id_2, score) VALUES
-            (:teamName, :email1, :email2, 0);
+            INSERT INTO teams (team_name, count, user_id_1, user_id_2, score) VALUES
+            (:teamName, 2, :email1, :email2, 0);
         QUERY;
 
         $statement = $this->databaseConnection->prepare($query);
 
         // Posem els paràmetres.
-        $email1 = $user1->id;
-        $email2 = $user2->id;
+        $id1 = $user1->id;
+        $id2 = $user2->id;
         $statement->bindParam(':teamName', $teamName, PDO::PARAM_STR);
-        $statement->bindParam(':email1', $email1, PDO::PARAM_STR);
-        $statement->bindParam(':email2', $email2, PDO::PARAM_STR);
+        $statement->bindParam(':email1', $id1, PDO::PARAM_STR);
+        $statement->bindParam(':email2', $id2, PDO::PARAM_STR);
 
         $statement->execute();
 
@@ -222,8 +222,8 @@ final class MySQLUserRepository implements UserRepository
 
         // Creem l'equip.
         $query = <<<'QUERY'
-            INSERT INTO teams (team_name, user_id_1, user_id_2, score) VALUES
-            (:teamName, (SELECT users.id FROM users WHERE users.email = :email LIMIT 1), null, 0);
+            INSERT INTO teams (team_name, count, user_id_1, user_id_2, score) VALUES
+            (:teamName, 1, (SELECT users.id FROM users WHERE users.email = :email LIMIT 1), null, 0);
         QUERY;
 
         $statement = $this->databaseConnection->prepare($query);
@@ -390,4 +390,30 @@ final class MySQLUserRepository implements UserRepository
     }
 
 
+    public function getIncompleteTeams()
+    {
+        // Fem la query
+        $query = <<<'QUERY'
+            SELECT * FROM teams WHERE user_id_1 IS NULL OR user_id_2 IS NULL;
+        QUERY;
+
+        // Preparem la query
+        $statement = $this->databaseConnection->prepare($query);
+
+        // Executem la query
+        $statement->execute();
+
+        // Retornem els resultats de la query
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getScore(User $u)
+    {
+        // TODO: Implement getScore() method.
+    }
+
+    public function setScore(User $u)
+    {
+        // TODO: Implement setScore() method.
+    }
 }

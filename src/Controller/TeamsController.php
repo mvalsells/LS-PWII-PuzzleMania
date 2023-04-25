@@ -33,7 +33,7 @@ class TeamsController
 
         //$this->userRepository->createUser($u4);
 
-        $this->userRepository->createSoloTeam("Prova 1", $u2);
+        print_r($this->userRepository->getIncompleteTeams());
 
         return $this->twig->render(
             $response,

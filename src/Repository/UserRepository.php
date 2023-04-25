@@ -47,4 +47,9 @@ interface UserRepository
 
     public function getTeamID(User $u);
 
+    public function getIncompleteTeams();
+
+    public function getScore(User $u);
+
+    public function setScore(User $u);
 }

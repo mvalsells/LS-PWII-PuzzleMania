@@ -33,6 +33,7 @@ CREATE TABLE `teams`
 (
     `team_id`   INT NOT NULL AUTO_INCREMENT,
     `team_name` VARCHAR(255) NOT NULL,
+    `count` INT NOT NULL,
     `user_id_1`    INT,
     `user_id_2`    INT,
     `score`      INT NOT NULL,

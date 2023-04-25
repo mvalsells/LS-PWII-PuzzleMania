@@ -40,7 +40,7 @@ class TeamsController
         $this->userRepository->createUser($u2);
 
         //$this->userRepository->createSoloTeam($u);
-        $this->userRepository->addToTeam($u, $u2);
+        $this->userRepository->addToTeamByID(11, $u2);
 
         return $this->twig->render(
             $response,

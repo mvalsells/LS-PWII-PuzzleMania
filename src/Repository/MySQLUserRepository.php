@@ -227,7 +227,35 @@ final class MySQLUserRepository implements UserRepository
 
     }
 
-    private function addToTeamByID(int $teamId, User $user){
+    public function addToTeamByID(int $teamId, User $u){
+
+        // Mirem que els usuaris existeixin.
+        if($this->exists($u) && !$this->hasTeam($u)){
+
+            // Busquem l'usuari que té equip a la BBDD per a aconseguir l'ID.
+            $user = $this->getUserByEmail($u->email());
+
+            $query = <<<'QUERY'
+                UPDATE teams
+                SET user_id_2 = :idNew
+                WHERE team_id = :idTeam;
+            QUERY;
+
+            $statement = $this->databaseConnection->prepare($query);
+
+            // Busquem la id de l'usuari.
+            $id = $user->id;
+
+            $statement->bindParam('idNew', $id, PDO::PARAM_INT);
+            $statement->bindParam('idTeam', $teamId, PDO::PARAM_INT);
+
+            $statement->execute();
+
+
+        }elseif (!$this->hasTeam($u)){
+            print_r("The user doesn't have a team"); //TODO: flash message
+            return;
+        }
 
     }
 

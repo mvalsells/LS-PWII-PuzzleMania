@@ -41,15 +41,17 @@ class ProfileController
     }
     public function show(Request $request, Response $response): Response
     {
-        $data = $request->getParsedBody();
+        $data = [];
+
+        // Set data variables to render the view
         $data["email"] = $_SESSION["email"];
-        $data["profilePicturePath"] = $_SESSION["profilePicturePath"];
 
         return $this->twig->render(
             $response,
             'profile.twig',
             [
-                'formData' => $data
+                'formData' => $data,
+                'profilePicture' => $_SESSION["profilePicturePath"] ?? ""
             ]
         );
     }
@@ -63,51 +65,51 @@ class ProfileController
         $errors = [];
 
         /** @var UploadedFileInterface $uploadedFile */
+        // Check if only one file was uploaded
         if (count($uploadedFiles) > 1) {
             $errors[] = self::EXCEEDED_MAXIMUM_FILES_ERROR;
         } else {
-            foreach ($uploadedFiles['files'] as $uploadedFile) {
-                // Check there hasn't been any error in the submission
-                if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
-                    $errors[] = sprintf(
-                        self::UNEXPECTED_ERROR,
-                        $uploadedFile->getClientFilename()
-                    );
-                }
+            $uploadedFile = $uploadedFiles['files'][0];
+            // Check there hasn't been any error in the submission
+            if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
+                $errors[] = sprintf(
+                    self::UNEXPECTED_ERROR,
+                    $uploadedFile->getClientFilename()
+                );
+            }
 
-                // Get name of the file submitted
-                $name = $uploadedFile->getClientFilename();
+            // Get name of the file submitted
+            $name = $uploadedFile->getClientFilename();
 
-                // Get info from the submitted file
-                $fileInfo = pathinfo($name);
+            // Get info from the submitted file
+            $fileInfo = pathinfo($name);
 
-                // Get image format
-                $format = $fileInfo['extension'];
+            // Get image format
+            $format = $fileInfo['extension'];
 
-                // Check if the image format is valid
-                if (!$this->isValidFormat($format)) {
-                    $errors[] = sprintf(self::INVALID_EXTENSION_ERROR, $format);
-                }
+            // Check if the image format is valid
+            if (!$this->isValidFormat($format)) {
+                $errors[] = sprintf(self::INVALID_EXTENSION_ERROR, $format);
+            }
 
-                // Check the size of the image
-                $fileSize = $uploadedFile->getSize();
-                if ($fileSize > self::MAX_SIZE_IMAGE) {
-                    $errors[] = sprintf(self::FILE_SIZE_ERROR, $uploadedFile->getClientFilename());
-                }
+            // Check the size of the image
+            $fileSize = $uploadedFile->getSize();
+            if ($fileSize > self::MAX_SIZE_IMAGE) {
+                $errors[] = sprintf(self::FILE_SIZE_ERROR, $uploadedFile->getClientFilename());
+            }
 
-                // Check the dimensions of the image
-                $imageInfo = getimagesize($uploadedFile->getFilePath());
-                if ($imageInfo[0] !== self::DIMENSION_IMAGE || $imageInfo[1] !== self::DIMENSION_IMAGE) {
-                    $errors[] = sprintf(self::IMAGE_DIMENSIONS_ERROR, $uploadedFile->getClientFilename());
-                }
+            // Check the dimensions of the image
+            $imageInfo = getimagesize($uploadedFile->getFilePath());
+            if ($imageInfo[0] !== self::DIMENSION_IMAGE || $imageInfo[1] !== self::DIMENSION_IMAGE) {
+                $errors[] = sprintf(self::IMAGE_DIMENSIONS_ERROR, $uploadedFile->getClientFilename());
+            }
 
-                // If no errors, we save the image
-                if (empty($errors)) {
-                    $uuid = Uuid::uuid4();
-                    $data["profilePicturePath"]= self::UPLOADS_DIR . DIRECTORY_SEPARATOR . $uuid . "." . $format;
-                    $_SESSION["profilePicturePath"] = $data["profilePicturePath"];
-                    $uploadedFile->moveTo($data["profilePicturePath"]);
-                }
+            // If no errors, we save the image
+            if (empty($errors)) {
+                $uuid = Uuid::uuid4();
+                $data["profilePicturePath"]= self::UPLOADS_DIR . DIRECTORY_SEPARATOR . $uuid . "." . $format;
+                $_SESSION["profilePicturePath"] = $data["profilePicturePath"];
+                $uploadedFile->moveTo($data["profilePicturePath"]);
             }
         }
         return $this->twig->render(
@@ -115,7 +117,8 @@ class ProfileController
             'profile.twig',
             [
                 'formErrors' => $errors,
-                'formData' => $data
+                'formData' => $data,
+                'profilePicture' => $_SESSION["profilePicturePath"] ?? ""
             ]
         );
     }

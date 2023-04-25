@@ -24,7 +24,7 @@ interface UserRepository
      * @param User $u2
      * @return void
      */
-    public function createTeam(User $u1, User $u2);
+    public function createTeam(String $teamName, User $u1, User $u2);
 
     public function createSoloTeam(User $u1): void;
 

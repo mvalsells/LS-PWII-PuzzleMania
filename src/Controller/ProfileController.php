@@ -2,13 +2,36 @@
 
 namespace Salle\PuzzleMania\Controller;
 
+use Psr\Http\Message\UploadedFileInterface;
+
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Views\Twig;
 
+
+use Ramsey\Uuid\Uuid;
+
 class ProfileController
 {
     private $twig;
+
+    // Constants definitions of image parameters
+    private const MAX_SIZE_IMAGE = 1024*1024;
+    private const DIMENSION_IMAGE = 400;
+
+    // Constant definition of images' directory
+    private const UPLOADS_DIR = __DIR__ . '/../../uploads';
+
+    // Constant definitions of possible errors
+    private const UNEXPECTED_ERROR = "An unexpected error occurred uploading the file '%s'...";
+    private const INVALID_EXTENSION_ERROR = "The received file extension '%s' is not valid";
+    private const EXCEEDED_MAXIMUM_FILES_ERROR = "You can only upload one profile picture.";
+    private const FILE_SIZE_ERROR = "The file '%s' uploaded can not exceed 1MB";
+    private const IMAGE_DIMENSIONS_ERROR = "The file '%s' uploaded doesn't have the required dimensions (400x400)";
+
+    // We use this const to define the extensions that we are going to allow
+    private const ALLOWED_EXTENSIONS = ['jpg', 'png'];
+
 
     public function __construct(
         Twig $twig,
@@ -18,21 +41,87 @@ class ProfileController
     }
     public function show(Request $request, Response $response): Response
     {
+        $data = $request->getParsedBody();
+        $data["email"] = $_SESSION["email"];
+        $data["profilePicturePath"] = $_SESSION["profilePicturePath"];
 
         return $this->twig->render(
             $response,
             'profile.twig',
             [
+                'formData' => $data
             ]
         );
     }
     public function handleForm(Request $request, Response $response): Response
     {
+        $uploadedFiles = $request->getUploadedFiles();
+
+        $data = [];
+        $data["email"] = $_SESSION["email"];
+
+        $errors = [];
+
+        /** @var UploadedFileInterface $uploadedFile */
+        if (count($uploadedFiles) > 1) {
+            $errors[] = self::EXCEEDED_MAXIMUM_FILES_ERROR;
+        } else {
+            foreach ($uploadedFiles['files'] as $uploadedFile) {
+                // Check there hasn't been any error in the submission
+                if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
+                    $errors[] = sprintf(
+                        self::UNEXPECTED_ERROR,
+                        $uploadedFile->getClientFilename()
+                    );
+                }
+
+                // Get name of the file submitted
+                $name = $uploadedFile->getClientFilename();
+
+                // Get info from the submitted file
+                $fileInfo = pathinfo($name);
+
+                // Get image format
+                $format = $fileInfo['extension'];
+
+                // Check if the image format is valid
+                if (!$this->isValidFormat($format)) {
+                    $errors[] = sprintf(self::INVALID_EXTENSION_ERROR, $format);
+                }
+
+                // Check the size of the image
+                $fileSize = $uploadedFile->getSize();
+                if ($fileSize > self::MAX_SIZE_IMAGE) {
+                    $errors[] = sprintf(self::FILE_SIZE_ERROR, $uploadedFile->getClientFilename());
+                }
+
+                // Check the dimensions of the image
+                $imageInfo = getimagesize($uploadedFile->getFilePath());
+                if ($imageInfo[0] !== self::DIMENSION_IMAGE || $imageInfo[1] !== self::DIMENSION_IMAGE) {
+                    $errors[] = sprintf(self::IMAGE_DIMENSIONS_ERROR, $uploadedFile->getClientFilename());
+                }
+
+                // If no errors, we save the image
+                if (empty($errors)) {
+                    $uuid = Uuid::uuid4();
+                    $data["profilePicturePath"]= self::UPLOADS_DIR . DIRECTORY_SEPARATOR . $uuid . "." . $format;
+                    $_SESSION["profilePicturePath"] = $data["profilePicturePath"];
+                    $uploadedFile->moveTo($data["profilePicturePath"]);
+                }
+            }
+        }
         return $this->twig->render(
             $response,
             'profile.twig',
             [
+                'formErrors' => $errors,
+                'formData' => $data
             ]
         );
+    }
+
+    private function isValidFormat(string $extension): bool
+    {
+        return in_array($extension, self::ALLOWED_EXTENSIONS, true);
     }
 }

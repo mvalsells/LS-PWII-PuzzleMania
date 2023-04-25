@@ -25,7 +25,7 @@ class Riddle implements JsonSerializable
     //------------------------------------------------------------------------------------------
 
     public function __construct(
-        int $idUser,
+        int    $idUser,
         string $riddle,
         string $answer
     )
@@ -39,15 +39,18 @@ class Riddle implements JsonSerializable
     // GETTERS
     //------------------------------------------------------------------------------------------
 
-    public function getIdUser(){
+    public function getIdUser()
+    {
         return $this->idUser;
-   }
+    }
 
-    public function getRiddle(){
+    public function getRiddle()
+    {
         return $this->riddle;
     }
 
-    public function getAnswer(){
+    public function getAnswer()
+    {
         return $this->answer;
     }
 
@@ -56,15 +59,18 @@ class Riddle implements JsonSerializable
     // SETTERS
     //------------------------------------------------------------------------------------------
 
-    public function setIdUser(int $id){
+    public function setIdUser(int $id)
+    {
         return $this->idUser = $id;
     }
 
-    public function setRiddle(string $riddle){
+    public function setRiddle(string $riddle)
+    {
         return $this->riddle = $riddle;
     }
 
-    public function setAnswer(string $answer){
+    public function setAnswer(string $answer)
+    {
         return $this->answer = $answer;
     }
 
@@ -73,8 +79,8 @@ class Riddle implements JsonSerializable
     // JSON SERIALIZE
     //------------------------------------------------------------------------------------------
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
-        // TODO: Implement jsonSerialize() method.
+        return get_object_vars($this);
     }
 }

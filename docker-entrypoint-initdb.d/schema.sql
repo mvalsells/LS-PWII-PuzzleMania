@@ -18,14 +18,14 @@ CREATE TABLE `users`
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `riddles`;
 CREATE TABLE `riddles`
 (
     `riddle_id`   INT          NOT NULL AUTO_INCREMENT,
     `user_id`    INT,
     `riddle`      VARCHAR(255) NOT NULL,
     `answer`    VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`riddle_id`),
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    PRIMARY KEY (`riddle_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `teams`;

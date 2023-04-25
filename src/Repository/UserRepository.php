@@ -51,5 +51,5 @@ interface UserRepository
 
     public function getScore(User $u);
 
-    public function setScore(User $u);
+    public function setScore(User $u, int $score);
 }

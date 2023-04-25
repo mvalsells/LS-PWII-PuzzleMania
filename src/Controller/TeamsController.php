@@ -34,7 +34,7 @@ class TeamsController
 
         //$this->userRepository->createUser($u4);
 
-        print_r($this->userRepository->getScore($u));
+        print_r($this->userRepository->setScore($u, 20));
 
         return $this->twig->render(
             $response,

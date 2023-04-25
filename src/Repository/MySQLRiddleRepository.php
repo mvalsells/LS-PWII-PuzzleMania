@@ -4,6 +4,18 @@ declare(strict_types=1);
 namespace Salle\PuzzleMania\Repository;
 
 use PDO;
+use Salle\PuzzleMania\Model\Riddle;
+
+/**
+ *  TODO: Coses que cal fer a la BBDD (✔✖)
+ *
+ *      Riddles:
+ *      · Llegir tots els riddles --> ✔
+ *      · Afegir riddles --> ✔
+ *
+ *
+ *  TODO: FLASH MESSAGES
+ */
 
 class MySQLRiddleRepository implements RiddleRepository
 {
@@ -17,8 +29,61 @@ class MySQLRiddleRepository implements RiddleRepository
         $this->databaseConnection = $database;
     }
 
-    public function getRiddle()
+
+    //==========================================================================================
+    // RIDDLES RELATED QUERIES
+    //==========================================================================================
+
+    /**
+     * Funció que agafa totes les riddles de la BBDD i les retorna en forma d'array.
+     * @return array
+     */
+    public function getRiddles(): array
     {
-        // TODO: Implement getRiddle() method.
+
+        // Fem la query
+        $query = <<<'QUERY'
+            SELECT * FROM riddles;
+        QUERY;
+
+        // Preparem la query
+        $statement = $this->databaseConnection->prepare($query);
+
+        // Executem la query
+        $statement->execute();
+
+        // Retornem els resultats de la query
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Funció que afegeix un riddle a la BBDD.
+     * @param Riddle $r
+     * @return void
+     */
+    public function addRiddle(Riddle $r): void
+    {
+
+        // Fem la query
+        $query = <<<'QUERY'
+            INSERT INTO riddles (user_id, riddle, answer) VALUES (:id, :riddle, :answer);
+        QUERY;
+
+        // Preparem la query
+        $statement = $this->databaseConnection->prepare($query);
+
+        // Inserim els paràmetres que volem a la query
+
+        $idUser = $r->getIdUser();
+        $riddle = $r->getRiddle();
+        $answer = $r->getAnswer();
+
+        $statement->bindParam('id', $idUser, PDO::PARAM_INT);
+        $statement->bindParam('riddle', $riddle, PDO::PARAM_STR);
+        $statement->bindParam('answer', $answer, PDO::PARAM_STR);
+
+        // Executem la query
+        $statement->execute();
+
     }
 }

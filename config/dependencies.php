@@ -104,14 +104,14 @@ function addDependencies(ContainerInterface $container): void
     $container->set(
         RiddleController::class,
         function (ContainerInterface $c) {
-            return new RiddleController($c->get('view'));
+            return new RiddleController($c->get('view'), $c->get('db'));
         }
     );
 
     $container->set(
         TeamsController::class,
         function (ContainerInterface $c) {
-            return new TeamsController($c->get('view'));
+            return new TeamsController($c->get('view'), $c->get('db'));
         }
     );
 

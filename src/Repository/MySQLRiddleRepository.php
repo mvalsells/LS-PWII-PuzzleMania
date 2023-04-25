@@ -17,8 +17,18 @@ class MySQLRiddleRepository implements RiddleRepository
         $this->databaseConnection = $database;
     }
 
-    public function getRiddle()
+
+    //==========================================================================================
+    // RIDDLES RELATED QUERIES
+    //==========================================================================================
+
+
+    public function getRiddles()
     {
-        // TODO: Implement getRiddle() method.
+
+    }
+
+    public function addRiddle(){
+
     }
 }

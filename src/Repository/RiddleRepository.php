@@ -8,5 +8,6 @@ use Salle\PuzzleMania\Model\User;
 
 interface RiddleRepository
 {
-    public function getRiddle();
+    public function getRiddles();
+    public function addRiddle();
 }

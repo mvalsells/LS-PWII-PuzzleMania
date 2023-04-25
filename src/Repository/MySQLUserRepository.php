@@ -8,7 +8,7 @@ use PDO;
 use Salle\PuzzleMania\Model\User;
 
 /**
- *  TODO: FER NOMS D'EQUP
+ *  TODO: FER NOMS D'EQUP Aka editar taula equips
  *  TODO: Coses que cal fer a la BBDD (✔✖)
  *
  *      Login i register:
@@ -44,6 +44,11 @@ final class MySQLUserRepository implements UserRepository
     {
         $this->databaseConnection = $database;
     }
+
+    //==========================================================================================
+    // USER RELATED QUERIES
+    //==========================================================================================
+
 
     public function createUser(User $user): void
     {
@@ -147,16 +152,29 @@ final class MySQLUserRepository implements UserRepository
         return $users;
     }
 
+    private function exists(User $u)
+    {
+        $user = $this->getUserByEmail($u->email());
+
+        // Mirem si l'usuari està a la BBDD.
+        if($user == null){
+            echo "User not created"; //TODO: Flash message.
+            return false;
+        }
+
+        return true;
+    }
+
+
+
+    //==========================================================================================
+    // TEAM RELATED QUERIES
+    //==========================================================================================
+
     public function getTeamByID(int $id)
     {
 
     }
-
-    /*public function addUserToTeam(int $id)
-    {
-        INSERT INTO teams (team_id, user_id, score) VALUES
-    (1, (SELECT users.id FROM users WHERE users.email = 'prova' LIMIT 1), 0)
-    }*/
 
     /***
      * Function that creates a team given 2 users.
@@ -334,19 +352,6 @@ final class MySQLUserRepository implements UserRepository
                 return;
             }
         }
-    }
-
-    private function exists(User $u)
-    {
-        $user = $this->getUserByEmail($u->email());
-
-        // Mirem si l'usuari està a la BBDD.
-        if($user == null){
-            echo "User not created"; //TODO: Flash message.
-            return false;
-        }
-
-        return true;
     }
 
     public function getTeamID(User $u)

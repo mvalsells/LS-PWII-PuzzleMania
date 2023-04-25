@@ -6,7 +6,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Salle\PuzzleMania\Repository\UserRepository;
 use Slim\Views\Twig;
-use Salle\PuzzleMania\Service\BarcodeGenerator;
 class LandingPageController
 {
     private $twig;
@@ -29,9 +28,8 @@ class LandingPageController
             $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
             $username = explode('@', $user->email)[0];
         }
-
         return $this->twig->render($response, 'home.twig', [
-            "username" => $username,
+            "username" => $username
         ]);
     }
 

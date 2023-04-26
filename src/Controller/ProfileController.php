@@ -6,6 +6,7 @@ use Psr\Http\Message\UploadedFileInterface;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
 
 
@@ -64,6 +65,8 @@ class ProfileController
 
         $errors = [];
 
+        $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+
         /** @var UploadedFileInterface $uploadedFile */
         // Check if only one file was uploaded
         if (count($uploadedFiles) > 1) {
@@ -90,18 +93,19 @@ class ProfileController
             // Check if the image format is valid
             if (!$this->isValidFormat($format)) {
                 $errors[] = sprintf(self::INVALID_EXTENSION_ERROR, $format);
-            }
+            } else {
+                // Check the size of the image
+                $fileSize = $uploadedFile->getSize();
+                if ($fileSize > self::MAX_SIZE_IMAGE) {
+                    $errors[] = sprintf(self::FILE_SIZE_ERROR, $uploadedFile->getClientFilename());
+                }
 
-            // Check the size of the image
-            $fileSize = $uploadedFile->getSize();
-            if ($fileSize > self::MAX_SIZE_IMAGE) {
-                $errors[] = sprintf(self::FILE_SIZE_ERROR, $uploadedFile->getClientFilename());
-            }
-
-            // Check the dimensions of the image
-            $imageInfo = getimagesize($uploadedFile->getFilePath());
-            if ($imageInfo[0] !== self::DIMENSION_IMAGE || $imageInfo[1] !== self::DIMENSION_IMAGE) {
-                $errors[] = sprintf(self::IMAGE_DIMENSIONS_ERROR, $uploadedFile->getClientFilename());
+                // Check the dimensions of the image
+                $imageInfo = getimagesize($uploadedFile->getFilePath());
+                echo $imageInfo[0];
+                if ($imageInfo[0] !== self::DIMENSION_IMAGE || $imageInfo[1] !== self::DIMENSION_IMAGE) {
+                    $errors[] = sprintf(self::IMAGE_DIMENSIONS_ERROR, $uploadedFile->getClientFilename());
+                }
             }
 
             // If no errors, we save the image
@@ -118,7 +122,8 @@ class ProfileController
             [
                 'formErrors' => $errors,
                 'formData' => $data,
-                'profilePicture' => $_SESSION["profilePicturePath"] ?? ""
+                'profilePicture' => $_SESSION["profilePicturePath"] ?? "",
+                'formAction' => $routeParser->urlFor('profile_post')
             ]
         );
     }

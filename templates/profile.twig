@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/numericlist_styles.css"/>
 {% endblock %}
 
-{% block name %}Home{% endblock %}
+{% block name %}Profile information{% endblock %}
 
 {% block header %}
     <!-- Dropdown -->
@@ -21,7 +21,7 @@
         </button>
         <!-- Logout suboption -->
         <div class="dropdown-content">
-            <a href="/home">Home</a>
+            <a href="/">Home</a>
             {% if team is not defined %}
                 <a href="/join">Join a Team</a>
             {% else %}

@@ -47,7 +47,7 @@ class ProfileController
     {
         $data = [];
         // PROVISIONAL
-        $_SESSION["email"] = "aaah@gmail.com";
+        // $_SESSION["email"] = "aaah@gmail.com";
         // Set data variables to render the view
         $data["email"] = $_SESSION["email"];
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
@@ -69,7 +69,7 @@ class ProfileController
 
         $data = [];
         // PROVISIONAL
-        $_SESSION["email"] = "aaah@gmail.com";
+        // $_SESSION["email"] = "aaah@gmail.com";
         $data["email"] = $_SESSION["email"];
 
         $errors = [];
@@ -83,7 +83,7 @@ class ProfileController
         } else {
             if (count($uploadedFiles['files']) > 1) {
                 $errors["profilePicture"] = self::EXCEEDED_MAXIMUM_FILES_ERROR;
-            } elseif (!isset($uploadedFiles['files'])){
+            } elseif (!isset($uploadedFiles['files'])){ // TODO: not working
                 $errors["profilePicture"] = self::NO_FILES_ERROR;
             } else {
                 echo $uploadedFiles['files'];
@@ -123,8 +123,8 @@ class ProfileController
                     // If no errors, we save the image
                     if (empty($errors)) {
                         $uuid = Uuid::uuid4();
-                        $data["profilePicturePath"]= self::UPLOADS_DIR . DIRECTORY_SEPARATOR . $uuid . "." . $format;
-                        $_SESSION["profilePicturePath"] = $data["profilePicturePath"];
+                        $data["profilePicturePath"] = self::UPLOADS_DIR . DIRECTORY_SEPARATOR . $uuid . "." . $format;
+                        $_SESSION["profilePicturePath"] = 'uploads/' . $uuid . "." . $format;
                         // TODO: Update profile picture path in DDBB
                         $uploadedFile->moveTo($data["profilePicturePath"]);
                     }

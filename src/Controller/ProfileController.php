@@ -45,11 +45,6 @@ class ProfileController
     }
     public function show(Request $request, Response $response): Response
     {
-        $data = [];
-        // PROVISIONAL
-        // $_SESSION["email"] = "aaah@gmail.com";
-        // Set data variables to render the view
-        $data["email"] = $_SESSION["email"];
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
 
         return $this->twig->render(
@@ -57,7 +52,7 @@ class ProfileController
             'profile.twig',
             [
                 'formAction' => $routeParser->urlFor('profile_post'),
-                'formData' => $data,
+                'email' => $_SESSION["email"],
                 'profilePicture' => $_SESSION["profilePicturePath"] ?? self::DEFAULT_PROFILE_IMAGE
             ]
         );
@@ -67,25 +62,17 @@ class ProfileController
         $uploadedFiles = $request->getUploadedFiles();
         $uploadedData = $request->getParsedBody();
 
-        $data = [];
-        // PROVISIONAL
-        // $_SESSION["email"] = "aaah@gmail.com";
-        $data["email"] = $_SESSION["email"];
-
         $errors = [];
-
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
 
         /** @var UploadedFileInterface $uploadedFile */
-        // Check if only one file was uploaded
+        // Check the email field has not changed
         if (!empty($uploadedData["email"]) and $_SESSION["email"] !== $uploadedData["email"]) {
             $errors["email"] = self::EMAIL_UPDATED_ERROR;
         } else {
-            if (count($uploadedFiles['files']) > 1) {
-                $errors["profilePicture"] = self::EXCEEDED_MAXIMUM_FILES_ERROR;
-            } elseif (!isset($uploadedFiles['files'])){ // TODO: not working
-                $errors["profilePicture"] = self::NO_FILES_ERROR;
-            } else {
+            // Check if only one file was uploaded
+            $errors = $this->checkNumberOfFiles($errors, $uploadedFiles);
+            if (empty($errors["profilePicture"])) {
                 $uploadedFile = $uploadedFiles['files'][0];
                 // Check there hasn't been any error in the submission
                 if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
@@ -94,39 +81,8 @@ class ProfileController
                         $uploadedFile->getClientFilename()
                     );
                 } else {
-                    // Get name of the file submitted
-                    $name = $uploadedFile->getClientFilename();
-
-                    // Get info from the submitted file
-                    $fileInfo = pathinfo($name);
-
-                    // Get image format
-                    $format = $fileInfo['extension'];
-
-                    // Check if the image format is valid
-                    if (!$this->isValidFormat($format)) {
-                        $errors["profilePicture"] = sprintf(self::INVALID_EXTENSION_ERROR, $format);
-                    } else {
-                        // Check the size of the image
-                        $fileSize = $uploadedFile->getSize();
-                        // Check the dimensions of the image
-                        $imageInfo = getimagesize($uploadedFile->getFilePath());
-
-                        if ($fileSize > self::MAX_SIZE_IMAGE) {
-                            $errors["profilePicture"] = sprintf(self::FILE_SIZE_ERROR, $uploadedFile->getClientFilename());
-                        } elseif ($imageInfo[0] !== self::DIMENSION_IMAGE || $imageInfo[1] !== self::DIMENSION_IMAGE) {
-                            $errors["profilePicture"] = sprintf(self::IMAGE_DIMENSIONS_ERROR, $uploadedFile->getClientFilename());
-                        }
-                    }
-
-                    // If no errors, we save the image
-                    if (empty($errors)) {
-                        $uuid = Uuid::uuid4();
-                        $data["profilePicturePath"] = self::UPLOADS_DIR . DIRECTORY_SEPARATOR . $uuid . "." . $format;
-                        $_SESSION["profilePicturePath"] = 'uploads/' . $uuid . "." . $format;
-                        // TODO: Update profile picture path in DDBB
-                        $uploadedFile->moveTo($data["profilePicturePath"]);
-                    }
+                    // Check the file is correct
+                    $errors = $this->checkUploadedFile($errors, $uploadedFile);
                 }
             }
         }
@@ -136,11 +92,58 @@ class ProfileController
             'profile.twig',
             [
                 'formErrors' => $errors ?? [],
-                'formData' => $data,
+                'email' => $_SESSION["email"],
                 'profilePicture' => $_SESSION["profilePicturePath"] ?? self::DEFAULT_PROFILE_IMAGE,
                 'formAction' => $routeParser->urlFor('profile_post')
             ]
         );
+    }
+
+    private function checkNumberOfFiles(array $errors, array $uploadedFiles): array
+    {
+        if (count($uploadedFiles['files']) > 1) {
+            $errors["profilePicture"] = self::EXCEEDED_MAXIMUM_FILES_ERROR;
+        } elseif (!isset($uploadedFiles['files'][0]) || $uploadedFiles['files'][0]->getError() !== UPLOAD_ERR_OK){ // TODO: not working
+            $errors["profilePicture"] = self::NO_FILES_ERROR;
+        }
+        return $errors;
+    }
+
+    private function checkUploadedFile(array $errors, UploadedFileInterface $uploadedFile): array
+    {
+        // Get name of the file submitted
+        $name = $uploadedFile->getClientFilename();
+
+        // Get info from the submitted file
+        $fileInfo = pathinfo($name);
+
+        // Get image format
+        $format = $fileInfo['extension'];
+
+        // Check if the image format is valid
+        if (!$this->isValidFormat($format)) {
+            $errors["profilePicture"] = sprintf(self::INVALID_EXTENSION_ERROR, $format);
+        } else {
+            // Check the size of the image
+            $fileSize = $uploadedFile->getSize();
+            // Check the dimensions of the image
+            $imageInfo = getimagesize($uploadedFile->getFilePath());
+            if ($fileSize > self::MAX_SIZE_IMAGE) {
+                $errors["profilePicture"] = sprintf(self::FILE_SIZE_ERROR, $uploadedFile->getClientFilename());
+            } elseif ($imageInfo[0] !== self::DIMENSION_IMAGE || $imageInfo[1] !== self::DIMENSION_IMAGE) {
+                $errors["profilePicture"] = sprintf(self::IMAGE_DIMENSIONS_ERROR, $uploadedFile->getClientFilename());
+            }
+        }
+
+        // If no errors, we save the image
+        if (empty($errors)) {
+            $uuid = Uuid::uuid4();
+            $_SESSION["profilePicturePath"] = 'uploads/' . $uuid . "." . $format;
+            // TODO: Update profile picture path in DDBB
+            $uploadedFile->moveTo(self::UPLOADS_DIR . DIRECTORY_SEPARATOR . $uuid . "." . $format);
+        }
+
+        return $errors;
     }
 
     private function isValidFormat(string $extension): bool

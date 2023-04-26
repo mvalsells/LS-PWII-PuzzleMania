@@ -43,7 +43,7 @@
                   enctype="multipart/form-data"
                   method="POST" id="profile" accept-charset="utf-8">
                 <div class="form-group row">
-                    <input type="email" name="email" value="{{ formData.email }}" disabled>
+                    <input type="email" name="email" value="{{ email }}" disabled>
                     {% if formErrors["email"] %}
                         <p class = "error">{{ formErrors["email"] }}</p>
                     {% endif %}

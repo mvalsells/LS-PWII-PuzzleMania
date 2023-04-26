@@ -86,7 +86,6 @@ class ProfileController
             } elseif (!isset($uploadedFiles['files'])){ // TODO: not working
                 $errors["profilePicture"] = self::NO_FILES_ERROR;
             } else {
-                echo $uploadedFiles['files'];
                 $uploadedFile = $uploadedFiles['files'][0];
                 // Check there hasn't been any error in the submission
                 if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {

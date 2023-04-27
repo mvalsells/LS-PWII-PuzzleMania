@@ -105,7 +105,7 @@ function addDependencies(ContainerInterface $container): void
     $container->set(
         ProfileController::class,
         function (ContainerInterface $c) {
-            return new ProfileController($c->get('view'));
+            return new ProfileController($c->get('view'), $c->get('user_repository'));
         }
     );
 

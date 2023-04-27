@@ -58,6 +58,9 @@ class SignInController
             } else {
                 $_SESSION['user_id'] = $user->id;
                 $_SESSION['email'] = $user->email;
+                if (isset($user->profilePicturePath)) {
+                    $_SESSION['profilePicturePath'] = $user->profilePicturePath;
+                }
                 return $response->withHeader('Location', '/')->withStatus(302);
             }
         }

@@ -6,6 +6,7 @@ use Psr\Http\Message\UploadedFileInterface;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Salle\PuzzleMania\Repository\UserRepository;
 use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
 
@@ -14,8 +15,6 @@ use Ramsey\Uuid\Uuid;
 
 class ProfileController
 {
-    private $twig;
-
     // Constants definitions of image parameters
     private const MAX_SIZE_IMAGE = 1024*1024;
     private const DIMENSION_IMAGE = 400;
@@ -38,10 +37,10 @@ class ProfileController
 
 
     public function __construct(
-        Twig $twig,
+        private Twig           $twig,
+        private UserRepository $userRepository,
     )
     {
-        $this->twig = $twig;
     }
     public function show(Request $request, Response $response): Response
     {
@@ -139,6 +138,7 @@ class ProfileController
         if (empty($errors)) {
             $uuid = Uuid::uuid4();
             $_SESSION["profilePicturePath"] = 'uploads/' . $uuid . "." . $format;
+            $this->userRepository->updateProfilePicture($_SESSION['user_id'], $_SESSION["profilePicturePath"]);
             // TODO: Update profile picture path in DDBB
             $uploadedFile->moveTo(self::UPLOADS_DIR . DIRECTORY_SEPARATOR . $uuid . "." . $format);
         }

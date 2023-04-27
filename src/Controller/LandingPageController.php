@@ -23,14 +23,18 @@ class LandingPageController
     public function show(Request $request, Response $response): Response
     {
         if (!isset($_SESSION['user_id'])) {
-            $username = "stranger";
+            return $this->twig->render($response, 'home.twig', [
+                "username" => "stranger"
+            ]);
         } else {
             $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
             $username = explode('@', $user->email)[0];
+            return $this->twig->render($response, 'home.twig', [
+                "username" => $username,
+                "email" => $_SESSION['email']
+            ]);
         }
-        return $this->twig->render($response, 'home.twig', [
-            "username" => $username
-        ]);
+
     }
 
 }

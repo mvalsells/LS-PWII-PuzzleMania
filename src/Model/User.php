@@ -13,6 +13,7 @@ class User implements JsonSerializable
     private int $id;
     private string $email;
     private string $password;
+    private string $profilePicturePath;
     private Datetime $createdAt;
     private Datetime $updatedAt;
 
@@ -65,6 +66,11 @@ class User implements JsonSerializable
         return $this->createdAt;
     }
 
+    public function profilePicturePath()
+    {
+        return $this->profilePicturePath;
+    }
+
     public function updatedAt()
     {
         return $this->updatedAt;
@@ -94,6 +100,12 @@ class User implements JsonSerializable
     public function setPassword(string $password)
     {
         $this->password = $password;
+        return $this;
+    }
+
+    public function setProfilePicturePath(string $profilePicturePath)
+    {
+        $this->profilePicturePath = $profilePicturePath;
         return $this;
     }
 

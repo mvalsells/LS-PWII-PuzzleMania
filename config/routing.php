@@ -5,6 +5,7 @@ declare(strict_types=1);
 use DI\Container;
 use Salle\PuzzleMania\Controller\GameController;
 use Salle\PuzzleMania\Controller\LandingPageController;
+use Salle\PuzzleMania\Controller\LogoutController;
 use Salle\PuzzleMania\Controller\ProfileController;
 use Salle\PuzzleMania\Controller\RiddleController;
 use Salle\PuzzleMania\Controller\TeamsController;
@@ -23,19 +24,21 @@ function addRoutes(App $app, Container $container): void
     $app->get('/sign-up', SignUpController::class . ':show')->setName('sign-up_get');
     $app->post('/sign-up', SignUpController::class . ':handleForm')->setName('sign-up_post');
 
+    $app->get('/log-out', LogOutController::class . ':handle')->setName('log-out_get');
+
     $app->get('/sign-in', SignInController::class . ':show')->setName('sign-in_get');
     $app->post('/sign-in', SignInController::class . ':handleForm')->setName('sign-in_post');
 
-    $app->get('/join', TeamsController::class . ':show')->setName('join_get');
-    $app->post('/join', TeamsController::class . ':handleForm')->setName('join_post');
+    $app->get('/join', TeamsController::class . ':show')->setName('join_get')->add(AuthorizationMiddleware::class);
+    $app->post('/join', TeamsController::class . ':handleForm')->setName('join_post')->add(AuthorizationMiddleware::class);
 
     //TODO: Mirar lo del ID.
-    $app->get('/invite/join/{id}', TeamsController::class . ':handleInviteForm')->setName('invite_get');
+    $app->get('/invite/join/{id}', TeamsController::class . ':handleInviteForm')->setName('invite_get')->add(AuthorizationMiddleware::class);
 
-    $app->get('/team-stats', TeamsController::class . ':showStats')->setName('stats_get');
+    $app->get('/team-stats', TeamsController::class . ':showStats')->setName('stats_get')->add(AuthorizationMiddleware::class);
 
-    $app->get('/profile', ProfileController::class . ':show')->setName('profile_get');
-    $app->post('/profile', ProfileController::class . ':handleForm')->setName('profile_post');
+    $app->get('/profile', ProfileController::class . ':show')->setName('profile_get')->add(AuthorizationMiddleware::class);
+    $app->post('/profile', ProfileController::class . ':handleForm')->setName('profile_post')->add(AuthorizationMiddleware::class);
 
 
     //TODO: Mirar lo del ID.
@@ -54,12 +57,12 @@ function addRoutes(App $app, Container $container): void
         $group->get(
             '/{gameID}/riddle/{riddleID}',
             GameController::class . ":showRiddle"
-        )->setName('riddle_get');
+        )->setName('game_riddle_get');
 
         $group->post(
             '/{gameID}/riddle/{riddleID}',
             GameController::class . ":handleFormRiddle"
-        )->setName('riddle_post');
+        )->setName('game_riddle_post');
 
     })->add(AuthorizationMiddleware::class);
 
@@ -68,12 +71,12 @@ function addRoutes(App $app, Container $container): void
         $group->get(
             '',
             RiddleController::class . ":show"
-        )->setName('game_get');
+        )->setName('riddle_get');
 
         $group->get(
             '/{id}',
             RiddleController::class . ":showID"
-        )->setName('game_post');
+        )->setName('riddle_post');
 
     });
 

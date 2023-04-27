@@ -1,7 +1,65 @@
 {% extends "base.twig" %}
 
-{% block title %}Profile | PuzzleMania{% endblock %}
+{% block head %}
+    <title>Profile | PuzzleMania</title>
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/navbar_styles.css"/>
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/numericlist_styles.css"/>
+{% endblock %}
+
+{% block name %}Profile information{% endblock %}
+
+{% block header %}
+    <!-- Dropdown -->
+    <div class="dropdown">
+        <!-- Email -->
+        <button class="dropbtn">
+            {% if email is not defined %}
+                Menu
+            {% else %}
+                {{ email }}
+            {% endif %}
+        </button>
+        <!-- Logout suboption -->
+        <div class="dropdown-content">
+            <a href="/">Home</a>
+            {% if team is not defined %}
+                <a href="/join">Join a Team</a>
+            {% else %}
+                <a href="/team-stats">Your Team Stats</a>
+                <a href="/game">Start a game</a>
+            {% endif %}
+            <a href="/riddles">List riddles</a>
+            <a href="/log-out">Logout</a>
+        </div>
+    </div>
+{% endblock %}
 
 {% block content %}
-    <h1 data-cy="profile">Here the user can see the profile information.</h1>
+    <div class = "parent-content">
+        <div class = "content">
+            <img src="{{ full_url_for('home') }}{{ profilePicture }}" alt="Profile picture" style="width: 150px; height: 150px; border-radius: 50%; margin-right: 10px;">
+            <h1 data-cy="profile">Here the user can see the profile information.</h1>
+            <form action="{{ formAction }}"
+                  enctype="multipart/form-data"
+                  method="POST" id="profile" accept-charset="utf-8">
+                <div class="form-group row">
+                    <input type="email" name="email" value="{{ email }}" disabled>
+                    {% if formErrors["email"] %}
+                        <p class = "error">{{ formErrors["email"] }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group row">
+                    <input type="file" name="files[]">
+                    {% if formErrors["profilePicture"] %}
+                        <p class = "error">{{ formErrors["profilePicture"] }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group row">
+                    <input type="submit" value="Update profile picture" class="submit-button">
+                </div>
+            </form>
+        </div>
+    </div>
+
+
 {% endblock %}

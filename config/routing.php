@@ -5,6 +5,7 @@ declare(strict_types=1);
 use DI\Container;
 use Salle\PuzzleMania\Controller\GameController;
 use Salle\PuzzleMania\Controller\LandingPageController;
+use Salle\PuzzleMania\Controller\LogoutController;
 use Salle\PuzzleMania\Controller\ProfileController;
 use Salle\PuzzleMania\Controller\RiddleController;
 use Salle\PuzzleMania\Controller\TeamsController;
@@ -22,6 +23,8 @@ function addRoutes(App $app, Container $container): void
 
     $app->get('/sign-up', SignUpController::class . ':show')->setName('sign-up_get');
     $app->post('/sign-up', SignUpController::class . ':handleForm')->setName('sign-up_post');
+
+    $app->get('/log-out', LogOutController::class . ':handle')->setName('log-out_get');
 
     $app->get('/sign-in', SignInController::class . ':show')->setName('sign-in_get');
     $app->post('/sign-in', SignInController::class . ':handleForm')->setName('sign-in_post');

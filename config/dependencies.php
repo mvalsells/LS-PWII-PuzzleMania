@@ -7,6 +7,7 @@ use Salle\PuzzleMania\Controller\API\RiddlesAPIController;
 use Salle\PuzzleMania\Controller\API\UsersAPIController;
 use Salle\PuzzleMania\Controller\GameController;
 use Salle\PuzzleMania\Controller\LandingPageController;
+use Salle\PuzzleMania\Controller\LogoutController;
 use Salle\PuzzleMania\Controller\ProfileController;
 use Salle\PuzzleMania\Controller\RiddleController;
 use Salle\PuzzleMania\Controller\SignUpController;
@@ -77,6 +78,13 @@ function addDependencies(ContainerInterface $container): void
         SignUpController::class,
         function (ContainerInterface $c) {
             return new SignUpController($c->get('view'), $c->get('user_repository'));
+        }
+    );
+
+    $container->set(
+        LogOutController::class,
+        function (ContainerInterface $c) {
+            return new LogOutController();
         }
     );
 

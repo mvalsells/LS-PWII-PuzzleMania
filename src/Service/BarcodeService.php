@@ -11,12 +11,12 @@ namespace Salle\PuzzleMania\Service;
 
 use GuzzleHttp;
 
-class BarcodeGenerator
+class BarcodeService
 {
     private GuzzleHttp\Client $client;
 
     /**
-     * Constructor for a BarcodeGenerator object
+     * Constructor for a BarcodeService object
      */
     public function __construct(){
         $this->client = new GuzzleHttp\Client([

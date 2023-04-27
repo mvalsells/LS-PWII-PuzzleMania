@@ -9,7 +9,7 @@ use Salle\PuzzleMania\Controller\ProfileController;
 use Salle\PuzzleMania\Controller\RiddleController;
 use Salle\PuzzleMania\Controller\TeamsController;
 use Salle\PuzzleMania\Middleware\AuthorizationMiddleware;
-use SallezzleMania\Controller\API\RiddlesAPIController;
+use Salle\PuzzleMania\Controller\API\RiddlesAPIController;
 use Salle\PuzzleMania\Controller\API\UsersAPIController;
 use Salle\PuzzleMania\Controller\SignUpController;
 use Salle\PuzzleMania\Controller\SignInController;
@@ -63,6 +63,7 @@ function addRoutes(App $app, Container $container): void
 
     })->add(AuthorizationMiddleware::class);
 
+    //TODO: Mirar lo del ID.
     $app->group('/riddle', function (RouteCollectorProxy $group) {
 
         $group->get(
@@ -77,4 +78,12 @@ function addRoutes(App $app, Container $container): void
 
     });
 
+    // Riddles API
+    $app->group('/api/riddle', function (RouteCollectorProxy $group) {
+
+        $group->get(
+           '',
+           RiddlesAPIController::class . ":getAllRiddles"
+       );
+    });
 }

@@ -61,6 +61,11 @@ class SignInController
                 if (isset($user->profilePicturePath)) {
                     $_SESSION['profilePicturePath'] = $user->profilePicturePath;
                 }
+                $team = $this->userRepository->getTeamByUserId($user->id);
+                if ($team != null) {
+                    $_SESSION['team_id'] = $team->team_id;
+                    $_SESSION['team_name'] = $team->team_name;
+                }
                 return $response->withHeader('Location', '/')->withStatus(302);
             }
         }

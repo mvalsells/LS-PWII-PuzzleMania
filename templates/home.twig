@@ -27,7 +27,7 @@
                 <a href="/riddles">List riddles</a>
             {% else %}
                 <a href="/profile">Your Profile</a>
-                {% if team is not defined %}
+                {% if team is not defined or team is null %}
                     <a href="/join">Join a Team</a>
                 {% else %}
                     <a href="/team-stats">Your Team Stats</a>

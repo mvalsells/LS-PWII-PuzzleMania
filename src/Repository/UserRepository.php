@@ -14,6 +14,8 @@ interface UserRepository
 
     public function updateProfilePicture(int $id, string $profilePicturePath): void;
 
+    public function getTeamByUserId(int $user_id);
+
     public function getUserById(int $id);
 
     public function getAllUsers();
@@ -29,13 +31,6 @@ interface UserRepository
     public function createTeam(String $teamName, User $u1, User $u2);
 
     public function createSoloTeam(String $teamName, User $u1): void;
-
-    /***
-     * Function that checks if a user is registered on a tema or not
-     * @param User $u
-     * @return bool
-     */
-    public function hasTeam(User $u);
 
     public function addToTeamByID(int $teamId, User $u);
 

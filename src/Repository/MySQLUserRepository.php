@@ -154,7 +154,8 @@ final class MySQLUserRepository implements UserRepository
 
         // Mirem si l'usuari està a la BBDD.
         if($user == null){
-            echo "User not created"; //TODO: Flash message.
+            //echo "User not created";
+            //TODO: Flash message.
             return false;
         }
 

@@ -31,6 +31,7 @@
     "slim/twig-view": "3.3",
     "ext-json": "*",
     "slim/flash": "^0.4.0",
-    "ext-http": "*"
+    "ext-http": "*",
+    "ramsey/uuid": "^4.7"
   }
 }

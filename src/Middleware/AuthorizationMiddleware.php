@@ -13,6 +13,19 @@ use Slim\Routing\RouteContext;
 final class AuthorizationMiddleware
 {
 
+    private const FLASH_MESSAGES = [
+                'profile_get' => 'access the Profile page.',
+                'profile_post' => 'access the Profile page.',
+                'join_get' => 'join a team.',
+                'join_post' => 'join a team.',
+                'invite_get' => 'join a team.',
+                'stats_get' => 'access the Team Stats page.',
+                'game_get' => 'access the Game page.',
+                'game_post' => 'access the Game page.',
+                'game_riddle_get' => 'access the Game page.',
+                'game_riddle_post' => 'access the Game page.',
+            ];
+
     public function __construct(private Messages $flash)
     {
     }
@@ -22,14 +35,16 @@ final class AuthorizationMiddleware
         if (!isset($_SESSION['user_id'])) {
             $route = RouteContext::fromRequest($request)->getRoute();
 
-            $this->flash->addMessage("notifications", $this->buildMessage($route->getName()));
+            // Get flash message and add it to response
+            $page = self::FLASH_MESSAGES[$route->getName()] ?? 'Unknown page';
+            $this->flash->addMessage("notifications", $this->buildMessage($page));
             $response = new Response();
-            return $response->withHeader('Location','/sign-in')->withStatus(401);
+            return $response->withHeader('Location','/sign-in')->withStatus(301);
         }
         return $next->handle($request);
     }
 
     private function buildMessage(string $page): string {
-        return "You must be logged in to access the " . $page . " page.";
+        return "You must be logged in to " . $page;
     }
 }

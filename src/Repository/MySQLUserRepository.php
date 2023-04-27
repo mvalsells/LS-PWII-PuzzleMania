@@ -148,13 +148,31 @@ final class MySQLUserRepository implements UserRepository
         return $users;
     }
 
-    private function exists(User $u)
+    public function updateProfilePicture(int $id, string $profilePicturePath): void
+    {
+        $query = <<<'QUERY'
+        UPDATE `users`
+        SET `profilePicturePath` = :profilePicturePath,
+            `updatedAt` = NOW()
+        WHERE `id` = :id;
+        QUERY;
+
+        $statement = $this->databaseConnection->prepare($query);
+
+        $statement->bindParam('id', $id, PDO::PARAM_INT);
+        $statement->bindParam('profilePicturePath', $profilePicturePath, PDO::PARAM_STR);
+
+        $statement->execute();
+    }
+
+    private function exists(User $u): bool
     {
         $user = $this->getUserByEmail($u->email());
 
         // Mirem si l'usuari està a la BBDD.
         if($user == null){
-            echo "User not created"; //TODO: Flash message.
+            //echo "User not created";
+            //TODO: Flash message.
             return false;
         }
 

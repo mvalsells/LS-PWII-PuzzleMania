@@ -13,30 +13,30 @@ class User implements JsonSerializable
     private int $id;
     private string $email;
     private string $password;
+    private string $profilePicturePath;
     private Datetime $createdAt;
     private Datetime $updatedAt;
 
-    public function __construct(
-        string   $email,
-        string   $password,
-        Datetime $createdAt,
-        Datetime $updatedAt
-    )
-    {
-        $this->email = $email;
-        $this->password = $password;
-        $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt;
-    }
+//    public function __construct(
+//        string   $email,
+//        string   $password,
+//        Datetime $createdAt,
+//        Datetime $updatedAt
+//    )
+//    {
+//        $this->email = $email;
+//        $this->password = $password;
+//        $this->createdAt = $createdAt;
+//        $this->updatedAt = $updatedAt;
+//    }
 
     /**
      * Static constructor / factory
      */
-    /* Si es necessita s'ha de posar els valors del constructor en el self().
-     * public static function create(): User
+    public static function create(): User
     {
         return new self();
-    }*/
+    }
 
     /**
      * Function called when encoded with json_encode
@@ -64,6 +64,11 @@ class User implements JsonSerializable
     public function createdAt()
     {
         return $this->createdAt;
+    }
+
+    public function profilePicturePath()
+    {
+        return $this->profilePicturePath;
     }
 
     public function updatedAt()
@@ -95,6 +100,12 @@ class User implements JsonSerializable
     public function setPassword(string $password)
     {
         $this->password = $password;
+        return $this;
+    }
+
+    public function setProfilePicturePath(string $profilePicturePath)
+    {
+        $this->profilePicturePath = $profilePicturePath;
         return $this;
     }
 

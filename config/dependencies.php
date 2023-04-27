@@ -14,6 +14,7 @@ use Salle\PuzzleMania\Controller\SignUpController;
 use Salle\PuzzleMania\Controller\SignInController;
 use Salle\PuzzleMania\Controller\TeamsController;
 use Salle\PuzzleMania\Middleware\AuthorizationMiddleware;
+use Salle\PuzzleMania\Middleware\TeamAuthorizationMiddleware;
 use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
 use Salle\PuzzleMania\Repository\MySQLUserRepository;
 use Salle\PuzzleMania\Repository\PDOConnectionBuilder;
@@ -55,6 +56,13 @@ function addDependencies(ContainerInterface $container): void
         'authorizationMiddleware',
         function (ContainerInterface $c) {
             return new AuthorizationMiddleware($c->get('flash'));
+        }
+    );
+
+    $container->set(
+        'teamAuthorizationMiddleware',
+        function (ContainerInterface $c) {
+            return new TeamAuthorizationMiddleware($c->get('flash'));
         }
     );
 

@@ -53,7 +53,12 @@ class MySQLRiddleRepository implements RiddleRepository
         $statement->execute();
 
         // Retornem els resultats de la query
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+        $rawData =  $statement->fetchAll(PDO::FETCH_ASSOC);
+        $riddles = [];
+        foreach ($rawData as $row) {
+            $riddles[] = new Riddle($row['riddle_id'], $row['user_id'], $row['riddle'], $row['answer']);
+        }
+        return $riddles;
     }
 
     /**
@@ -74,7 +79,7 @@ class MySQLRiddleRepository implements RiddleRepository
 
         // Inserim els paràmetres que volem a la query
 
-        $idUser = $r->getIdUser();
+        $idUser = $r->getUserId();
         $riddle = $r->getRiddle();
         $answer = $r->getAnswer();
 

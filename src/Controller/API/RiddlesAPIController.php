@@ -6,23 +6,16 @@ namespace Salle\PuzzleMania\Controller\API;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Views\Twig;
+use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
 
 class RiddlesAPIController
 {
     public function __construct(
+        private MySQLRiddleRepository $riddleRepository
     ){}
 
     public function getAllRiddles(Request $request, Response $response): Response {
-        $data = [
-            [
-                "id" => 1,
-                "userId" => 1,
-                "riddle" => "What has to be broken before you can use it?",
-                "answer" => "Egg"
-            ]
-        ];
-        $response->getBody()->write(json_encode($data));
+        $response->getBody()->write(json_encode($this->riddleRepository->getRiddles()));
         return $response
             ->withHeader("content-type", "application/json")
             ->withStatus(200);

@@ -42,3 +42,27 @@ CREATE TABLE `teams`
     FOREIGN KEY (user_id_1) REFERENCES users (id),
     FOREIGN KEY (user_id_2) REFERENCES users (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+/* INSERT DEMO/TEST DATA TO RIDDLES TABLE
+ INSERT INTO riddles (
+                     user_id,
+                     riddle,
+                     answer
+                    )
+VALUES (
+           1,
+           'It brings back the lost as though never gone, shines laughter and tears with light long since shone; a moment to make, a lifetime to shed; valued then but lost when your dead. What Is It?',
+           'Memory'
+        ),
+        (
+            NULL,
+            'What do you get when you cross a fish with an elephant?',
+            'Swimming trunks'
+        ),
+        (
+            2,
+            'I can be long, or I can be short.\nI can be grown, and I can be bought.\nI can be painted, or left bare.\nI can be round, or I can be square.\nWhat am I?',
+            'Fingernails'
+        );
+ */

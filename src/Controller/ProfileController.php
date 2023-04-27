@@ -52,6 +52,7 @@ class ProfileController
             [
                 'formAction' => $routeParser->urlFor('profile_post'),
                 'email' => $_SESSION["email"],
+                "team" => $_SESSION['team_id'] ?? null,
                 'profilePicture' => $_SESSION["profilePicturePath"] ?? self::DEFAULT_PROFILE_IMAGE
             ]
         );
@@ -92,6 +93,7 @@ class ProfileController
             [
                 'formErrors' => $errors ?? [],
                 'email' => $_SESSION["email"],
+                "team" => $_SESSION['team_id'] ?? null,
                 'profilePicture' => $_SESSION["profilePicturePath"] ?? self::DEFAULT_PROFILE_IMAGE,
                 'formAction' => $routeParser->urlFor('profile_post')
             ]

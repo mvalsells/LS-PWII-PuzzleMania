@@ -92,11 +92,48 @@ final class MySQLUserRepository implements UserRepository
 
         $count = $statement->rowCount();
         if ($count > 0) {
-            $row = $statement->fetch(PDO::FETCH_OBJ);
-            return $row;
+            return $statement->fetch(PDO::FETCH_OBJ);
         }
-
         return null;
+    }
+
+    public function updateProfilePicture(int $id, string $profilePicturePath): void
+    {
+        $query = <<<'QUERY'
+        UPDATE `users`
+        SET `profilePicturePath` = :profilePicturePath,
+            `updatedAt` = NOW()
+        WHERE `id` = :id;
+        QUERY;
+
+        $statement = $this->databaseConnection->prepare($query);
+
+        $statement->bindParam('id', $id, PDO::PARAM_INT);
+        $statement->bindParam('profilePicturePath', $profilePicturePath, PDO::PARAM_STR);
+
+        $statement->execute();
+    }
+
+    public function getTeamByUserId(int $user_id)
+    {
+        // Mirem si hi ha algun equip amb l'usuari que estem registrant.
+        $query = <<<'QUERY'
+            SELECT * FROM teams WHERE user_id_1 = :id OR user_id_2 = :id
+        QUERY;
+
+        $statement = $this->databaseConnection->prepare($query);
+
+        $statement->bindParam('id', $user_id, PDO::PARAM_INT);
+
+        $statement->execute();
+
+        // Mirem quants equips tenen aquest usuari.
+        $count = $statement->rowCount();
+        if ($count > 0) {
+            return $statement->fetch(PDO::FETCH_OBJ);
+        }
+        return null;
+
     }
 
     public function getUserById(int $id)
@@ -148,22 +185,7 @@ final class MySQLUserRepository implements UserRepository
         return $users;
     }
 
-    public function updateProfilePicture(int $id, string $profilePicturePath): void
-    {
-        $query = <<<'QUERY'
-        UPDATE `users`
-        SET `profilePicturePath` = :profilePicturePath,
-            `updatedAt` = NOW()
-        WHERE `id` = :id;
-        QUERY;
 
-        $statement = $this->databaseConnection->prepare($query);
-
-        $statement->bindParam('id', $id, PDO::PARAM_INT);
-        $statement->bindParam('profilePicturePath', $profilePicturePath, PDO::PARAM_STR);
-
-        $statement->execute();
-    }
 
     private function exists(User $u): bool
     {
@@ -254,44 +276,8 @@ final class MySQLUserRepository implements UserRepository
         $statement->execute();
     }
 
-    /***
-     * Function that checks if a user is registered on a tema or not
-     * @param User $u
-     * @return bool
-    */
-    public function hasTeam(User $u)
-    {
-        // Busquem l'usuari a la BBDD per a aconseguir l'ID.
-        $user = $this->getUserByEmail($u->email());
 
-        // Mirem si l'usuari està a la BBDD.
-        if($user == null){
-            echo "User not created (team) \n"; //TODO: Flash message.
-            return false;
-        }
 
-        // Mirem si hi ha algun equip amb l'usuari que estem registrant.
-        $query = <<<'QUERY'
-            SELECT COUNT(*) FROM teams WHERE user_id_1 = :id OR user_id_2 = :id
-        QUERY;
-
-        $statement = $this->databaseConnection->prepare($query);
-
-        // Busquem la id de l'usuari.
-        $id = $user->id;
-
-        $statement->bindParam('id', $id, PDO::PARAM_INT);
-
-        $statement->execute();
-
-        // Mirem quants equips tenen aquest usuari.
-        $count = $statement->fetch(PDO::FETCH_ASSOC);
-
-        // Si l'usuari ja està registrat tornem true.
-        if($count['COUNT(*)'] > 0) return true;
-        return false;
-
-    }
 
     public function addToTeamByID(int $teamId, User $u){
 

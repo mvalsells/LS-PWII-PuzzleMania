@@ -32,7 +32,8 @@ class LandingPageController
             $username = explode('@', $user->email)[0];
             return $this->twig->render($response, 'home.twig', [
                 "username" => $username,
-                "email" => $_SESSION['email']
+                "email" => $_SESSION['email'],
+                "team" => $_SESSION['team_id'] ?? null
             ]);
         }
 

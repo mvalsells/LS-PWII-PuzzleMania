@@ -56,6 +56,11 @@ class Riddle implements JsonSerializable
         return $this->answer;
     }
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
 
     //------------------------------------------------------------------------------------------
     // SETTERS
@@ -74,6 +79,11 @@ class Riddle implements JsonSerializable
     public function setAnswer(string $answer)
     {
         return $this->answer = $answer;
+    }
+
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
     }
 
 

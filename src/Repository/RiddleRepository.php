@@ -12,5 +12,6 @@ interface RiddleRepository
 
     public function getAllRiddles(): array;
     public function addRiddle(Riddle $r): void;
+    public function updateRiddle(int $originalId, Riddle $newRiddle): void;
     public function getOneRiddleById(int $id): ?Riddle;
 }

@@ -121,4 +121,31 @@ class MySQLRiddleRepository implements RiddleRepository
             return null;
         }
     }
+
+    public function updateRiddle(int $originalId, Riddle $newRiddle): void
+    {
+
+        // Create query
+        $query = <<<'QUERY'
+            UPDATE riddles SET riddle_id = :id, user_id = :userId, riddle = :riddle, answer = :answer  WHERE riddle_id = :originalId;
+        QUERY;
+
+        $statement = $this->databaseConnection->prepare($query);
+
+        // Add parameters to the query
+
+        $id = $newRiddle->getId();
+        $userId = $newRiddle->getUserId();
+        $riddle = $newRiddle->getRiddle();
+        $answer = $newRiddle->getAnswer();
+
+        $statement->bindParam('id', $id, PDO::PARAM_INT);
+        $statement->bindParam('userId', $userId, PDO::PARAM_INT);
+        $statement->bindParam('riddle', $riddle, PDO::PARAM_STR);
+        $statement->bindParam('answer', $answer, PDO::PARAM_STR);
+        $statement->bindParam('originalId', $originalId, PDO::PARAM_INT);
+
+        // Execute query
+        $statement->execute();
+    }
 }

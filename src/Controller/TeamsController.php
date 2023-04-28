@@ -5,46 +5,40 @@ namespace Salle\PuzzleMania\Controller;
 use PDO;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Salle\PuzzleMania\Model\User;
-use Salle\PuzzleMania\Repository\MySQLUserRepository;
+use Salle\PuzzleMania\Repository\TeamRepository;
 use Salle\PuzzleMania\Repository\UserRepository;
+use Slim\Flash\Messages;
 use Slim\Views\Twig;
 
 class TeamsController
 {
-    private $twig;
-    private $userRepository;
+
+    private const DEFAULT_TEAM_IMAGE = 'assets/images/teamPicture.png';
 
     public function __construct(
-        Twig $twig,
-        PDO $PDO
+        private Twig           $twig,
+        private UserRepository $userRepository,
+        private TeamRepository $teamRepository,
+        private Messages       $flash
     )
     {
-        $this->twig = $twig;
-        $this->userRepository = new MySQLUserRepository($PDO);
     }
-    public function show(Request $request, Response $response): Response
+
+    public function showJoin(Request $request, Response $response): Response
+    {
+        $messages = $this->flash->getMessages();
+
+        $notifications = $messages['notifications'] ?? [];
+
+        $teams = $this->teamRepository->getIncompleteTeams();
+
+
+        return $this->twig->render($response, 'join.twig', ["notifs" => $notifications]);
+    }
+    public function handleJoinForm(Request $request, Response $response): Response
     {
 
-        //print_r("Probes BBDD" . "<br>");
 
-        //$u2 = new User("prova2", "pass", new \DateTime(),new \DateTime());
-        //$u = new User("prova", "pass", new \DateTime(),new \DateTime());
-
-
-        //$this->userRepository->createUser($u4);
-
-        //print_r($this->userRepository->setScore($u, 20));
-
-        return $this->twig->render(
-            $response,
-            'join.twig',
-            [
-            ]
-        );
-    }
-    public function handleForm(Request $request, Response $response): Response
-    {
         return $this->twig->render(
             $response,
             'join.twig',
@@ -63,15 +57,34 @@ class TeamsController
             ]
         );
     }
-    public function showStats(Request $request, Response $response): Response
+
+    public function showTeamStats(Request $request, Response $response): Response
     {
-        $team = $this->userRepository->getTeamById();
-        $user = $this->userRepository->getUserById();
+        $messages = $this->flash->getMessages();
+
+        $notifications = $messages["notifications"] ?? [];
+        echo $notifications[0];
+        $team = $this->teamRepository->getTeamById($_SESSION['team_id']);
+
+        $user1 = explode('@', $this->userRepository->getUserById($team->getUserId1())->getEmail())[0];
+        if ($team->getNumMembers() == 2) {
+            $user2 = explode('@', $this->userRepository->getUserById($team->getUserId2())->getEmail())[0];
+        }
 
         return $this->twig->render(
             $response,
-            'stats.twig',
+            'team-stats.twig',
             [
+                "notifs" => $notifications,
+                "email" => $_SESSION['email'],
+                "team" => $_SESSION['team_id'],
+                "teamPicture" => self::DEFAULT_TEAM_IMAGE,
+                "teamName" => $team->getTeamName(),
+                "teamMembers" => $team->getNumMembers(),
+                "lastScore" => $team->getLastScore(),
+                "totalScore" => $team->getTotalScore(),
+                "user1" => $user1,
+                "user2" => $user2 ?? null
             ]
         );
     }

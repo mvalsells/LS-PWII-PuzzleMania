@@ -1,0 +1,54 @@
+{% extends "base.twig" %}
+
+{% block head %}
+    <title>Team Stats | PuzzleMania</title>
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/navbar_styles.css"/>
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/numericlist_styles.css"/>
+{% endblock %}
+
+{% block name %}Team Stats{% endblock %}
+
+{% block header %}
+    <!-- Dropdown -->
+    <div class="dropdown">
+        <!-- Email -->
+        <button class="dropbtn">
+            {% if email is not defined %}
+                Menu
+            {% else %}
+                {{ email }}
+            {% endif %}
+        </button>
+        <!-- Logout suboption -->
+        <div class="dropdown-content">
+            <a href="/">Home</a>
+            <a href="/profile">Your Profile</a>
+            <a href="/game">Start a game</a>
+            <a href="/riddles">List riddles</a>
+            <a href="/log-out">Logout</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% if notifs is not empty %}
+        {% for notif in notifs %}
+            <p data-cy="team-stats__message" class="error">{{ notif }}</p>
+        {% endfor %}
+    {% endif %}
+    <div class = "parent-content">
+        <div class = "content">
+            <div class = "page" style = "background: white; padding: 40px 130px; border-radius: 10px; border: 2px solid #000;">
+                <img src="{{ full_url_for('home') }}{{ teamPicture }}" alt="Profile picture" style="width: 150px; height: 150px; border-radius: 50%; margin-right: 10px;">
+                <h1>{{ teamName }}</h1>
+                <p><b>Team members:</b> {{ teamMembers }}</p>
+                <p><b>Last score:</b> {{ lastScore }}</p>
+                <p><b>Total score:</b> {{ totalScore }}</p>
+                <p><b>User 1:</b> {{ user1 }}</p>
+                {% if user2 is not null %}
+                    <p><b>User 2:</b> {{ user2 }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

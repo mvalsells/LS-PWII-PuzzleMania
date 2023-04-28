@@ -31,22 +31,23 @@ function addRoutes(App $app, Container $container): void
     $app->post('/sign-in', SignInController::class . ':handleForm')->setName('sign-in_post');
 
     $app->get('/join',
-        TeamsController::class . ':show')
+        TeamsController::class . ':showJoin')
         ->setName('join_get')->add(TeamAuthorizationMiddleware::class)
         ->add(AuthorizationMiddleware::class);
 
     $app->post('/join',
-        TeamsController::class . ':handleForm')
+        TeamsController::class . ':handleJoinForm')
         ->setName('join_post')->add(TeamAuthorizationMiddleware::class)
         ->add(AuthorizationMiddleware::class);
 
     //TODO: Mirar lo del ID.
     $app->get('/invite/join/{id}',
         TeamsController::class . ':handleInviteForm')
-        ->setName('invite_get')->add(AuthorizationMiddleware::class);
+        ->setName('invite_get')->add(TeamAuthorizationMiddleware::class)
+        ->add(AuthorizationMiddleware::class);
 
     $app->get('/team-stats',
-        TeamsController::class . ':showStats')
+        TeamsController::class . ':showTeamStats')
         ->setName('stats_get')->add(TeamAuthorizationMiddleware::class)
         ->add(AuthorizationMiddleware::class);
 

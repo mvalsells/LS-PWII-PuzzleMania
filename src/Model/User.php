@@ -42,7 +42,7 @@ class User implements JsonSerializable
 
     public function isNullUser(): bool
     {
-        if (!isset($email)) {
+        if (!isset($this->email)) {
             return true;
         }
         return false;
@@ -50,7 +50,7 @@ class User implements JsonSerializable
 
     public function hasPicture(): bool
     {
-        if (isset($profilePicturePath)) {
+        if (isset($this->profilePicturePath)) {
             return true;
         }
         return false;

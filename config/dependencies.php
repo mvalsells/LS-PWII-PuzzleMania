@@ -132,7 +132,7 @@ function addDependencies(ContainerInterface $container): void
     $container->set(
         TeamsController::class,
         function (ContainerInterface $c) {
-            return new TeamsController($c->get('view'), $c->get('db'));
+            return new TeamsController($c->get('view'), $c->get('user_repository'), $c->get('team_repository'), $c->get("flash"));
         }
     );
 

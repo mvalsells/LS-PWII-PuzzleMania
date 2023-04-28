@@ -1,3 +1,37 @@
 {% extends "base.twig" %}
 
-{% block title %} JOIN {% endblock %}
+{% block head %}
+    <title>Join Team | PuzzleMania</title>
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/navbar_styles.css"/>
+{% endblock %}
+
+{% block name %}Join a Team{% endblock %}
+
+{% block header %}
+    <!-- Dropdown -->
+    <div class="dropdown">
+        <!-- Email -->
+        <button class="dropbtn">
+            {% if email is not defined %}
+                Menu
+            {% else %}
+                {{ email }}
+            {% endif %}
+        </button>
+        <!-- Logout suboption -->
+        <div class="dropdown-content">
+            <a href="/">Home</a>
+            <a href="/profile">Your Profile</a>
+            <a href="/riddles">List riddles</a>
+            <a href="/log-out">Logout</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% if notifs is not empty %}
+        {% for notif in notifs %}
+            <p class="error">{{ notif }}</p>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

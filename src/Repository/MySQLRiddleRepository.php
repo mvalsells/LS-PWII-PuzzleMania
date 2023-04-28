@@ -38,7 +38,7 @@ class MySQLRiddleRepository implements RiddleRepository
      * Funció que agafa totes les riddles de la BBDD i les retorna en forma d'array.
      * @return array
      */
-    public function getRiddles(): array
+    public function getAllRiddles(): array
     {
 
         // Fem la query
@@ -90,5 +90,35 @@ class MySQLRiddleRepository implements RiddleRepository
         // Executem la query
         $statement->execute();
 
+    }
+
+    public function getOneRiddleById(int $id): ?Riddle
+    {
+        // Fem la query
+        $query = <<<'QUERY'
+            SELECT * FROM riddles WHERE riddle_id = :riddleId LIMIT 1;
+        QUERY;
+
+        // Preparem la query
+        $statement = $this->databaseConnection->prepare($query);
+        $statement->bindParam(':riddleId', $id, PDO::PARAM_INT);
+
+        // Executem la query
+        $statement->execute();
+
+        // Retornem els resultats de la query
+        $rawData =  $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        // Check if at least one row has been returned
+        if ( count($rawData) <= 0) {
+            return null;
+        }
+
+        // Check if the returned row has all the expected columns
+        if (array_key_exists('riddle_id', $rawData[0]) && array_key_exists('user_id', $rawData[0]) && array_key_exists('riddle', $rawData[0]) && array_key_exists('answer', $rawData[0]) ){
+            return new Riddle($rawData[0]['riddle_id'], $rawData[0]['user_id'], $rawData[0]['riddle'], $rawData[0]['answer']);
+        } else {
+            return null;
+        }
     }
 }

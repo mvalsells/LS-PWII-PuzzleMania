@@ -16,7 +16,7 @@ class RiddlesAPIController
     ){}
 
     public function getAllRiddles(Request $request, Response $response): Response {
-        $response->getBody()->write(json_encode($this->riddleRepository->getRiddles()));
+        $response->getBody()->write(json_encode($this->riddleRepository->getAllRiddles()));
         return $response
             ->withHeader("content-type", "application/json")
             ->withStatus(200);
@@ -39,5 +39,32 @@ class RiddlesAPIController
                 ->withHeader("content-type", "application/json")
                 ->withStatus(400);
         }
+    }
+
+    public function getOneRiddle(Request $request, Response $response, array $args): Response {
+
+        // Check if argument 'id' was provided
+        if (!array_key_exists('id', $args)) {
+            $args['id'] = '<not provided>';
+        }
+
+        // Check if the 'id' is a valid number, if not doesn't make sense requesting to db
+        if (is_numeric($args['id']) && ctype_digit($args['id'])) {
+            $id = intval($args['id']);
+            $riddle = $this->riddleRepository->getOneRiddleById($id);
+            if ($riddle != null) {
+                $response->getBody()->write(json_encode($riddle));
+                return $response
+                    ->withHeader("content-type", "application/json")
+                    ->withStatus(200);
+            }
+        }
+
+        // If id is incorrect return error message
+        $response->getBody()->write('{"message": "Riddle with id '.$args['id'].' does not exist"}');
+        return $response
+            ->withHeader("content-type", "application/json")
+            ->withStatus(404);
+
     }
 }

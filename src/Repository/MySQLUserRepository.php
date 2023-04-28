@@ -161,8 +161,6 @@ final class MySQLUserRepository implements UserRepository
         if ($row->profilePicturePath != null) {
             $user->setProfilePicturePath($row->profilePicturePath);
         }
-        $user->setCreatedAt($row->createdAt);
-        $user->setUpdatedAt($row->updatedAt);
         return $user;
     }
 

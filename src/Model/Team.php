@@ -47,7 +47,7 @@ class Team implements JsonSerializable
 
     public function isNullTeam(): bool
     {
-        if (!isset($team_name)) {
+        if (!isset($this->team_name)) {
             return true;
         }
         return false;

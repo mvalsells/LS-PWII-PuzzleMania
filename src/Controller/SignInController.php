@@ -52,8 +52,8 @@ class SignInController
         }
         if (count($errors) == 0) {
             $errors = $this->checkFormWithDatabase($data['email'], $data['password'], $errors);
-            if (empty($errors['email']) and empty($errors['password'])) {
-                $response->withHeader('Location', '/')->withStatus(302);
+            if (!isset($errors['email']) and !isset($errors['password'])) {
+                return $response->withHeader('Location', '/')->withStatus(302);
             }
         }
         return $this->twig->render(
@@ -82,7 +82,7 @@ class SignInController
                 $_SESSION['profilePicturePath'] = $user->getProfilePicturePath();
             }
             $team = $this->teamRepository->getTeamByUserId($user->getId());
-            if ($team->isNullTeam()) {
+            if (!$team->isNullTeam()) {
                 $_SESSION['team_id'] = $team->getTeamId();
             }
         }

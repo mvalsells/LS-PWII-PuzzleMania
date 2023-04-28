@@ -84,9 +84,16 @@ function addRoutes(App $app, Container $container): void
     // Riddles API
     $app->group('/api/riddle', function (RouteCollectorProxy $group) {
 
+        // Gets all riddles
         $group->get(
            '',
            RiddlesAPIController::class . ":getAllRiddles"
-       );
+        );
+
+        // Adds a riddle
+        $group->post(
+            '',
+            RiddlesAPIController::class . ":addARiddle"
+        );
     });
 }

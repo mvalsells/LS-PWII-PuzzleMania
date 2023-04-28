@@ -107,5 +107,11 @@ function addRoutes(App $app, Container $container): void
             '/{id}',
             RiddlesAPIController::class . ":updateARiddle"
         );
+
+        // Delete a riddle
+        $group->delete(
+            '/{id}',
+            RiddlesAPIController::class . ":deleteARiddle"
+        );
     });
 }

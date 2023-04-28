@@ -148,4 +148,19 @@ class MySQLRiddleRepository implements RiddleRepository
         // Execute query
         $statement->execute();
     }
+
+    public function deleteRiddle(int $id): void {
+        // Create query
+        $query = <<<'QUERY'
+            DELETE FROM riddles WHERE riddle_id = :id;
+        QUERY;
+
+        $statement = $this->databaseConnection->prepare($query);
+
+        // Add parameters to the query
+        $statement->bindParam('id', $id, PDO::PARAM_INT);
+
+        // Execute query
+        $statement->execute();
+    }
 }

@@ -5,6 +5,7 @@ namespace Salle\PuzzleMania\Controller;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Salle\PuzzleMania\Repository\TeamRepository;
 use Salle\PuzzleMania\Service\ValidatorService;
 use Salle\PuzzleMania\Repository\UserRepository;
 use Slim\Flash\Messages;
@@ -18,6 +19,7 @@ class SignInController
     public function __construct(
         private Twig           $twig,
         private UserRepository $userRepository,
+        private TeamRepository $teamRepository,
         private Messages       $flash
     )
     {
@@ -49,24 +51,9 @@ class SignInController
             unset($errors['password']);
         }
         if (count($errors) == 0) {
-            // Check if the credentials match the user information saved in the database
-            $user = $this->userRepository->getUserByEmail($data['email']);
-            if ($user == null) {
-                $errors['email'] = 'User with this email address does not exist.';
-            } else if ($user->password != md5($data['password'])) {
-                $errors['password'] = 'Your email and/or password are incorrect.';
-            } else {
-                $_SESSION['user_id'] = $user->id;
-                $_SESSION['email'] = $user->email;
-                if (isset($user->profilePicturePath)) {
-                    $_SESSION['profilePicturePath'] = $user->profilePicturePath;
-                }
-                $team = $this->userRepository->getTeamByUserId($user->id);
-                if ($team != null) {
-                    $_SESSION['team_id'] = $team->team_id;
-                    $_SESSION['team_name'] = $team->team_name;
-                }
-                return $response->withHeader('Location', '/')->withStatus(302);
+            $errors = $this->checkFormWithDatabase($data['email'], $data['password'], $errors);
+            if (empty($errors['email']) and empty($errors['password'])) {
+                $response->withHeader('Location', '/')->withStatus(302);
             }
         }
         return $this->twig->render(
@@ -78,5 +65,28 @@ class SignInController
                 'formAction' => $routeParser->urlFor('sign-in_get')
             ]
         );
+    }
+
+    private function checkFormWithDatabase($email, $password, $errors): array
+    {
+        // Check if the credentials match the user information saved in the database
+        $user = $this->userRepository->getUserByEmail($email);
+        if ($user->isNullUser()) {
+            $errors['email'] = 'User with this email address does not exist.';
+        } else if ($user->getPassword() != md5($password)) {
+            $errors['password'] = 'Your email and/or password are incorrect.';
+        } else {
+            $_SESSION['user_id'] = $user->getId();
+            $_SESSION['email'] = $user->getEmail();
+            if ($user->hasPicture()) {
+                $_SESSION['profilePicturePath'] = $user->getProfilePicturePath();
+            }
+            $team = $this->teamRepository->getTeamByUserId($user->getId());
+            if ($team->isNullTeam()) {
+                $_SESSION['team_id'] = $team->getTeamId();
+            }
+        }
+
+        return $errors;
     }
 }

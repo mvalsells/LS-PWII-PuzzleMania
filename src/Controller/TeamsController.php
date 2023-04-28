@@ -65,6 +65,9 @@ class TeamsController
     }
     public function showStats(Request $request, Response $response): Response
     {
+        $team = $this->userRepository->getTeamById();
+        $user = $this->userRepository->getUserById();
+
         return $this->twig->render(
             $response,
             'stats.twig',

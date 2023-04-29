@@ -35,10 +35,11 @@ CREATE TABLE `teams`
     `team_id`         INT NOT NULL AUTO_INCREMENT,
     `team_name`       VARCHAR(255) NOT NULL,
     `num_members`     INT NOT NULL,
-    `user_id_1`       INT,
+    `user_id_1`       INT NOT NULL,
     `user_id_2`       INT,
     `total_score`     INT NOT NULL,
     `last_score`      INT,
+    `QR_generated`    INT NOT NULL,
     PRIMARY KEY (`team_id`),
     FOREIGN KEY (user_id_1) REFERENCES users (id),
     FOREIGN KEY (user_id_2) REFERENCES users (id)

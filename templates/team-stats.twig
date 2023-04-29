@@ -38,15 +38,31 @@
     {% endif %}
     <div class = "parent-content">
         <div class = "content">
+            <img src="{{ full_url_for('home') }}{{ teamPicture }}" alt="Profile picture" style="width: 150px; height: 150px; border-radius: 50%; margin-right: 10px;">
             <div class = "page" style = "background: white; padding: 40px 130px; border-radius: 10px; border: 2px solid #000;">
-                <img src="{{ full_url_for('home') }}{{ teamPicture }}" alt="Profile picture" style="width: 150px; height: 150px; border-radius: 50%; margin-right: 10px;">
+
                 <h1>{{ teamName }}</h1>
                 <p><b>Team members:</b> {{ teamMembers }}</p>
                 <p><b>Last score:</b> {{ lastScore }}</p>
                 <p><b>Total score:</b> {{ totalScore }}</p>
-                <p><b>User 1:</b> {{ user1 }}</p>
+                <p><b>Users:</b></p>
+                <p>{{ user1 }}</p>
                 {% if user2 is not null %}
-                    <p><b>User 2:</b> {{ user2 }}</p>
+                    <p>{{ user2 }}</p>
+                {% endif %}
+                {% if QRGenerated == 0 and TeamFull == 0 %}
+                    <p><br><b>Create QR code and share it so<br>others can join your team</b></p>
+                    <button class = "create-button">
+                        <a href="/team-stats/QR_create">Create QR code</a>
+                    </button>
+                {% elseif TeamFull == 0 %}
+                    <p><br><b>Share this QR code so<br>others can join your team</b></p>
+                    <p><img src="{{ full_url_for('home') }}QR_codes/{{ team }}.jpeg" alt="QR Team" style="width: 150px; height: 150px; "></p>
+                    <button class = "create-button">
+                        <a href="/team-stats/QR_download">Download QR code</a>
+                    </button>
+                {% else %}
+                    <p style="color: darkred;"><br><b>The team is full</b></p>
                 {% endif %}
             </div>
         </div>

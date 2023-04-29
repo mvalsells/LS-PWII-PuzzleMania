@@ -41,12 +41,30 @@ class MySQLTeamRepository implements TeamRepository
         return $this->getTeam($query, $id);
     }
 
+    public function setQRToTeam(int $id): void
+    {
+        // Build the SQL query
+        $query = <<<'QUERY'
+            UPDATE teams
+            SET QR_generated = 1
+            WHERE team_id = :team_id;
+        QUERY;
+
+        $statement = $this->databaseConnection->prepare($query);
+
+        // Introduce variables in statement query
+        $statement->bindParam('team_id', $id, PDO::PARAM_INT);
+
+        // Execute query
+        $statement->execute();
+    }
+
     public function createTeam(Team $team): void
     {
         // Build the SQL query
         $query = <<<'QUERY'
-            INSERT INTO teams (team_name, num_members, user_id_1, total_score) VALUES
-            (:teamName, 1, :email1, 0);
+            INSERT INTO teams (team_name, num_members, user_id_1, total_score, QR_generated) VALUES
+            (:teamName, 1, :email1, 0, 0);
         QUERY;
 
         // Extract the variables we want to upload to database
@@ -163,6 +181,7 @@ class MySQLTeamRepository implements TeamRepository
         if ($row->last_score != null) {
             $team->setLastScore($row->last_score);
         }
+        $team->setQRGenerated($row->QR_generated);
         return $team;
     }
 

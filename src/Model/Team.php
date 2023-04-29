@@ -17,6 +17,7 @@ class Team implements JsonSerializable
     private int $user_id_2;
     private int $total_score;
     private int $last_score;
+    private int $QR_generated;
 
     //------------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -51,6 +52,14 @@ class Team implements JsonSerializable
             return true;
         }
         return false;
+    }
+
+    public function isLastScoreRegistered(): bool
+    {
+        if (!isset($this->last_score)) {
+            return false;
+        }
+        return true;
     }
 
     //------------------------------------------------------------------------------------------
@@ -113,6 +122,14 @@ class Team implements JsonSerializable
         return $this->last_score;
     }
 
+    /**
+     * @return int
+     */
+    public function isQRGenerated(): int
+    {
+        return $this->QR_generated;
+    }
+
     //------------------------------------------------------------------------------------------
     // SETTERS
     //------------------------------------------------------------------------------------------
@@ -171,6 +188,14 @@ class Team implements JsonSerializable
     public function setTotalScore(int $total_score): void
     {
         $this->total_score = $total_score;
+    }
+
+    /**
+     * @param int $QR_generated
+     */
+    public function setQRGenerated(int $QR_generated): void
+    {
+        $this->QR_generated = $QR_generated;
     }
 
 }

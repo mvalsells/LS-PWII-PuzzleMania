@@ -29,8 +29,7 @@ class BarcodeService
     /**
      * Generates QR code with the API
      * @param string $data Data to be found in the QR code
-     * @return string|null Image with the mime and data encoded in base64, ready to be placed in the src attribute of
-     *                     an img tag. If there was an error generating the code null is returned.
+     * @return bool Indicates whether the QR has been received correctly from the API or not
      */
     public function simpleQRBase64(string $data, string $text): bool {
         try {

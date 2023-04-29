@@ -37,10 +37,29 @@ class TeamsController
         $teams = $this->teamRepository->getIncompleteTeams();
 
         // Render view
-        return $this->twig->render($response, 'join.twig', ["notifs" => $notifications]);
+        return $this->twig->render($response, 'join.twig', [
+            "notifs" => $notifications,
+            "teams" => $teams
+        ]);
     }
     public function handleJoinForm(Request $request, Response $response): Response
     {
+        if (isset($_POST['joinTeam'])) {
+            // The "Join Team" button was clicked
+            if (isset($_POST['team'])) {
+                // Join this team in DB
+                // Set SESSION variables
+                // Redirect to team-stats
+                echo $_POST['team'];
+            } else {
+                echo "No team selected";
+                $teams = $this->teamRepository->getIncompleteTeams();
+            }
+        } elseif (isset($_POST['createTeam'])) {
+            // The "Create Team" button was clicked
+            // Check the name entered is not empty and doesn't exist in DB
+            echo "Create";
+        }
 
 
         return $this->twig->render(

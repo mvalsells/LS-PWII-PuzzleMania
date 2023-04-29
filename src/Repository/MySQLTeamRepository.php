@@ -41,6 +41,32 @@ class MySQLTeamRepository implements TeamRepository
         return $this->getTeam($query, $id);
     }
 
+    public function getTeamByName(string $name): Team
+    {
+        // Build the SQL query
+        $query = <<<'QUERY'
+            SELECT * FROM teams WHERE team_name = :name
+        QUERY;
+
+        $statement = $this->databaseConnection->prepare($query);
+
+        // Introduce 'id' variable in statement query
+        $statement->bindParam('name', $name, PDO::PARAM_STR);
+
+        // Execute the query
+        $statement->execute();
+
+        // Check if the user provided belongs to a team
+        $count = $statement->rowCount();
+        if ($count > 0) {
+            // Extract the first team (theoretically, the user can only form part of 1 team)
+            $row = $statement->fetch(PDO::FETCH_OBJ);
+            return $this->createTeamVariable($row);
+        }
+        // Return null Team
+        return new Team();
+    }
+
     public function setQRToTeam(int $id): void
     {
         // Build the SQL query
@@ -64,7 +90,7 @@ class MySQLTeamRepository implements TeamRepository
         // Build the SQL query
         $query = <<<'QUERY'
             INSERT INTO teams (team_name, num_members, user_id_1, total_score, QR_generated) VALUES
-            (:teamName, 1, :email1, 0, 0);
+            (:team_name, 1, :user_id_1, 0, 0);
         QUERY;
 
         // Extract the variables we want to upload to database
@@ -86,8 +112,7 @@ class MySQLTeamRepository implements TeamRepository
         // Build the SQL query
         $query = <<<'QUERY'
             UPDATE teams
-            SET num_members = 2
-            SET user_id_2 = :user_id
+            SET num_members = 2, user_id_2 = :user_id
             WHERE team_id = :team_id;
         QUERY;
 
@@ -138,8 +163,7 @@ class MySQLTeamRepository implements TeamRepository
         // Build the SQL query
         $query = <<<'QUERY'
             UPDATE teams
-            SET total_score = :total_score
-            SET last_score = :last_score
+            SET total_score = :total_score, last_score = :last_score
             WHERE team_id = :team_id;
         QUERY;
 

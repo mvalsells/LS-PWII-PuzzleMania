@@ -5,6 +5,7 @@ namespace Salle\PuzzleMania\Controller;
 use PDO;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Salle\PuzzleMania\Model\Team;
 use Salle\PuzzleMania\Repository\TeamRepository;
 use Salle\PuzzleMania\Repository\UserRepository;
 use Salle\PuzzleMania\Service\BarcodeService;
@@ -48,17 +49,43 @@ class TeamsController
             // The "Join Team" button was clicked
             if (isset($_POST['team'])) {
                 // Join this team in DB
-                // Set SESSION variables
+                $user = $this->userRepository->getUserById($_SESSION["user_id"]);
+                $this->teamRepository->addUserToTeam($_POST['team'], $user);
+                // Set SESSION variable
+                $_SESSION['team_id'] = $_POST['team'];
                 // Redirect to team-stats
-                echo $_POST['team'];
+                $this->flash->addMessage("success", "You joined the team successfully.");
+                return $response->withHeader('Location','/team-stats')->withStatus(301);
             } else {
-                echo "No team selected";
-                $teams = $this->teamRepository->getIncompleteTeams();
+                // No team was selected.
+                $this->flash->addMessage("notifications", "You didn't select a team to join.");
             }
         } elseif (isset($_POST['createTeam'])) {
             // The "Create Team" button was clicked
-            // Check the name entered is not empty and doesn't exist in DB
-            echo "Create";
+
+            if (isset($_POST['teamName'])) {
+                $name = $_POST['teamName'];
+                $team_aux = $this->teamRepository->getTeamByName($name);
+                if ($team_aux->isNullTeam()) {
+                    // Create team and upload to DB
+                    $team = new Team();
+                    $team->setTeamName($name);
+                    $team->setUserId1($_SESSION['user_id']);
+                    $this->teamRepository->createTeam($team);
+                    // Set SESSION VARIABLE
+                    $team = $this->teamRepository->getTeamByName($name);
+                    $_SESSION['team_id'] = $team->getTeamId();
+                    // Redirect to team-stats
+                    $this->flash->addMessage("success", "You joined the team successfully.");
+                    return $response->withHeader('Location','/team-stats')->withStatus(301);
+                } else {
+                    $this->flash->addMessage("notifications", "The team name is already in use.");
+                }
+            } else {
+                $this->flash->addMessage("notifications", "The team name can not be empty.");
+            }
+            // If reached here means the creation of team failed, so we must show the 'join' page again
+            return $response->withHeader('Location','/join')->withStatus(301);
         }
 
 

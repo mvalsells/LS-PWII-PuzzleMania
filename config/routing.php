@@ -46,10 +46,24 @@ function addRoutes(App $app, Container $container): void
         ->setName('invite_get')->add(TeamAuthorizationMiddleware::class)
         ->add(AuthorizationMiddleware::class);
 
-    $app->get('/team-stats',
-        TeamsController::class . ':showTeamStats')
-        ->setName('stats_get')->add(TeamAuthorizationMiddleware::class)
-        ->add(AuthorizationMiddleware::class);
+    $app->group('/team-stats', function (RouteCollectorProxy $group) {
+
+        $group->get(
+            '',
+            TeamsController::class . ':showTeamStats')
+            ->setName('stats_get');
+
+        $group->get(
+            '/QR_create',
+            TeamsController::class . ":createQR"
+        )->setName('game_riddle_get');
+
+        $group->get(
+            '/QR_download',
+            TeamsController::class . ":downloadQR"
+        )->setName('game_riddle_post');
+
+    })->add(TeamAuthorizationMiddleware::class)->add(AuthorizationMiddleware::class);
 
     $app->get('/profile', ProfileController::class . ':show')->setName('profile_get')->add(AuthorizationMiddleware::class);
     $app->post('/profile', ProfileController::class . ':handleForm')->setName('profile_post')->add(AuthorizationMiddleware::class);

@@ -11,6 +11,8 @@ interface TeamRepository
 
     public function getTeamById(int $id): Team;
 
+    public function getTeamByName(string $name): Team;
+
     public function setQRToTeam(int $id): void;
 
     public function createTeam(Team $team): void;

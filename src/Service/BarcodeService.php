@@ -15,6 +15,8 @@ class BarcodeService
 {
     private GuzzleHttp\Client $client;
 
+    private const QRCODES_DIR = __DIR__ . '/../../public/QR_codes';
+
     /**
      * Constructor for a BarcodeService object
      */
@@ -30,7 +32,7 @@ class BarcodeService
      * @return string|null Image with the mime and data encoded in base64, ready to be placed in the src attribute of
      *                     an img tag. If there was an error generating the code null is returned.
      */
-    public function simpleQRBase64(string $data): ?string{
+    public function simpleQRBase64(string $data, string $text): bool {
         try {
             $response = $this->client->post('/BarcodeGenerator', [
                 // Answer must be a jpeg file
@@ -42,13 +44,22 @@ class BarcodeService
                     'symbology' => 'QRCode',
                     'code' => $data,
                     'artFinderShape' => 'RoundRect',
+                    'humanReadableText' => $text,
                 ]
             ]);
         } catch (GuzzleHttp\Exception\GuzzleException $e) {
-            return null;
+            return false;
         }
         // Get the image data from the request and encode it in base64
-        $imgData = base64_encode($response->getBody()->getContents());
-        return 'data:image/jpeg;base64,' . $imgData;
+        $imgData = ($response->getBody()->getContents());
+        $filePath = self::QRCODES_DIR . DIRECTORY_SEPARATOR . $_SESSION['team_id'] . ".jpeg";
+        file_put_contents($filePath, $imgData);
+
+        return true;
+    }
+
+    public function getQRFilePath(int $id): string
+    {
+        return self::QRCODES_DIR . DIRECTORY_SEPARATOR . $id . ".jpeg";
     }
 }

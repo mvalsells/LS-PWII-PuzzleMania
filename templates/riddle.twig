@@ -1,3 +1,17 @@
 {% extends "base.twig" %}
 
+{% block head %}
+    <title>Riddles | LSCoins</title>
+    <link rel="stylesheet" href="{{ full_url_for('riddle_get') }}assets/css/navbar_styles.css"/>
+    <link rel="stylesheet" href="{{ full_url_for('riddle_get') }}assets/css/numericlist_styles.css"/>
+{% endblock %}
+
 {% block title %} Riddle {% endblock %}
+
+
+{% block header %}
+    <p>{{ riddle }}</p>
+    {% for riddle in riddles %}
+        <p>Riddle #{{ loop.index }}: {{ riddle }}</p>
+    {% endfor %}
+{% endblock %}

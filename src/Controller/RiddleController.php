@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Salle\PuzzleMania\Model\Riddle;
 use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
 use Slim\Views\Twig;
+use function DI\add;
 
 class RiddleController
 {
@@ -26,20 +27,24 @@ class RiddleController
     public function show(Request $request, Response $response): Response
     {
 
-        print_r("Proves Riddles");
+        print_r("Show Riddles");
+
+        $riddles = $this->riddleRepository->getRiddles();
+        print_r($riddles);
+
+        $riddle = array();
+        for ($i = 0; $i < count($riddles); $i++) {
+                $riddle[$i] = $riddles[$i]["riddle"];
+        }
 
 
-        $r = new Riddle(1, "p1", "p1");
-
-        $this->riddleRepository->addRiddle($r);
-        $this->riddleRepository->addRiddle($r);
-
-        print_r($this->riddleRepository->getRiddles());
+        print_r($riddles);
 
         return $this->twig->render(
             $response,
-            'base.twig',
+            'riddle.twig',
             [
+                'riddles' => $riddle
             ]
         );
     }

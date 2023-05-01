@@ -66,29 +66,43 @@ class MySQLRiddleRepository implements RiddleRepository
      * @param Riddle $r
      * @return void
      */
-    public function addRiddle(Riddle $r): void
+    public function addRiddle(Riddle $r): int
     {
+        // Check if optional ID field is set
+        if ($r->getId() == null) {
+            // Fem la query
+            $query = <<<'QUERY'
+                INSERT INTO riddles (user_id, riddle, answer) VALUES (:user_id, :riddle, :answer);
+            QUERY;
 
-        // Fem la query
-        $query = <<<'QUERY'
-            INSERT INTO riddles (user_id, riddle, answer) VALUES (:id, :riddle, :answer);
-        QUERY;
+            // Preparem la query
+            $statement = $this->databaseConnection->prepare($query);
+        } else {
+            // Fem la query
+            $query = <<<'QUERY'
+                INSERT INTO riddles (id, user_id, riddle, answer) VALUES (:id, :user_id, :riddle, :answer);
+            QUERY;
+            // Preparem la query
+            $statement = $this->databaseConnection->prepare($query);
+            $id = $r->getId();
+            $statement->bindParam('id', $id, PDO::PARAM_INT);
+        }
 
-        // Preparem la query
-        $statement = $this->databaseConnection->prepare($query);
+
 
         // Inserim els paràmetres que volem a la query
-
         $idUser = $r->getUserId();
         $riddle = $r->getRiddle();
         $answer = $r->getAnswer();
 
-        $statement->bindParam('id', $idUser, PDO::PARAM_INT);
+        $statement->bindParam('user_id', $idUser, PDO::PARAM_INT);
         $statement->bindParam('riddle', $riddle, PDO::PARAM_STR);
         $statement->bindParam('answer', $answer, PDO::PARAM_STR);
 
         // Executem la query
         $statement->execute();
+
+        return intval($this->databaseConnection->lastInsertId());
 
     }
 

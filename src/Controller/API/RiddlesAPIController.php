@@ -26,19 +26,27 @@ class RiddlesAPIController
 
         // Get request body as associative array
         $input = json_decode($request->getBody()->getContents(), true);
+            // Check if required parameters exists before adding the riddle
+            if ($input != null && array_key_exists('userId', $input) && array_key_exists('riddle', $input) && array_key_exists('answer', $input)) {
+                $id = null;
+                if (array_key_exists('id', $input) && is_numeric($input['id'])) {
+                    $id = intval($input['id']);
+                }
+                $addId = $this->riddleRepository->addRiddle(new Riddle($id, $input['userId'], $input['riddle'], $input['answer']));
+                $riddle = $this->riddleRepository->getOneRiddleById($addId);
+                if ($riddle != null) {
+                    $response->getBody()->write(json_encode($riddle));
+                    return $response
+                        ->withHeader("content-type", "application/json")
+                        ->withStatus(201);
+                }
+            }
 
-        // Check if required parameters exists before adding the riddle
-        if (array_key_exists('id', $input[0]) && array_key_exists('userId', $input[0]) && array_key_exists('riddle', $input[0]) && array_key_exists('answer', $input[0])) {
-            $this->riddleRepository->addRiddle(new Riddle($input[0]['id'], $input[0]['userId'], $input[0]['riddle'], $input[0]['answer']));
-            return $response
-                ->withHeader("content-type", "application/json")
-                ->withStatus(200);
-        } else {
-            $response->getBody()->write('{ "message": "\'riddle\' and/or \'answer\' and/or \'userId\' key missing"}');
-            return $response
-                ->withHeader("content-type", "application/json")
-                ->withStatus(400);
-        }
+
+        $response->getBody()->write('{ "message": "\'riddle\' and/or \'answer\' and/or \'userId\' key missing"}');
+        return $response
+            ->withHeader("content-type", "application/json")
+            ->withStatus(400);
     }
 
     public function getOneRiddle(Request $request, Response $response, array $args): Response {
@@ -88,33 +96,38 @@ class RiddlesAPIController
             if (!is_null($riddle)) {
 
                 // Check if required parameters exists before adding the riddle
-                if (array_key_exists('riddle', $input[0]) || array_key_exists('answer', $input[0])) {
+                if (array_key_exists('riddle', $input) || array_key_exists('answer', $input)) {
 
                     // Update riddle object with the new values
-                    if (array_key_exists('id', $input[0]) && is_numeric($input[0]['id'])) {
-                        $riddle->setId($input[0]['id']);
+                    if (array_key_exists('id', $input) && is_numeric($input['id'])) {
+                        $riddle->setId($input['id']);
                     }
 
-                    if (array_key_exists('userId', $input[0]) && is_numeric($input[0]['userId'])) {
-                        $riddle->setUserId($input[0]['userId']);
+                    if (array_key_exists('userId', $input) && is_numeric($input['userId'])) {
+                        $riddle->setUserId($input['userId']);
                     }
 
-                    if (array_key_exists('riddle', $input[0])) {
-                        $riddle->setRiddle($input[0]['riddle']);
+                    if (array_key_exists('riddle', $input)) {
+                        $riddle->setRiddle($input['riddle']);
                     }
 
-                    if (array_key_exists('answer', $input[0])) {
-                        $riddle->setAnswer($input[0]['answer']);
+                    if (array_key_exists('answer', $input)) {
+                        $riddle->setAnswer($input['answer']);
                     }
 
                     // Send new values to the repository
                     $this->riddleRepository->updateRiddle($id, $riddle);
 
-                    return $response
-                        ->withHeader("content-type", "application/json")
-                        ->withStatus(200);
+                    // Answer with the new riddle
+                    $riddle = $this->riddleRepository->getOneRiddleById($riddle->getId());
+                    if ($riddle != null) {
+                        $response->getBody()->write(json_encode($riddle));
+                        return $response
+                            ->withHeader("content-type", "application/json")
+                            ->withStatus(200);
+                    }
                 } else {
-                    $response->getBody()->write('{ "message": "The riddle and/or answer cannot be empty"}');
+                    $response->getBody()->write('{ "message": "\'riddle\' and/or \'answer\' key missing"}');
                     return $response
                         ->withHeader("content-type", "application/json")
                         ->withStatus(400);
@@ -145,6 +158,7 @@ class RiddlesAPIController
             $riddle = $this->riddleRepository->getOneRiddleById($id);
             if (!is_null($riddle)) {
                 $this->riddleRepository->deleteRiddle($id);
+                $response->getBody()->write('{ "message": "Riddle with id '.$id.' was successfully deleted"}');
                 return $response
                     ->withHeader("content-type", "application/json")
                     ->withStatus(200);

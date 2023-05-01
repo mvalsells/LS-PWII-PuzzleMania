@@ -19,6 +19,16 @@
     z-index: 1;
 }
 
+.dropdown {
+    position: relative;
+    font-size: 12px;
+    display: inline-block;
+
+    border: 1px solid white;
+    padding: 5px;
+    border-radius: 20px;
+}
+
 /* Dropdown arrow styles */
 .dropdown .dropbtn::after {
     content: "";
@@ -108,3 +118,4 @@
     font-size: 30px;
     font-weight: bold;
 }
+

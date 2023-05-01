@@ -8,10 +8,16 @@
 
 {% block title %} Riddle {% endblock %}
 
+{% block header %} {% endblock %}
 
-{% block header %}
-    <p>{{ riddle }}</p>
-    {% for riddle in riddles %}
-        <p>Riddle #{{ loop.index }}: {{ riddle }}</p>
-    {% endfor %}
+{% block content %}
+
+    <div class="box">
+
+        {% for riddle in riddles %}
+            <div style = "background: white; margin-top: 5px; padding-left: 160px; padding-right: 160px; border-radius: 10px; border: 2px solid #000;">
+                <p><b>Riddle #{{ loop.index }}:</b> {{ riddle }}</p>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

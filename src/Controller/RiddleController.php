@@ -29,16 +29,14 @@ class RiddleController
 
         print_r("Show Riddles");
 
+        // TODO: Change the line underneath to an API request (riddle API).
         $riddles = $this->riddleRepository->getRiddles();
-        print_r($riddles);
 
+        // We get the riddles and we copy them to an array.
         $riddle = array();
         for ($i = 0; $i < count($riddles); $i++) {
                 $riddle[$i] = $riddles[$i]["riddle"];
         }
-
-
-        print_r($riddles);
 
         return $this->twig->render(
             $response,

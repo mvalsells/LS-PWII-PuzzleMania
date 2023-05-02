@@ -1,4 +1,11 @@
 <?php
+/**
+ * Riddles API Controllers: Manages all the petitions to the Riddle API
+ * @author: Marc Valsells, Òscar de Jesus and David Larrosa
+ * @creation: 27/04/2023
+ * @updated: 02/05/2023
+ */
+
 declare(strict_types=1);
 
 namespace Salle\PuzzleMania\Controller\API;
@@ -8,13 +15,24 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Salle\PuzzleMania\Model\Riddle;
 use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
+use Salle\PuzzleMania\Repository\RiddleRepository;
 
 class RiddlesAPIController
 {
+    /**
+     * Constructor for the RiddleAPIController
+     * @param RiddleRepository $riddleRepository
+     */
     public function __construct(
-        private MySQLRiddleRepository $riddleRepository
+        private RiddleRepository $riddleRepository
     ){}
 
+    /**
+     * Fetch all riddles available at the Riddle Repository and encode them in JSON.
+     * @param Request $request Not used since the necessary information from the request is handled by routing.php
+     * @param Response $response All the riddles will be written in this response body.
+     * @return Response The received by arguments response with updated header and body content.
+     */
     public function getAllRiddles(Request $request, Response $response): Response {
         $response->getBody()->write(json_encode($this->riddleRepository->getAllRiddles()));
         return $response
@@ -22,6 +40,14 @@ class RiddlesAPIController
             ->withStatus(200);
     }
 
+    /**
+     * Given a Riddle in JSON format this is added to the Riddle repository.
+     * @param Request $request The new riddle must be in JSON format inside the body of the request. The userId, riddle
+     *                         and answer fields are required while the id filed is optional.
+     * @param Response $response Once the Riddle is added to the repository, a petition with the new ID is done to
+     *                           the repository which is added to the body of the response.
+     * @return Response The received by arguments response with updated header and body content.
+     */
     public function addARiddle(Request $request, Response $response): Response{
 
         // Get request body as associative array
@@ -49,6 +75,13 @@ class RiddlesAPIController
             ->withStatus(400);
     }
 
+    /**
+     * Given a riddle id by arguments returns the information about the requested riddles in the repository
+     * @param Request $request Not used since the necessary information from the request is handled by routing.php and $args.
+     * @param Response $response Requested riddle information will be written into this response body.
+     * @param array $args Requested riddle id will be retrieved from 'id' key of the arguments array.
+     * @return Response The received by arguments response with updated header and body content.
+     */
     public function getOneRiddle(Request $request, Response $response, array $args): Response {
 
         // Check if argument 'id' was provided
@@ -76,6 +109,15 @@ class RiddlesAPIController
 
     }
 
+    /**
+     * Given a riddle id by argument this will be updated in the repository with the JSON provided in the request body.
+     * @param Request $request The body of the request must contain encoded in JSON the updated riddle. At least the
+     *                         'answer' or the 'riddle' field must be present.
+     * @param Response $response Once the Riddle is updated to the repository, a petition with the new ID is done to
+     *                           the repository which is added to the body of the response.
+     * @param array $args Requested riddle id will be updated from 'id' key of the arguments array.
+     * @return Response The received by arguments response with updated header and body content.
+     */
     public function updateARiddle(Request $request, Response $response, array $args): Response
     {
 
@@ -143,7 +185,13 @@ class RiddlesAPIController
             ->withStatus(404);
     }
 
-
+    /**
+     * Deletes from the repository the riddle with the id given by argument
+     * @param Request $request Not used since the necessary information from the request is handled by routing.php and $args
+     * @param Response $response A message, encoded in JSON, about the deletion operation is added in the body.
+     * @param array $args Requested riddle id will be deleted from 'id' key of the arguments array.
+     * @return Response The received by arguments response with updated header and body content.
+     */
     public function deleteARiddle(Request $request, Response $response, array $args): Response{
         // Check if argument 'id' was provided
         if (!array_key_exists('id', $args)) {

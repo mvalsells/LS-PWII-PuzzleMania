@@ -35,7 +35,7 @@ class MySQLRiddleRepository implements RiddleRepository
     //==========================================================================================
 
     /**
-     * Funció que agafa totes les riddles de la BBDD i les retorna en forma d'array.
+     * Returns an array of Model/Riddle objects with all the available riddles in the 'riddles' table of the database.
      * @return array
      */
     public function getAllRiddles(): array
@@ -62,9 +62,9 @@ class MySQLRiddleRepository implements RiddleRepository
     }
 
     /**
-     * Funció que afegeix un riddle a la BBDD.
-     * @param Riddle $r
-     * @return void
+     * Adds the $r object to the 'riddles' table in the database, the ID of the added riddle is returned.
+     * @param Riddle $r The 'id' and 'userId' attributes can be null.
+     * @return int
      */
     public function addRiddle(Riddle $r): int
     {
@@ -80,7 +80,7 @@ class MySQLRiddleRepository implements RiddleRepository
         } else {
             // Fem la query
             $query = <<<'QUERY'
-                INSERT INTO riddles (id, user_id, riddle, answer) VALUES (:id, :user_id, :riddle, :answer);
+                INSERT INTO riddles (riddle_id, user_id, riddle, answer) VALUES (:id, :user_id, :riddle, :answer);
             QUERY;
             // Preparem la query
             $statement = $this->databaseConnection->prepare($query);
@@ -105,7 +105,12 @@ class MySQLRiddleRepository implements RiddleRepository
         return intval($this->databaseConnection->lastInsertId());
 
     }
-
+    /**
+     * Given an id of a riddle, a Model/Riddle object with all the information is returned. If the riddle is not found
+     * in the 'riddles' table of the database null is returned.
+     * @param int $id
+     * @return Riddle|null
+     */
     public function getOneRiddleById(int $id): ?Riddle
     {
         // Fem la query
@@ -135,7 +140,13 @@ class MySQLRiddleRepository implements RiddleRepository
             return null;
         }
     }
-
+    /**
+     * Updates the riddle with ID $originalId in the 'riddles' table of the database with the $newRiddle data
+     * @param int $originalId
+     * @param Riddle $newRiddle 'id' attribute CANNOT be null, 'userId' can be null. The unchanged fields must have the
+     *                          original information.
+     * @return void
+     */
     public function updateRiddle(int $originalId, Riddle $newRiddle): void
     {
 
@@ -162,7 +173,11 @@ class MySQLRiddleRepository implements RiddleRepository
         // Execute query
         $statement->execute();
     }
-
+    /**
+     * Given an id of a riddle this one is deleted from the 'riddles' table fo the database.
+     * @param int $id
+     * @return void
+     */
     public function deleteRiddle(int $id): void {
         // Create query
         $query = <<<'QUERY'

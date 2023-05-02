@@ -29,12 +29,12 @@ class RiddleController
         print_r("Proves Riddles");
 
 
-        $r = new Riddle(1, "p1", "p1");
+        $r = new Riddle(1, "p1", "p1", "p1");
 
         $this->riddleRepository->addRiddle($r);
         $this->riddleRepository->addRiddle($r);
 
-        print_r($this->riddleRepository->getRiddles());
+        print_r($this->riddleRepository->getAllRiddles());
 
         return $this->twig->render(
             $response,

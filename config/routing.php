@@ -81,6 +81,7 @@ function addRoutes(App $app, Container $container): void
 
     });
 
+
     // Riddles API
     $app->group('/api/riddle', function (RouteCollectorProxy $group) {
 

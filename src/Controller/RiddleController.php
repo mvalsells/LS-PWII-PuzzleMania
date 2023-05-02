@@ -2,12 +2,15 @@
 
 namespace Salle\PuzzleMania\Controller;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use PDO;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Salle\PuzzleMania\Model\Riddle;
 use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
 use Slim\Views\Twig;
+use function DI\add;
 
 class RiddleController
 {
@@ -29,11 +32,26 @@ class RiddleController
         print_r("Proves Riddles");
 
 
+        $API_URL = "http://nginx/api/riddle";
+
+        $client = new Client();
+        try {
+            $resposta = $client->request("GET", $API_URL);
+            $riddles = json_decode($resposta->getBody()->getContents());
+
+            $temp = array();
+            for ($i = 0; $i < count($riddles); $i++) {
+                $temp[] = $riddles[$i]->answer;
+            }
+        } catch (GuzzleException $e) {
+            exit();
+        }
 
         return $this->twig->render(
             $response,
-            'base.twig',
+            'riddle.twig',
             [
+                'riddles' => $temp
             ]
         );
     }

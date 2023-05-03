@@ -6,7 +6,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Salle\PuzzleMania\Repository\UserRepository;
 use Slim\Views\Twig;
-
 class LandingPageController
 {
     private $twig;

@@ -11,7 +11,7 @@ use Salle\PuzzleMania\Controller\RiddleController;
 use Salle\PuzzleMania\Controller\TeamsController;
 use Salle\PuzzleMania\Middleware\AuthorizationMiddleware;
 use Salle\PuzzleMania\Middleware\TeamAuthorizationMiddleware;
-use SallezzleMania\Controller\API\RiddlesAPIController;
+use Salle\PuzzleMania\Controller\API\RiddlesAPIController;
 use Salle\PuzzleMania\Controller\API\UsersAPIController;
 use Salle\PuzzleMania\Controller\SignUpController;
 use Salle\PuzzleMania\Controller\SignInController;
@@ -106,6 +106,40 @@ function addRoutes(App $app, Container $container): void
             RiddleController::class . ":showID"
         )->setName('riddle_post');
 
+    });
+
+    // Riddles API
+    $app->group('/api/riddle', function (RouteCollectorProxy $group) {
+
+        // Gets all riddles
+        $group->get(
+            '',
+            RiddlesAPIController::class . ":getAllRiddles"
+        );
+
+        // Adds a riddle
+        $group->post(
+            '',
+            RiddlesAPIController::class . ":addARiddle"
+        );
+
+        // Get one riddle
+        $group->get(
+            '/{id}',
+            RiddlesAPIController::class . ":getOneRiddle"
+        );
+
+        // Update a riddle
+        $group->put(
+            '/{id}',
+            RiddlesAPIController::class . ":updateARiddle"
+        );
+
+        // Delete a riddle
+        $group->delete(
+            '/{id}',
+            RiddlesAPIController::class . ":deleteARiddle"
+        );
     });
 
 }

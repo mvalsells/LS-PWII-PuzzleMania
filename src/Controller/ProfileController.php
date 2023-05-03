@@ -52,6 +52,7 @@ class ProfileController
             [
                 'formAction' => $routeParser->urlFor('profile_post'),
                 'email' => $_SESSION["email"],
+                "team" => $_SESSION['team_id'] ?? null,
                 'profilePicture' => $_SESSION["profilePicturePath"] ?? self::DEFAULT_PROFILE_IMAGE
             ]
         );
@@ -92,6 +93,7 @@ class ProfileController
             [
                 'formErrors' => $errors ?? [],
                 'email' => $_SESSION["email"],
+                "team" => $_SESSION['team_id'] ?? null,
                 'profilePicture' => $_SESSION["profilePicturePath"] ?? self::DEFAULT_PROFILE_IMAGE,
                 'formAction' => $routeParser->urlFor('profile_post')
             ]
@@ -136,10 +138,15 @@ class ProfileController
 
         // If no errors, we save the image
         if (empty($errors)) {
+            // Generate uuid for new profile picture
             $uuid = Uuid::uuid4();
+            // TODO: delete past profile picture correct
+            $past_picture = __DIR__ . '/../../public/' . $_SESSION["profilePicturePath"];
+            unlink($past_picture);
             $_SESSION["profilePicturePath"] = 'uploads/' . $uuid . "." . $format;
+            // Upload new profile picture path to database
             $this->userRepository->updateProfilePicture($_SESSION['user_id'], $_SESSION["profilePicturePath"]);
-            // TODO: Update profile picture path in DDBB
+            // Save new profile picture in 'uploads/' folder
             $uploadedFile->moveTo(self::UPLOADS_DIR . DIRECTORY_SEPARATOR . $uuid . "." . $format);
         }
 

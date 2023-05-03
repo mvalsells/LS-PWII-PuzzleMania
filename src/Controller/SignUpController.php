@@ -49,33 +49,18 @@ final class SignUpController
         $data = $request->getParsedBody();
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
 
-        $errors = [];
+        $errors = $this->validateForm($data['email'], $data['password'], $data['repeatPassword']);
 
-        $errors['email'] = $this->validator->validateEmail($data['email']);
-        $errors['password'] = $this->validator->validatePassword($data['password']);
-        if ($data['password'] != $data['repeatPassword']) {
-            $errors['password'] = "Passwords do not match.";
-        }
-
-        // Unset variables if there are no errors
-        if ($errors['email'] == '') {
-            unset($errors['email']);
-        }
-        if ($errors['password'] == '') {
-            unset($errors['password']);
-        }
-
-        $savedUser = $this->userRepository->getUserByEmail($data['email']);
-        if ($savedUser != null) {
-            $errors['email'] = "User already exists!";
-        }
         if (count($errors) == 0) {
-            $user = User::create()
-                ->setEmail($data['email'])
-                ->setPassword(md5($data['password']))
-                ->setCreatedAt(new DateTime())
-                ->setUpdatedAt(new DateTime());
+            // Create user variable
+            $user = new User();
+            $user->setEmail($data['email']);
+            $user->setPassword(md5($data['password']));
+            $user->setCreatedAt(new DateTime());
+            $user->setUpdatedAt(new DateTime());
+            // Upload user to repository
             $this->userRepository->createUser($user);
+            // Redirect to sign-in page
             return $response->withHeader('Location', '/sign-in')->withStatus(302);
         }
         return $this->twig->render(
@@ -87,5 +72,34 @@ final class SignUpController
                 'formAction' => $routeParser->urlFor('sign-up_get')
             ]
         );
+    }
+
+    private function validateForm($email, $password, $repeat_password): array
+    {
+        $errors = [];
+
+        $errors['email'] = $this->validator->validateEmail($email);
+        $errors['password'] = $this->validator->validatePassword($password);
+
+        // Check that passwords match
+        if ($password != $repeat_password) {
+            $errors['password'] = "Passwords do not match.";
+        }
+
+        // Unset variables if there are no errors
+        if ($errors['email'] == '') {
+            unset($errors['email']);
+        }
+        if ($errors['password'] == '') {
+            unset($errors['password']);
+        }
+
+        // Check if user with this email already exists
+        $savedUser = $this->userRepository->getUserByEmail($email);
+        if (!$savedUser->isNullUser()) {
+            $errors['email'] = "User already exists!";
+        }
+
+        return $errors;
     }
 }

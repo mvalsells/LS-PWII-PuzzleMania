@@ -22,22 +22,24 @@ CREATE TABLE `users`
 DROP TABLE IF EXISTS `riddles`;
 CREATE TABLE `riddles`
 (
-    `riddle_id`   INT          NOT NULL AUTO_INCREMENT,
-    `user_id`    INT,
+    `riddle_id`   INT NOT NULL AUTO_INCREMENT,
+    `user_id`     INT,
     `riddle`      VARCHAR(255) NOT NULL,
-    `answer`    VARCHAR(255) NOT NULL,
+    `answer`      VARCHAR(255) NOT NULL,
     PRIMARY KEY (`riddle_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `teams`;
 CREATE TABLE `teams`
 (
-    `team_id`   INT NOT NULL AUTO_INCREMENT,
-    `team_name` VARCHAR(255) NOT NULL,
-    `count` INT NOT NULL,
-    `user_id_1`    INT,
-    `user_id_2`    INT,
-    `score`      INT NOT NULL,
+    `team_id`         INT NOT NULL AUTO_INCREMENT,
+    `team_name`       VARCHAR(255) NOT NULL,
+    `num_members`     INT NOT NULL,
+    `user_id_1`       INT NOT NULL,
+    `user_id_2`       INT,
+    `total_score`     INT NOT NULL,
+    `last_score`      INT,
+    `QR_generated`    INT NOT NULL,
     PRIMARY KEY (`team_id`),
     FOREIGN KEY (user_id_1) REFERENCES users (id),
     FOREIGN KEY (user_id_2) REFERENCES users (id)

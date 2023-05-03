@@ -14,7 +14,9 @@ use Salle\PuzzleMania\Controller\SignUpController;
 use Salle\PuzzleMania\Controller\SignInController;
 use Salle\PuzzleMania\Controller\TeamsController;
 use Salle\PuzzleMania\Middleware\AuthorizationMiddleware;
+use Salle\PuzzleMania\Middleware\TeamAuthorizationMiddleware;
 use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
+use Salle\PuzzleMania\Repository\MySQLTeamRepository;
 use Salle\PuzzleMania\Repository\MySQLUserRepository;
 use Salle\PuzzleMania\Repository\PDOConnectionBuilder;
 use Slim\Flash\Messages;
@@ -58,8 +60,19 @@ function addDependencies(ContainerInterface $container): void
         }
     );
 
+    $container->set(
+        'teamAuthorizationMiddleware',
+        function (ContainerInterface $c) {
+            return new TeamAuthorizationMiddleware($c->get('flash'));
+        }
+    );
+
     $container->set('user_repository', function (ContainerInterface $container) {
         return new MySQLUserRepository($container->get('db'));
+    });
+
+    $container->set('team_repository', function (ContainerInterface $container) {
+        return new MySQLTeamRepository($container->get('db'));
     });
 
     $container->set('riddle_repository', function (ContainerInterface $container) {
@@ -70,7 +83,7 @@ function addDependencies(ContainerInterface $container): void
     $container->set(
         SignInController::class,
         function (ContainerInterface $c) {
-            return new SignInController($c->get('view'), $c->get('user_repository'), $c->get("flash"));
+            return new SignInController($c->get('view'), $c->get('user_repository'), $c->get('team_repository'), $c->get("flash"));
         }
     );
 
@@ -119,7 +132,7 @@ function addDependencies(ContainerInterface $container): void
     $container->set(
         TeamsController::class,
         function (ContainerInterface $c) {
-            return new TeamsController($c->get('view'), $c->get('db'));
+            return new TeamsController($c->get('view'), $c->get('user_repository'), $c->get('team_repository'), $c->get("flash"));
         }
     );
 

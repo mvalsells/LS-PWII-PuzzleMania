@@ -31,7 +31,7 @@ class BarcodeService
      * @param string $data Data to be found in the QR code
      * @return bool Indicates whether the QR has been received correctly from the API or not
      */
-    public function simpleQRBase64(string $data, string $text): bool {
+    public function generateSimpleQR(string $data, string $text): bool {
         try {
             $response = $this->client->post('/BarcodeGenerator', [
                 // Answer must be a jpeg file

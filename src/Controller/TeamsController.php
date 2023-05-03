@@ -130,7 +130,7 @@ class TeamsController
         }
 
         // Contact API to generate the QR
-        $generated = $this->barcode->simpleQRBase64("localhost:8030/invite/join/" . $_SESSION["team_id"], "Join '" . $team->getTeamName() . "'");
+        $generated = $this->barcode->generateSimpleQR("http://localhost:8030/invite/join/" . $_SESSION["team_id"], "Join '" . $team->getTeamName() . "'");
 
         // Check if QR has been generated correctly
         if (!$generated) {

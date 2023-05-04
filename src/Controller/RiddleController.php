@@ -49,6 +49,7 @@ class RiddleController
             $response,
             'riddle.twig',
             [
+                'riddleCount' => 999, // It can be any value as long as it's not 1.
                 'riddles' => $temp
             ]
         );
@@ -60,31 +61,28 @@ class RiddleController
         // Guarem el id de la riddle
         $idRiddle = (int) filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_NUMBER_INT);
 
-        print_r($idRiddle);
-
-        $API_URL = "http://nginx/api/riddle?id=$idRiddle";
+        $API_URL = "http://nginx/api/riddle/{$idRiddle}";
 
         $client = new Client();
+        $temp = array();
 
         try {
             $resposta = $client->request("GET", $API_URL);
             $riddles = json_decode($resposta->getBody()->getContents());
 
-            $temp = array();
-
-            $temp[0] = $riddles[0]->riddle;
-
-            print_r($temp);
+            $temp[0] = $riddles->riddle;
+            $riddleCount = 1;
 
         } catch (GuzzleException $e) {
-            print_r($e->getCode());
-            exit();
+            $temp[0] = "Riddle not found";
+            $riddleCount = 0;
         }
 
         return $this->twig->render(
             $response,
             'riddle.twig',
             [
+                'riddleCount' => $riddleCount, // We indicate that there's just one riddle
                 'riddles' => $temp
             ]
         );

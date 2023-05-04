@@ -2,17 +2,31 @@
 
 {% block head %}
     <title>Riddles | LSCoins</title>
-    <link rel="stylesheet" href="{{ full_url_for('riddle_get') }}assets/css/navbar_styles.css"/>
-    <link rel="stylesheet" href="{{ full_url_for('riddle_get') }}assets/css/numericlist_styles.css"/>
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/navbar_styles.css"/>
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/numericlist_styles.css"/>
 {% endblock %}
 
-{% block title %} Riddle {% endblock %}
+{% block title %} Show riddles {% endblock %}
 
-{% block header %} {% endblock %}
+{% block header %}
+    <div class="dropdown">
+        <button class = "home-button">
+            <a href="/">Go to Landing Page</a>
+        </button>
+    </div>
+{% endblock %}
+
+{% block name %}
+    {% if riddleCount == 0 %}
+        Show riddle: {{ idRiddle }}
+    {% else %}
+        Show all riddles
+    {% endif %}
+{% endblock %}
 
 {% block content %}
 
-    {% if riddleCount == 1 %}
+    {% if (riddleCount == 1 or riddleCount == 0) %}
         {% set text = "Riddle" %}
     {% else %}
         {% set text = "Riddles" %}
@@ -29,7 +43,9 @@
 
             {% for riddle in riddles %}
                 <div style = "background: white; margin-top: 5px; padding-left: 160px; padding-right: 160px; border-radius: 10px; border: 2px solid #000;">
-                    {% if riddleCount == 1 %}
+                    {% if riddleCount == 0 %}
+                        <p><b>{{ text }} not found</b></p>
+                    {% elseif riddleCount == 1 %}
                         <p><b>Riddle:</b> {{ riddle }}</p>
                     {% else %}
                         <p><b>Riddle #{{ loop.index }}:</b> {{ riddle }}</p>

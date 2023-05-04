@@ -66,7 +66,6 @@ function addRoutes(App $app, Container $container): void
 
     })->add(AuthorizationMiddleware::class);
 
-    //TODO: Mirar lo del ID.
     $app->group('/riddle', function (RouteCollectorProxy $group) {
 
         $group->get(

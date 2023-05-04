@@ -82,6 +82,7 @@ class RiddleController
             $response,
             'riddle.twig',
             [
+                'idRiddle' => $idRiddle,
                 'riddleCount' => $riddleCount, // We indicate that there's just one riddle
                 'riddles' => $temp
             ]

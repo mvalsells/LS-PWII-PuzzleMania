@@ -47,8 +47,8 @@
     display: block;
     padding: 10px;
     text-decoration: none;
-    background: red;
-    color: #fff;
+    background: yellow;
+    color: dimgray;
     border: 1px solid #eee;
     border-radius: 20px;
 }
@@ -57,8 +57,8 @@
     display: block;
     padding: 10px;
     text-decoration: none;
-    background: #B32203;
-    color: #fff;
+    background: yellowgreen;
+    color: dimgray;
     border: 1px solid #eee;
     border-radius: 20px;
 }

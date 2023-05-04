@@ -9,6 +9,9 @@ use JsonSerializable;
 
 class User implements JsonSerializable
 {
+    //------------------------------------------------------------------------------------------
+    // VARIABLES
+    //------------------------------------------------------------------------------------------
 
     private int $id;
     private string $email;
@@ -17,26 +20,17 @@ class User implements JsonSerializable
     private Datetime $createdAt;
     private Datetime $updatedAt;
 
-//    public function __construct(
-//        string   $email,
-//        string   $password,
-//        Datetime $createdAt,
-//        Datetime $updatedAt
-//    )
-//    {
-//        $this->email = $email;
-//        $this->password = $password;
-//        $this->createdAt = $createdAt;
-//        $this->updatedAt = $updatedAt;
-//    }
 
-    /**
-     * Static constructor / factory
-     */
-    public static function create(): User
-    {
-        return new self();
+    //------------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    //------------------------------------------------------------------------------------------
+
+    public function __construct () {
     }
+
+    //------------------------------------------------------------------------------------------
+    // OTHER METHODS
+    //------------------------------------------------------------------------------------------
 
     /**
      * Function called when encoded with json_encode
@@ -46,87 +40,125 @@ class User implements JsonSerializable
         return get_object_vars($this);
     }
 
-    public function getId()
+    public function isNullUser(): bool
+    {
+        if (!isset($this->email)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function hasPicture(): bool
+    {
+        if (isset($this->profilePicturePath)) {
+            return true;
+        }
+        return false;
+    }
+
+    //------------------------------------------------------------------------------------------
+    // GETTERS
+    //------------------------------------------------------------------------------------------
+
+    /**
+     * @return int
+     */
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function email()
+    /**
+     * @return string
+     */
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function password()
+    /**
+     * @return string
+     */
+    public function getPassword(): string
     {
         return $this->password;
     }
 
-    public function createdAt()
-    {
-        return $this->createdAt;
-    }
-
-    public function profilePicturePath()
+    /**
+     * @return string
+     */
+    public function getProfilePicturePath(): string
     {
         return $this->profilePicturePath;
     }
 
-    public function updatedAt()
+    /**
+     * @return DateTime
+     */
+    public function getCreatedAt(): DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getUpdatedAt(): DateTime
     {
         return $this->updatedAt;
     }
 
+    //------------------------------------------------------------------------------------------
+    // SETTERS
+    //------------------------------------------------------------------------------------------
+
     /**
      * @param int $id
      */
-    public function setId(int $id)
+    public function setId(int $id): void
     {
         $this->id = $id;
-        return $this;
     }
 
     /**
      * @param string $email
      */
-    public function setEmail(string $email)
+    public function setEmail(string $email): void
     {
         $this->email = $email;
-        return $this;
     }
 
     /**
      * @param string $password
      */
-    public function setPassword(string $password)
+    public function setPassword(string $password): void
     {
         $this->password = $password;
-        return $this;
     }
 
-    public function setProfilePicturePath(string $profilePicturePath)
+    /**
+     * @param string $profilePicturePath
+     */
+    public function setProfilePicturePath(string $profilePicturePath): void
     {
         $this->profilePicturePath = $profilePicturePath;
-        return $this;
     }
 
     /**
      * @param DateTime $createdAt
      */
-    public function setCreatedAt(DateTime $createdAt)
+    public function setCreatedAt(DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
-        return $this;
     }
 
     /**
      * @param DateTime $updatedAt
      */
-    public function setUpdatedAt(DateTime $updatedAt)
+    public function setUpdatedAt(DateTime $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
-        return $this;
     }
-
 
 
 }

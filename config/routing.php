@@ -72,7 +72,7 @@ function addRoutes(App $app, Container $container): void
         $group->get(
             '',
             RiddleController::class . ":show"
-        )->setName('riddle_get');
+            )->setName('riddle_get');
 
         $group->get(
             '/{id}',

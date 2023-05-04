@@ -9,6 +9,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Salle\PuzzleMania\Model\Riddle;
 use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
+use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
 use function DI\add;
 
@@ -28,10 +29,7 @@ class RiddleController
     }
     public function show(Request $request, Response $response): Response
     {
-
-        print_r("Proves Riddles");
-
-
+        
         $API_URL = "http://nginx/api/riddle";
 
         $client = new Client();
@@ -55,8 +53,10 @@ class RiddleController
             ]
         );
     }
+
     public function showID(Request $request, Response $response): Response
     {
+
         return $this->twig->render(
             $response,
             'base.twig',

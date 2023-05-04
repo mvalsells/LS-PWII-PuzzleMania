@@ -39,7 +39,7 @@ class RiddleController
 
             $temp = array();
             for ($i = 0; $i < count($riddles); $i++) {
-                $temp[] = $riddles[$i]->answer;
+                $temp[] = $riddles[$i]->riddle;
             }
         } catch (GuzzleException $e) {
             exit();
@@ -57,10 +57,35 @@ class RiddleController
     public function showID(Request $request, Response $response): Response
     {
 
+        // Guarem el id de la riddle
+        $idRiddle = (int) filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_NUMBER_INT);
+
+        print_r($idRiddle);
+
+        $API_URL = "http://nginx/api/riddle?id=$idRiddle";
+
+        $client = new Client();
+
+        try {
+            $resposta = $client->request("GET", $API_URL);
+            $riddles = json_decode($resposta->getBody()->getContents());
+
+            $temp = array();
+
+            $temp[0] = $riddles[0]->riddle;
+
+            print_r($temp);
+
+        } catch (GuzzleException $e) {
+            print_r($e->getCode());
+            exit();
+        }
+
         return $this->twig->render(
             $response,
-            'base.twig',
+            'riddle.twig',
             [
+                'riddles' => $temp
             ]
         );
     }

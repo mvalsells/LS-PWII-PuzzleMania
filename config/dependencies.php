@@ -104,7 +104,7 @@ function addDependencies(ContainerInterface $container): void
     $container->set(
         GameController::class,
         function (ContainerInterface $c) {
-            return new GameController($c->get('view'));
+            return new GameController($c->get('view'), $c->get('team_repository'), $c->get('riddle_repository'));
         }
     );
 

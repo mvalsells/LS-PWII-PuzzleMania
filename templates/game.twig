@@ -1,3 +1,96 @@
 {% extends "base.twig" %}
 
-{% block title %} Game {% endblock %}
+{% block head %}
+    <title>Game | PuzzleMania</title>
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/navbar_styles.css"/>
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/numericlist_styles.css"/>
+{% endblock %}
+
+{% block name %}Game{% endblock %}
+
+{% block header %}
+    <!-- Dropdown -->
+    <div class="dropdown">
+        <!-- Email -->
+        <button class="dropbtn">
+            {% if email is not defined %}
+                Menu
+            {% else %}
+                {{ email }}
+            {% endif %}
+        </button>
+        <!-- Logout suboption -->
+        <div class="dropdown-content">
+            <a href="/">Home</a>
+            <a href="/profile">Your Profile</a>
+            <a href="/team-stats">Team Stats</a>
+            <a href="/riddles">List riddles</a>
+            <a href="/log-out">Logout</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% if notifs is not empty %}
+        {% for notif in notifs %}
+            <p data-cy="team-stats__message" class="error">{{ notif }}</p>
+        {% endfor %}
+    {% endif %}
+    <div class = "parent-content">
+        <div class = "content">
+            <div class = "page" style = "background: white; padding: 40px 130px; border-radius: 10px; border: 2px solid #000;">
+
+                {% if start == 1 %}
+                    <form data-cy="game" action="{{ formAction }}" method="POST" id="game" accept-charset="utf-8" style="text-align: center;">
+                        <h1 style="text-align: center;">{{ teamName }}</h1>
+                        <h2><br><b>Read the instructions</b></h2>
+                        <p><br><b>The game consists on 3 riddles, which you need to guess to earn points.
+                                For every guessed riddle you'll earn 10 points, but you'll lose 10 points for each mistaken answer.</b></p>
+                        <div class="form-group row">
+                            <input data-cy="game__btn" type="submit" value="{{ buttonName }}" class="submit-button">
+                        </div>
+                    </form>
+                {% elseif endGame == 0 %}
+                    {% if guessRiddle == 1 %}
+                        <form data-cy="game" action="{{ formAction }}" method="POST" id="game" accept-charset="utf-8" style="text-align: center;">
+                            <h2><br><b>{{ actualRiddle.riddle }}</b></h2>
+                            <input data-cy="game__riddle-answer" type="text" name="answer" placeholder="Enter your answer"
+                                   value="">
+                            <div class="form-group row">
+                                <input data-cy="game__btn" type="submit" value="{{ buttonName }}" class="submit-button">
+                            </div>
+                        </form>
+                    {% else %}
+                        <h2><br><b>{{ actualRiddle.riddle }}</b></h2>
+                        <h3><br>{{ actualRiddle.answer }}</h3>
+
+                        {% if points < 0 %}
+                            <h3 style = "color: red; "><br>Your answer was {{ actualRiddle.answer }}</h3>
+                            <p><br><b>Your answer wasn't correct. You lost {{ points }} points.</b></p>
+                        {% else %}
+                            <p><br><b>Good job, your answer is correct. You won {{ points }} points.</b></p>
+                        {% endif %}
+                        <div style = "margin-top: 15px; font-size: 13px;">
+                            <a href="{{ formAction }}">{{ buttonName }}</a>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <h1 style="text-align: center;">{{ teamName }}</h1>
+                    <h2 style="text-align: center;">You have earned a total of {{ points }} points.</h2>
+                    {% if points > 0 %}
+                        <p><br><b>Good job! The points will be added to your team score.</b></p>
+                    {% else %}
+                        <p><br><b>Good luck next time :(</b></p>
+                    {% endif %}
+                    <div style = "margin-top: 15px; font-size: 13px;">
+                        <a href="{{ formAction }}">{{ buttonName }}</a>
+                    </div>
+                {% endif %}
+
+            </div>
+            {% if start == 0 and endGame == 0 %}
+                <h2 style="text-align: center;"><u>Total:</u> {{ totalPoints }} points.</h2>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

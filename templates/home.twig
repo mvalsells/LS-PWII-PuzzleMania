@@ -24,7 +24,7 @@
             {% if email is not defined %}
                 <a href="/sign-in">Sign in</a>
                 <a href="/sign-up">Sign up</a>
-                <a href="/riddles">List riddles</a>
+                <a href="/riddle">List riddles</a>
             {% else %}
                 <a href="/profile">Your Profile</a>
                 {% if team is not defined or team is null %}
@@ -33,7 +33,7 @@
                     <a href="/team-stats">Your Team Stats</a>
                     <a href="/game">Start a game</a>
                 {% endif %}
-                <a href="/riddles">List riddles</a>
+                <a href="/riddle">List riddles</a>
                 <a href="/log-out">Logout</a>
             {% endif %}
         </div>
@@ -57,7 +57,7 @@
             <div class ="feature-item"><a href="/team-stats">Watch your Team stats to know how you're doing.</a></div>
             <div class ="feature-item"><a href="/profile">Watch your profile and change your profile picture.</a></div>
             <div class ="feature-item"><a href="/game">Start a game with 3 riddles and get a score that will be added to your team stats.</a></div>
-            <div class ="feature-item"><a href="/riddles">Create riddles, list them, update them and delete them.</a></div>
+            <div class ="feature-item"><a href="/riddle">List riddles.</a></div>
         </div>
     </div>
 

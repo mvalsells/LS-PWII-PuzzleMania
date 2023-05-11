@@ -2,12 +2,16 @@
 
 namespace Salle\PuzzleMania\Controller;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use PDO;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Salle\PuzzleMania\Model\Riddle;
 use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
+use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
+use function DI\add;
 
 class RiddleController
 {
@@ -25,30 +29,66 @@ class RiddleController
     }
     public function show(Request $request, Response $response): Response
     {
+        
+        $API_URL = "http://nginx/api/riddle";
 
-        print_r("Proves Riddles");
+        $client = new Client();
+        try {
+            $resposta = $client->request("GET", $API_URL);
+            $riddles = json_decode($resposta->getBody()->getContents());
 
-
-        $r = new Riddle(1, "p1", "p1", "p1");
-
-        $this->riddleRepository->addRiddle($r);
-        $this->riddleRepository->addRiddle($r);
-
-        print_r($this->riddleRepository->getAllRiddles());
+            $temp = array();
+            for ($i = 0; $i < count($riddles); $i++) {
+                $temp[] = $riddles[$i]->riddle;
+            }
+        } catch (GuzzleException $e) {
+            exit();
+        }
 
         return $this->twig->render(
             $response,
-            'base.twig',
+            'riddle.twig',
             [
+                'riddleCount' => 999, // It can be any value as long as it's not 1.
+                'riddles' => $temp,
+                "email" => $_SESSION['email'],
+                "team" => $_SESSION['team_id'] ?? null
             ]
         );
     }
+
     public function showID(Request $request, Response $response): Response
     {
+
+        // Guarem el id de la riddle
+        $idRiddle = (int) filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_NUMBER_INT);
+
+        $API_URL = "http://nginx/api/riddle/{$idRiddle}";
+
+        $client = new Client();
+        $temp = array();
+
+        try {
+            $resposta = $client->request("GET", $API_URL);
+            $riddles = json_decode($resposta->getBody()->getContents());
+
+            $temp[0] = $riddles->riddle;
+            $riddleCount = 1;
+
+        } catch (GuzzleException $e) {
+            $temp[0] = "Riddle not found";
+            $riddleCount = 0;
+        }
+
         return $this->twig->render(
             $response,
-            'base.twig',
+            'riddle.twig',
             [
+                'idRiddle' => $idRiddle,
+                'riddleCount' => $riddleCount, // We indicate that there's just one riddle
+                'riddles' => $temp,
+                "email" => $_SESSION['email'],
+                "team" => $_SESSION['team_id'] ?? null
             ]
         );
     }

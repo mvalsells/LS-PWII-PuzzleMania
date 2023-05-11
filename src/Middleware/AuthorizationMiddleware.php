@@ -35,6 +35,9 @@ final class AuthorizationMiddleware
         if (!isset($_SESSION['user_id'])) {
             $route = RouteContext::fromRequest($request)->getRoute();
 
+            // Get the team ID and store it in the session
+            $_SESSION["idTeam"] = (int) filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_NUMBER_INT);
+
             // Get flash message and add it to response
             $page = self::FLASH_MESSAGES[$route->getName()] ?? 'Unknown page';
             $this->flash->addMessage("notifications", $this->buildMessage($page));

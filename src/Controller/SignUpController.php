@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Salle\PuzzleMania\Controller;
 
+use Salle\PuzzleMania\Repository\TeamRepository;
 use Salle\PuzzleMania\Service\ValidatorService;
 use Salle\PuzzleMania\Repository\UserRepository;
 use Salle\PuzzleMania\Model\User;
@@ -22,7 +23,8 @@ final class SignUpController
 
     public function __construct(
         private Twig $twig,
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
+        private TeamRepository $teamRepository
     )
     {
         $this->validator = new ValidatorService();
@@ -61,6 +63,19 @@ final class SignUpController
             // Upload user to repository
             $this->userRepository->createUser($user);
             // Redirect to sign-in page
+
+            // If the user has to join a team (used invite)
+            if(isset($_SESSION["idTeam"])){
+
+                // In order to join a team we need a user with an ID associated.
+                // The ID is associated after the creation of the user (in the DB), that's why we look up the same user that we have just created.
+                $userT = $this->userRepository->getUserByEmail($user->getEmail());
+
+                // Joining user to the team
+                $this->teamRepository->addUserToTeam($_SESSION["idTeam"], $userT);
+
+            }
+
             return $response->withHeader('Location', '/sign-in')->withStatus(302);
         }
         return $this->twig->render(

@@ -62,10 +62,9 @@ final class SignUpController
             $user->setUpdatedAt(new DateTime());
             // Upload user to repository
             $this->userRepository->createUser($user);
-            // Redirect to sign-in page
 
             // If the user has to join a team (used invite)
-            if(isset($_SESSION["idTeam"])){
+            if(!empty($_SESSION["idTeam"])){
 
                 // In order to join a team we need a user with an ID associated.
                 // The ID is associated after the creation of the user (in the DB), that's why we look up the same user that we have just created.
@@ -76,6 +75,7 @@ final class SignUpController
 
             }
 
+            // Redirect to sign-in page
             return $response->withHeader('Location', '/sign-in')->withStatus(302);
         }
         return $this->twig->render(

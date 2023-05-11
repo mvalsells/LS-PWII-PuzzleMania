@@ -99,7 +99,7 @@ function addRoutes(App $app, Container $container): void
         $group->get(
             '',
             RiddleController::class . ":show"
-        )->setName('riddle_get');
+            )->setName('riddle_get');
 
         $group->get(
             '/{id}',
@@ -107,6 +107,7 @@ function addRoutes(App $app, Container $container): void
         )->setName('riddle_post');
 
     });
+
 
     // Riddles API
     $app->group('/api/riddle', function (RouteCollectorProxy $group) {

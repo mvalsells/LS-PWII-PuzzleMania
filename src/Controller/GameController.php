@@ -36,7 +36,8 @@ class GameController
     {
         // Get riddles from repository and randomly choose 3
         $riddles = $this->riddleRepository->getAllRiddles();
-        $chosenRiddles = array_slice(shuffle($riddles), 0, 3);
+        shuffle($riddles);
+        $chosenRiddles = array_slice($riddles, 0, 3);
 
         // Set chosen riddles as a session variable
         $_SESSION['riddles'] = $chosenRiddles;
@@ -57,28 +58,56 @@ class GameController
             [
                 "teamName" => $team->getTeamName(),
                 "start" => 0,
+                "endGame" => 0,
                 "actualRiddle" => $chosenRiddles[0],
-                "nextRiddle" => 2
+                "button" => '/game/' . $gameId . "/riddle/" . ($_SESSION['actual_riddle'])
             ]
         );
     }
 
     public function showRiddle(Request $request, Response $response): Response
     {
+        // Increment actual riddle
+        $_SESSION['actual_riddle']++;
 
         return $this->twig->render(
             $response,
-            'riddle.twig',
+            'game.twig',
             [
+                "teamName" => $this->teamRepository->getTeamById($_SESSION['team_id'])->getTeamName(),
+                "start" => 0,
+                "endGame" => 0,
+                "actualRiddle" => $_SESSION['riddles'][$_SESSION['actual_riddle']-1],
+                "button" => '/game/' . $_SESSION['gameId'] . "/riddle/" . ($_SESSION['actual_riddle'])
             ]
         );
     }
     public function handleFormRiddle(Request $request, Response $response): Response
     {
+        $endGame = 0;
+        $link = '/game/' . $_SESSION['gameId'] . "/riddle/" . ($_SESSION['actual_riddle']);
+
+        // Increment actual riddle if it's not the last
+        if ($_SESSION['actual_riddle'] != 3) {
+            $_SESSION['actual_riddle']++;
+        } else {
+            // Set end game and button link to /team-stats
+            $endGame = 1;
+            unset($_SESSION['actual_riddle']);
+            unset($_SESSION['riddles']);
+            unset($_SESSION['gameId']);
+            $link = "/team-stats";
+        }
+
         return $this->twig->render(
             $response,
-            'riddle.twig',
+            'game.twig',
             [
+                "teamName" => $this->teamRepository->getTeamById($_SESSION['team_id'])->getTeamName(),
+                "start" => 0,
+                "endGame" => $endGame,
+                "actualRiddle" => $_SESSION['riddles'][$_SESSION['actual_riddle']-1] ?? [],
+                "button" => $link
             ]
         );
     }

@@ -50,7 +50,9 @@ class RiddleController
             'riddle.twig',
             [
                 'riddleCount' => 999, // It can be any value as long as it's not 1.
-                'riddles' => $temp
+                'riddles' => $temp,
+                "email" => $_SESSION['email'],
+                "team" => $_SESSION['team_id'] ?? null
             ]
         );
     }
@@ -84,7 +86,9 @@ class RiddleController
             [
                 'idRiddle' => $idRiddle,
                 'riddleCount' => $riddleCount, // We indicate that there's just one riddle
-                'riddles' => $temp
+                'riddles' => $temp,
+                "email" => $_SESSION['email'],
+                "team" => $_SESSION['team_id'] ?? null
             ]
         );
     }

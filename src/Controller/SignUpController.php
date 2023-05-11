@@ -63,8 +63,6 @@ final class SignUpController
             // Upload user to repository
             $this->userRepository->createUser($user);
 
-            print_r($_SESSION["idTeam"]);
-
             // If the user has to join a team (used invite)
             if(!empty($_SESSION["idTeam"])){
 

@@ -63,21 +63,6 @@ final class SignUpController
             // Upload user to repository
             $this->userRepository->createUser($user);
 
-            // If the user has to join a team (used invite)
-            if(!empty($_SESSION["idTeam"])){
-
-                // In order to join a team we need a user with an ID associated.
-                // The ID is associated after the creation of the user (in the DB), that's why we look up the same user that we have just created.
-                $userT = $this->userRepository->getUserByEmail($user->getEmail());
-
-                // Joining user to the team
-                $this->teamRepository->addUserToTeam($_SESSION["idTeam"], $userT);
-
-                unset($_SESSION["idTeam"]);
-
-                return $response->withHeader('Location', '/team-stats')->withStatus(302);
-            }
-
             // Redirect to sign-in page
             return $response->withHeader('Location', '/sign-in')->withStatus(302);
         }

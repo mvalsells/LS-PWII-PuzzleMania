@@ -73,7 +73,9 @@ final class SignUpController
                 // Joining user to the team
                 $this->teamRepository->addUserToTeam($_SESSION["idTeam"], $userT);
 
-                $_SESSION["idTeam"] = null;
+                unset($_SESSION["idTeam"]);
+
+                return $response->withHeader('Location', '/team-stats')->withStatus(302);
             }
 
             // Redirect to sign-in page

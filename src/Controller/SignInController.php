@@ -64,7 +64,9 @@ class SignInController
                     // Joining user to the team
                     $this->teamRepository->addUserToTeam($_SESSION["idTeam"], $user);
 
-                    $_SESSION["idTeam"] = null;
+                    unset($_SESSION["idTeam"]);
+
+                    return $response->withHeader('Location', '/team-stats')->withStatus(302);
                 }
 
                 return $response->withHeader('Location', '/')->withStatus(302);

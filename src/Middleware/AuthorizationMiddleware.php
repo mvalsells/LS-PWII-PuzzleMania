@@ -30,6 +30,7 @@ final class AuthorizationMiddleware
     {
     }
 
+    //TODO: Si s'entra després d'haver borrat la BBDD peta
     public function __invoke(Request $request, RequestHandler $next): Response
     {
         if (!isset($_SESSION['user_id'])) {

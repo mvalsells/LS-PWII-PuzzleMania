@@ -53,6 +53,20 @@ class SignInController
         if (count($errors) == 0) {
             $errors = $this->checkFormWithDatabase($data['email'], $data['password'], $errors);
             if (!isset($errors['email']) and !isset($errors['password'])) {
+
+                // If the user has to join a team (used invite)
+                if(!empty($_SESSION["idTeam"])){
+
+                    // In order to join a team we need a user with an ID associated.
+                    // The ID is associated after the creation of the user (in the DB), that's why we look up the same user that we have just created.
+                    $user = $this->userRepository->getUserByEmail($data['email']);
+
+                    // Joining user to the team
+                    $this->teamRepository->addUserToTeam($_SESSION["idTeam"], $user);
+
+                    $_SESSION["idTeam"] = null;
+                }
+
                 return $response->withHeader('Location', '/')->withStatus(302);
             }
         }

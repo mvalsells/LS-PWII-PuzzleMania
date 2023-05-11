@@ -102,7 +102,7 @@ class TeamsController
 
         return $this->twig->render(
             $response,
-            'join.twig',
+            'team-stats.twig',
             [
             ]
         );

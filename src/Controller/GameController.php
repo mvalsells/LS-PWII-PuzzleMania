@@ -20,6 +20,10 @@ class GameController
     }
     public function show(Request $request, Response $response): Response
     {
+        // Randomly generate game ID
+        $gameId = rand(1000, 9999); // TODO: generate correctly this random number
+        $_SESSION['gameId'] = $gameId;
+
         // Get team for showing team name
         $team = $this->teamRepository->getTeamById($_SESSION['team_id']);
         return $this->twig->render(
@@ -27,7 +31,9 @@ class GameController
             'game.twig',
             [
                 "teamName" => $team->getTeamName(),
-                "start" => 1
+                "start" => 1,
+                "button" => '/game/' . $gameId . "/riddle/1",
+                "buttonName" => "Start answer"
             ]
         );
     }
@@ -48,10 +54,6 @@ class GameController
         // Set actual riddle
         $_SESSION['actual_riddle'] = 1;
 
-        // Randomly generate game ID
-        $gameId = rand(1000, 9999); // TODO: generate correctly this random number
-        $_SESSION['gameId'] = $gameId;
-
         return $this->twig->render(
             $response,
             'game.twig',
@@ -60,7 +62,8 @@ class GameController
                 "start" => 0,
                 "endGame" => 0,
                 "actualRiddle" => $chosenRiddles[0],
-                "button" => '/game/' . $gameId . "/riddle/" . ($_SESSION['actual_riddle'])
+                "button" => '/game/' . $_SESSION['gameId'] . "/riddle/1",
+                "buttonName" => "Submit answer"
             ]
         );
     }
@@ -78,7 +81,8 @@ class GameController
                 "start" => 0,
                 "endGame" => 0,
                 "actualRiddle" => $_SESSION['riddles'][$_SESSION['actual_riddle']-1],
-                "button" => '/game/' . $_SESSION['gameId'] . "/riddle/" . ($_SESSION['actual_riddle'])
+                "button" => '/game/' . $_SESSION['gameId'] . "/riddle/" . ($_SESSION['actual_riddle']),
+                "buttonName" => "Submit answer"
             ]
         );
     }
@@ -86,6 +90,7 @@ class GameController
     {
         $endGame = 0;
         $link = '/game/' . $_SESSION['gameId'] . "/riddle/" . ($_SESSION['actual_riddle']);
+        $buttonName = "Next riddle";
 
         // Increment actual riddle if it's not the last
         if ($_SESSION['actual_riddle'] != 3) {
@@ -97,6 +102,7 @@ class GameController
             unset($_SESSION['riddles']);
             unset($_SESSION['gameId']);
             $link = "/team-stats";
+            $buttonName = "Finish";
         }
 
         return $this->twig->render(

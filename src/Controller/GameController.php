@@ -20,11 +20,11 @@ class GameController
     }
     public function show(Request $request, Response $response): Response
     {
+        unset($_SESSION['actual_riddle']);
+        unset($_SESSION['riddles']);
+        unset($_SESSION['gameId']);
         if (isset($_SESSION['gameId'])) {
             // Set end game and button link to /team-stats
-            unset($_SESSION['actual_riddle']);
-            unset($_SESSION['riddles']);
-            unset($_SESSION['gameId']);
             $points = $_SESSION['points'];
             if ($_SESSION["points"] > 0) {
                 $this->teamRepository->addScoreToTeam($_SESSION["team_id"], $points);
@@ -47,6 +47,7 @@ class GameController
                 ]
             );
         } else {
+            unset($_SESSION['points']);
             // Randomly generate game ID
             $gameId = rand(1000, 9999); // TODO: generate correctly this random number
             $_SESSION['gameId'] = $gameId;
@@ -144,6 +145,7 @@ class GameController
                 "guessRiddle" => 0,
                 "endGame" => $endGame,
                 "actualRiddle" => $_SESSION['riddles'][$_SESSION['actual_riddle']-1] ?? [],
+                "userAnswer" => $data["answer"],
                 "formAction" => $link,
                 "buttonName" => $buttonName,
                 "points" => $points,

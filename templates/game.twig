@@ -65,7 +65,7 @@
                         <h3><br>{{ actualRiddle.answer }}</h3>
 
                         {% if points < 0 %}
-                            <h3 style = "color: red; "><br>Your answer was {{ actualRiddle.answer }}</h3>
+                            <h3 style = "color: red; "><br>Your answer was "{{ userAnswer }}"</h3>
                             <p><br><b>Your answer wasn't correct. You lost {{ points }} points.</b></p>
                         {% else %}
                             <p><br><b>Good job, your answer is correct. You won {{ points }} points.</b></p>

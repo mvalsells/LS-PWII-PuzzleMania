@@ -140,9 +140,12 @@ class ProfileController
         if (empty($errors)) {
             // Generate uuid for new profile picture
             $uuid = Uuid::uuid4();
-            // TODO: delete past profile picture correct
-            $past_picture = __DIR__ . '/../../public/' . $_SESSION["profilePicturePath"];
-            unlink($past_picture);
+            // Delete past profile picture if exists
+            if (isset( $_SESSION["profilePicturePath"])) {
+                $past_picture = __DIR__ . '/../../public/' . $_SESSION["profilePicturePath"];
+                unlink($past_picture);
+            }
+
             $_SESSION["profilePicturePath"] = 'uploads/' . $uuid . "." . $format;
             // Upload new profile picture path to database
             $this->userRepository->updateProfilePicture($_SESSION['user_id'], $_SESSION["profilePicturePath"]);

@@ -102,7 +102,9 @@ class ProfileController
 
     private function checkNumberOfFiles(array $errors, array $uploadedFiles): array
     {
-        if (count($uploadedFiles['files']) > 1) {
+        if (!isset($uploadedFiles['files'])) {
+            $errors["profilePicture"] = self::NO_FILES_ERROR;
+        } elseif (count($uploadedFiles['files']) > 1) {
             $errors["profilePicture"] = self::EXCEEDED_MAXIMUM_FILES_ERROR;
         } elseif (!isset($uploadedFiles['files'][0]) || $uploadedFiles['files'][0]->getError() !== UPLOAD_ERR_OK){ // TODO: not working
             $errors["profilePicture"] = self::NO_FILES_ERROR;
@@ -141,7 +143,7 @@ class ProfileController
             // Generate uuid for new profile picture
             $uuid = Uuid::uuid4();
             // Delete past profile picture if exists
-            if (isset( $_SESSION["profilePicturePath"])) {
+            if (isset($_SESSION["profilePicturePath"])) {
                 $past_picture = __DIR__ . '/../../public/' . $_SESSION["profilePicturePath"];
                 unlink($past_picture);
             }

@@ -1,37 +1,51 @@
 <?php
-
+/**
+ * Riddle controller: handles requests to /riddle and /riddle/{id} routes making requests to the API and rendering the twig templates.
+ * @author: Marc Valsells, Òscar de Jesus and David Larrosa
+ * @creation: 20/04/2023
+ * @updated: 16/05/2023
+ */
 namespace Salle\PuzzleMania\Controller;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use PDO;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Salle\PuzzleMania\Model\Riddle;
-use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
-use Salle\PuzzleMania\Repository\RiddleRepository;
 use Salle\PuzzleMania\Repository\UserRepository;
-use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
-use function DI\add;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class RiddleController
 {
 
-    private $twig;
-    private $riddleRepository;
-    private $userRepository;
+    private Twig $twig;
+    private UserRepository $userRepository;
 
+    /**
+     * RiddleController constructor.
+     * @param UserRepository $userRepository Repository used to get the username of the user that created the riddle.
+     * @param Twig $twig Twig templating engine used to render the templates.
+     */
     public function __construct(
-        RiddleRepository $riddleRepository,
         UserRepository $userRepository,
         Twig $twig
     )
     {
         $this->twig = $twig;
-        $this->riddleRepository = $riddleRepository;
         $this->userRepository = $userRepository;
     }
+
+    /**
+     * It will ask for the information of all the riddles to the API and will render the twig template with the information.
+     * @param Request $request Not used since the necessary information from the request is handled by routing.php.
+     * @param Response $response Requested riddle information will be written into this response body.
+     * @return Response Returns the response with all the riddles' information.
+     * @throws LoaderError When the template cannot be found
+     * @throws RuntimeError When an error occurred during rendering
+     * @throws SyntaxError When an error occurred during compilation
+     */
     public function show(Request $request, Response $response): Response
     {
         
@@ -49,6 +63,7 @@ class RiddleController
             $response,
             'riddle.twig',
             [
+                //TODO remove 999 with a propre code
                 'riddleCount' => 999, // It can be any value as long as it's not 1.
                 'riddles' => $riddles,
                 "email" => $_SESSION['email'],
@@ -57,11 +72,22 @@ class RiddleController
         );
     }
 
-    public function showID(Request $request, Response $response): Response
+    /**
+     * Given a Riddles ID in the argument, it will ask for the information of the riddle to the API and will render the
+     * twig template with the information.
+     * @param Request $request Not used since the necessary information from the request is handled by routing.php and $args.
+     * @param Response $response Requested riddle information will be written into this response body.
+     * @param array $args Requested riddle id will be retrieved from 'id' key of the arguments array.
+     * @return Response Returns the response with the requested riddle information.
+     * @throws LoaderError When the template cannot be found
+     * @throws RuntimeError When an error occurred during rendering
+     * @throws SyntaxError When an error occurred during compilation
+     */
+    public function showID(Request $request, Response $response, array $args): Response
     {
 
-        // Guarem el id de la riddle
-        $idRiddle = (int) filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_NUMBER_INT);
+        // Guardem el id de la riddle que ens passen per paràmetre
+        $idRiddle = (int) filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
 
         $API_URL = "http://nginx/api/riddle/{$idRiddle}";
 
@@ -72,7 +98,8 @@ class RiddleController
             $resposta = $client->request("GET", $API_URL);
             $riddles = json_decode($resposta->getBody()->getContents());
             if (isset($riddles->userId)) {
-                $userName = $this->userRepository->getUserById($riddles->userId)->getUsername();
+                $user = $this->userRepository->getUserById($riddles->userId);
+                $userName = isset($user) ? $user->getUsername() : "-";
             } else {
                 $userName = "-";
             }

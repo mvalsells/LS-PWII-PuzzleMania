@@ -24,6 +24,8 @@ final class AuthorizationMiddleware
                 'game_post' => 'access the Game page.',
                 'game_riddle_get' => 'access the Game page.',
                 'game_riddle_post' => 'access the Game page.',
+                'riddle_get' => 'access the riddles page.',
+                'riddle_id_get' => 'access a riddle page.',
             ];
 
     public function __construct(private Messages $flash)
@@ -42,7 +44,7 @@ final class AuthorizationMiddleware
             }
 
             // Get flash message and add it to response
-            $page = self::FLASH_MESSAGES[$route->getName()] ?? 'Unknown page';
+            $page = self::FLASH_MESSAGES[$route->getName()] ?? 'access unknown page.xº';
             $this->flash->addMessage("notifications", $this->buildMessage($page));
             $response = new Response();
             return $response->withHeader('Location','/sign-in')->withStatus(301);

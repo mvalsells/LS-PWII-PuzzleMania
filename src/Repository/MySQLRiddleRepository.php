@@ -20,8 +20,6 @@ use Salle\PuzzleMania\Model\Riddle;
 class MySQLRiddleRepository implements RiddleRepository
 {
 
-    private const DATE_FORMAT = 'Y-m-d H:i:s';
-
     private PDO $databaseConnection;
 
     public function __construct(PDO $database)

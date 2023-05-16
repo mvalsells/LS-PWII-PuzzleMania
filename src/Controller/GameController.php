@@ -4,6 +4,8 @@ namespace Salle\PuzzleMania\Controller;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Salle\PuzzleMania\Model\Game;
+use Salle\PuzzleMania\Repository\GameRepository;
 use Salle\PuzzleMania\Repository\RiddleRepository;
 use Salle\PuzzleMania\Repository\TeamRepository;
 use Slim\Flash\Messages;
@@ -16,6 +18,7 @@ class GameController
         private Twig           $twig,
         private TeamRepository $teamRepository,
         private RiddleRepository $riddleRepository,
+        private GameRepository $gameRepository,
         private Messages       $flash
     )
     {
@@ -66,15 +69,16 @@ class GameController
                 unset($_SESSION['endGame']);
             }
 
-            // Randomly generate game ID
-            $gameId = rand(1000, 9999); // TODO: generate correctly this random number
-            $_SESSION['gameId'] = $gameId;
-            $_SESSION['endGame'] = 0;
-
             // Get riddles from repository and randomly choose 3
             $riddles = $this->riddleRepository->getAllRiddles();
             shuffle($riddles);
             $chosenRiddles = array_slice($riddles, 0, 3);
+
+            // Randomly generate game ID
+            $game = new Game($_SESSION["user_id"], $chosenRiddles[0]->getId(), $chosenRiddles[1]->getId(), $chosenRiddles[2]->getId());
+            $gameId = $this->gameRepository->createGame($game);
+            $_SESSION['gameId'] = $gameId;
+            $_SESSION['endGame'] = 0;
 
             // Set chosen riddles as a session variable
             $_SESSION['riddles'] = $chosenRiddles;

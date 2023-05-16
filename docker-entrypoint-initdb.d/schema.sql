@@ -45,6 +45,17 @@ CREATE TABLE `teams`
     FOREIGN KEY (user_id_2) REFERENCES users (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `games`;
+CREATE TABLE `games`
+(
+    `game_id`       INT NOT NULL AUTO_INCREMENT,
+    `user_id`       INT NOT NULL,
+    `riddle_1`      INT NOT NULL,
+    `riddle_2`      INT NOT NULL,
+    `riddle_3`      INT NOT NULL,
+    PRIMARY KEY (`game_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 INSERT DEMO/TEST DATA TO RIDDLES TABLE
 INSERT INTO riddles (riddle, answer)

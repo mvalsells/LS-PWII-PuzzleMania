@@ -24,7 +24,7 @@
             {% if email is not defined %}
                 <a href="/sign-in">Sign in</a>
                 <a href="/sign-up">Sign up</a>
-                <a href="/riddles">List riddles</a>
+                <a href="/riddle">List riddles</a>
             {% else %}
                 <a href="/profile">Your Profile</a>
                 {% if team is not defined or team is null %}
@@ -33,7 +33,7 @@
                     <a href="/team-stats">Your Team Stats</a>
                     <a href="/game">Start a game</a>
                 {% endif %}
-                <a href="/riddles">List riddles</a>
+                <a href="/riddle">List riddles</a>
                 <a href="/log-out">Logout</a>
             {% endif %}
         </div>

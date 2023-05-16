@@ -30,10 +30,16 @@ final class AuthorizationMiddleware
     {
     }
 
+    //TODO: Si s'entra després d'haver borrat la BBDD peta
     public function __invoke(Request $request, RequestHandler $next): Response
     {
         if (!isset($_SESSION['user_id'])) {
             $route = RouteContext::fromRequest($request)->getRoute();
+
+            // Get the team ID and store it in the session if it is an /invite request
+            if ($route->getName() === 'invite_get') {
+                $_SESSION["idTeam"] = (int) filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_NUMBER_INT);
+            }
 
             // Get flash message and add it to response
             $page = self::FLASH_MESSAGES[$route->getName()] ?? 'Unknown page';

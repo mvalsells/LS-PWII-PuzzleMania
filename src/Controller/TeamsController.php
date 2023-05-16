@@ -40,6 +40,7 @@ class TeamsController
         // Render view
         return $this->twig->render($response, 'join.twig', [
             "notifs" => $notifications,
+            "email" => $_SESSION["email"],
             "teams" => $teams
         ]);
     }
@@ -99,13 +100,27 @@ class TeamsController
 
     public function handleInviteForm(Request $request, Response $response): Response
     {
+        // Get the teamID from the URL
+        $team_id = $request->getAttribute('id');
 
-        return $this->twig->render(
-            $response,
-            'join.twig',
-            [
-            ]
-        );
+        // Get team from repository
+        $team = $this->teamRepository->getTeamById($team_id);
+        if (!$team->isNullTeam() and $team->getNumMembers() !== 2 and $team->isQRGenerated() !== 0) {
+            // In order to join a team we need the user Id
+            $user = $this->userRepository->getUserByEmail($_SESSION['email']);
+
+            // Joining user to the team
+            $this->teamRepository->addUserToTeam($team_id, $user);
+
+            // Set session team_id variable
+            $_SESSION["team_id"] = $team_id;
+
+            // Redirect to the /team-stats page
+            return $response->withHeader('Location', '/team-stats')->withStatus(302);
+        } else {
+            $this->flash->addMessage("notifications", "The team you're trying to join is full, doesn't exist or does not have the /invite endpoint activated.");
+            return $response->withHeader('Location', '/join')->withStatus(302);
+        }
     }
 
     public function showTeamStats(Request $request, Response $response): Response

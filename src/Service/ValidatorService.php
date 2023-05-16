@@ -6,15 +6,20 @@ namespace Salle\PuzzleMania\Service;
 
 class ValidatorService
 {
+
+    const SIZE = 100;
+
     public function __construct()
     {
     }
 
     public function validateEmail(string $email): string
     {
-        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if(empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return 'The email address is not valid.';
-        } else if (!strpos($email, "@salle.url.edu")) {
+        } else if (strlen($email) > self::$SIZE){
+            return "[ERROR]: The email can't be longer than " . self::$SIZE . " characters.";
+        }else if (!strpos($email, "@salle.url.edu")) {
             return 'Only emails from the domain @salle.url.edu are accepted.';
         }
         return '';
@@ -22,8 +27,11 @@ class ValidatorService
 
     public function validatePassword(string $password): string
     {
+
         if (empty($password) || strlen($password) < 6) {
             return 'The password must contain at least 7 characters.';
+        }else if (strlen($password) > self::$SIZE){
+            return "[ERROR]: The password can't be longer than " . self::$SIZE . " characters.";
         } else if (!preg_match("~[0-9]+~", $password) || !preg_match("/[a-z]/", $password) || !preg_match("/[A-Z]/", $password)) {
             return 'The password must contain both upper and lower case letters and numbers.';
         }

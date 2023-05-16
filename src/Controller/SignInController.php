@@ -15,6 +15,7 @@ use Slim\Routing\RouteContext;
 class SignInController
 {
     private ValidatorService $validator;
+    private InputCheckerService $inputCheckerService;
 
     public function __construct(
         private Twig           $twig,
@@ -44,6 +45,7 @@ class SignInController
 
         $errors['email'] = $this->validator->validateEmail($data['email']);
         $errors['password'] = $this->validator->validatePassword($data['password']);
+
         if ($errors['email'] == '') {
             unset($errors['email']);
         }

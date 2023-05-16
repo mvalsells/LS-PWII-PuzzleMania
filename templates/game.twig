@@ -66,21 +66,21 @@
 
                         {% if points < 0 %}
                             <h3 style = "color: red; "><br>Your answer was "{{ userAnswer }}"</h3>
-                            <p><br><b>Your answer wasn't correct. You lost {{ points }} points.</b></p>
+                            <p style="color: red; "><br><b>Your answer wasn't correct. You lost {{ points }} points.</b></p>
                         {% else %}
-                            <p><br><b>Good job, your answer is correct. You won {{ points }} points.</b></p>
+                            <p style="color: green; "><br><b>Good job, your answer is correct. You won {{ points }} points.</b></p>
                         {% endif %}
                         <div style = "margin-top: 15px; font-size: 13px;">
                             <a href="{{ formAction }}">{{ buttonName }}</a>
                         </div>
                     {% endif %}
                 {% else %}
-                    <h1 style="text-align: center;">{{ teamName }}</h1>
+                    <h1 style="text-align: center;"><u>END OF GAME</u></h1>
                     <h2 style="text-align: center;">You have earned a total of {{ points }} points.</h2>
                     {% if points > 0 %}
-                        <p><br><b>Good job! The points will be added to your team score.</b></p>
+                        <p style="color: green; "><br><b>Good job! The points will be added to your team '{{ teamName }}' score.</b></p>
                     {% else %}
-                        <p><br><b>Good luck next time :(</b></p>
+                        <p style="color: red; "><br><b>Your team '{{ teamName }}' earned no points. Good luck next time :(</b></p>
                     {% endif %}
                     <div style = "margin-top: 15px; font-size: 13px;">
                         <a href="{{ formAction }}">{{ buttonName }}</a>
@@ -89,7 +89,10 @@
 
             </div>
             {% if start == 0 and endGame == 0 %}
-                <h2 style="text-align: center;"><u>Total:</u> {{ totalPoints }} points.</h2>
+                <h2 style="text-align: center;">You currently have {{ totalPoints }} points.</h2>
+                {% if guessRiddle == 1 %}
+                    <p style="text-align: center;">Guess this riddle and earn 10 points.</p>
+                {% endif %}
             {% endif %}
         </div>
     </div>

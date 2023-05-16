@@ -14,6 +14,7 @@
 
 </head>
 <body>
+<header>
   <nav class="navbar">
     <!-- Logo and text -->
     <div class="navbar-logo">
@@ -22,6 +23,9 @@
     </div>
     {% block header %}{% endblock %}
   </nav>
+</header>
+  <main>
   {% block content %}{% endblock %}
+  </main>
 </body>
 </html>

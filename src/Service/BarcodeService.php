@@ -52,6 +52,11 @@ class BarcodeService
         // Get the image data from the request and encode it in base64
         $imgData = ($response->getBody()->getContents());
         $filePath = self::QRCODES_DIR . DIRECTORY_SEPARATOR . $_SESSION['team_id'] . ".jpeg";
+
+        // Check if the /qrcodes directory exists, and if not create it
+        if (!is_dir(self::QRCODES_DIR)) {
+            mkdir(self::QRCODES_DIR, 0777, true);
+        }
         file_put_contents($filePath, $imgData);
 
         return true;

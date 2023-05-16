@@ -105,7 +105,7 @@ class TeamsController
 
         // Get team from repository
         $team = $this->teamRepository->getTeamById($team_id);
-        if ($team->getNumMembers() !== 2 and $team->isQRGenerated() !== 0) {
+        if (!$team->isNullTeam() and $team->getNumMembers() !== 2 and $team->isQRGenerated() !== 0) {
             // In order to join a team we need the user Id
             $user = $this->userRepository->getUserByEmail($_SESSION['email']);
 
@@ -118,7 +118,7 @@ class TeamsController
             // Redirect to the /team-stats page
             return $response->withHeader('Location', '/team-stats')->withStatus(302);
         } else {
-            $this->flash->addMessage("notifications", "The team you're trying to join is full or has not the /invite endpoint activated.");
+            $this->flash->addMessage("notifications", "The team you're trying to join is full, doesn't exist or does not have the /invite endpoint activated.");
             return $response->withHeader('Location', '/join')->withStatus(302);
         }
     }

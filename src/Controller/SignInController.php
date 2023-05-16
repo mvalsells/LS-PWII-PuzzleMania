@@ -59,7 +59,7 @@ class SignInController
                     if(!isset($_SESSION["team_id"])) {
                         // Check the team the user is trying to join is not already full
                         $team = $this->teamRepository->getTeamById($_SESSION["idTeam"]);
-                        if ($team->getNumMembers() !== 2 and $team->isQRGenerated() !== 0) {
+                        if (!$team->isNullTeam() and $team->getNumMembers() !== 2 and $team->isQRGenerated() !== 0) {
                             // In order to join a team we need the user Id
                             $user = $this->userRepository->getUserByEmail($data['email']);
 
@@ -75,7 +75,7 @@ class SignInController
                             // Redirect to the /team-stats page
                             return $response->withHeader('Location', '/team-stats')->withStatus(302);
                         } else {
-                            $this->flash->addMessage("notifications", "The team you're trying to join is full or has not the /invite endpoint activated.");
+                            $this->flash->addMessage("notifications", "The team you're trying to join is full, doesn't exist or does not have the /invite endpoint activated.");
                             // Unset the variable used for the /invite logic
                             unset($_SESSION["idTeam"]);
                             return $response->withHeader('Location', '/join')->withStatus(302);

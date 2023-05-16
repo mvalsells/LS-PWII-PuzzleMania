@@ -151,6 +151,10 @@ class ProfileController
             $_SESSION["profilePicturePath"] = 'uploads/' . $uuid . "." . $format;
             // Upload new profile picture path to database
             $this->userRepository->updateProfilePicture($_SESSION['user_id'], $_SESSION["profilePicturePath"]);
+            // Check if the /uploads directory exists, and if not create it
+            if (!is_dir(self::UPLOADS_DIR)) {
+                mkdir(self::UPLOADS_DIR, 0777, true);
+            }
             // Save new profile picture in 'uploads/' folder
             $uploadedFile->moveTo(self::UPLOADS_DIR . DIRECTORY_SEPARATOR . $uuid . "." . $format);
         }

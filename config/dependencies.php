@@ -53,19 +53,13 @@ function addDependencies(ContainerInterface $container): void
      *  Declare the AuthorizationMiddleware dependency, to show the flash message if the user access specific
      *  pages without being logged in
     */
-    $container->set(
-        'authorizationMiddleware',
-        function (ContainerInterface $c) {
-            return new AuthorizationMiddleware($c->get('flash'));
-        }
-    );
+    $container->set(AuthorizationMiddleware::class, function (ContainerInterface $container) {
+        return new AuthorizationMiddleware($container->get('flash'));
+    });
 
-    $container->set(
-        'teamAuthorizationMiddleware',
-        function (ContainerInterface $c) {
-            return new TeamAuthorizationMiddleware($c->get('flash'));
-        }
-    );
+    $container->set(TeamAuthorizationMiddleware::class, function (ContainerInterface $container) {
+        return new TeamAuthorizationMiddleware($container->get('flash'));
+    });
 
     $container->set('user_repository', function (ContainerInterface $container) {
         return new MySQLUserRepository($container->get('db'));

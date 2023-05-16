@@ -213,6 +213,7 @@ class GameController
             $_SESSION["points"] += $_SESSION["last_points"];
         }
 
+        $riddle = $_SESSION['riddles'][$_SESSION['actual_riddle']-1];
         // Determine button link and actual riddle
         if ($_SESSION['actual_riddle'] == 3 or $_SESSION["points"] <= 0) {
             $link = "/game";
@@ -230,7 +231,7 @@ class GameController
                 "start" => 0,
                 "guessRiddle" => 0,
                 "endGame" => 0,
-                "actualRiddle" => $_SESSION['riddles'][$_SESSION['actual_riddle']-2] ?? [],
+                "actualRiddle" => $riddle ?? [],
                 "userAnswer" => $data["answer"],
                 "formAction" => $link,
                 "buttonName" => "Next",

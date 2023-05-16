@@ -57,8 +57,8 @@ CREATE TABLE `games`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT DEMO/TEST DATA TO RIDDLES TABLE
-INSERT INTO riddles (riddle, answer)
+-- INSERT DEMO/TEST DATA TO RIDDLES TABLE
+INSERT INTO riddles (user_id, riddle, answer)
 VALUES
     (1, 'It brings back the lost as though never gone, shines laughter and tears with light long since shone; a moment to make, a lifetime to shed; valued then but lost when your dead. What Is It?', 'Memory'),
     (NULL, 'What do you get when you cross a fish with an elephant?', 'Swimming trunks'),

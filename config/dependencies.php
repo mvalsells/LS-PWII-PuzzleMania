@@ -15,6 +15,7 @@ use Salle\PuzzleMania\Controller\SignInController;
 use Salle\PuzzleMania\Controller\TeamsController;
 use Salle\PuzzleMania\Middleware\AuthorizationMiddleware;
 use Salle\PuzzleMania\Middleware\TeamAuthorizationMiddleware;
+use Salle\PuzzleMania\Repository\MySQLGameRepository;
 use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
 use Salle\PuzzleMania\Repository\MySQLTeamRepository;
 use Salle\PuzzleMania\Repository\MySQLUserRepository;
@@ -73,6 +74,10 @@ function addDependencies(ContainerInterface $container): void
         return new MySQLRiddleRepository($container->get('db'));
     });
 
+    $container->set('game_repository', function (ContainerInterface $container) {
+        return new MySQLGameRepository($container->get('db'));
+    });
+
     // Controller dependencies
     $container->set(
         SignInController::class,
@@ -98,7 +103,7 @@ function addDependencies(ContainerInterface $container): void
     $container->set(
         GameController::class,
         function (ContainerInterface $c) {
-            return new GameController($c->get('view'));
+            return new GameController($c->get('view'), $c->get('team_repository'), $c->get('riddle_repository'), $c->get('game_repository'), $c->get("flash"));
         }
     );
 

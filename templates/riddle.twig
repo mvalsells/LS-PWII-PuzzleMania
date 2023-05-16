@@ -64,9 +64,13 @@
                     {% if riddleCount == 0 %}
                         <p style="color: red;"><b>{{ text }} not found</b></p>
                     {% elseif riddleCount == 1 %}
-                        <p><b>Riddle:</b> {{ riddle }}</p>
+                        <p><b>Riddle:</b> {{ riddle.riddle }}</p>
+                        <p><b>Answer:</b> {{ riddle.answer }}</p>
+                        <p><b>Created by:</b> {{ user }}</p>
                     {% else %}
-                        <p><b>Riddle #{{ loop.index }}:</b> {{ riddle }}</p>
+                        <a href="/riddle/{{ riddle.id }}">
+                            <p><b>Riddle #{{ loop.index }}:</b> {{ riddle.riddle }}</p>
+                        </a>
                     {% endif %}
                 </div>
             {% endfor %}

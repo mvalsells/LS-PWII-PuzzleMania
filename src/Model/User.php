@@ -79,6 +79,14 @@ class User implements JsonSerializable
     /**
      * @return string
      */
+    public function getUsername(): string
+    {
+        return explode('@', $this->email)[0];;
+    }
+
+    /**
+     * @return string
+     */
     public function getPassword(): string
     {
         return $this->password;

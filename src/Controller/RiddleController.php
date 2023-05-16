@@ -9,6 +9,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Salle\PuzzleMania\Model\Riddle;
 use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
+use Salle\PuzzleMania\Repository\RiddleRepository;
+use Salle\PuzzleMania\Repository\UserRepository;
 use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
 use function DI\add;
@@ -18,14 +20,17 @@ class RiddleController
 
     private $twig;
     private $riddleRepository;
+    private $userRepository;
 
     public function __construct(
-        Twig $twig,
-        PDO $PDO,
+        RiddleRepository $riddleRepository,
+        UserRepository $userRepository,
+        Twig $twig
     )
     {
         $this->twig = $twig;
-        $this->riddleRepository = new MySQLRiddleRepository($PDO);
+        $this->riddleRepository = $riddleRepository;
+        $this->userRepository = $userRepository;
     }
     public function show(Request $request, Response $response): Response
     {
@@ -36,11 +41,6 @@ class RiddleController
         try {
             $resposta = $client->request("GET", $API_URL);
             $riddles = json_decode($resposta->getBody()->getContents());
-
-            $temp = array();
-            for ($i = 0; $i < count($riddles); $i++) {
-                $temp[] = $riddles[$i]->riddle;
-            }
         } catch (GuzzleException $e) {
             exit();
         }
@@ -50,7 +50,7 @@ class RiddleController
             'riddle.twig',
             [
                 'riddleCount' => 999, // It can be any value as long as it's not 1.
-                'riddles' => $temp,
+                'riddles' => $riddles,
                 "email" => $_SESSION['email'],
                 "team" => $_SESSION['team_id'] ?? null
             ]
@@ -71,11 +71,16 @@ class RiddleController
         try {
             $resposta = $client->request("GET", $API_URL);
             $riddles = json_decode($resposta->getBody()->getContents());
-
-            $temp[0] = $riddles->riddle;
+            if (isset($riddles->userId)) {
+                $userName = $this->userRepository->getUserById($riddles->userId)->getUsername();
+            } else {
+                $userName = "-";
+            }
+            $temp[0] = $riddles;
             $riddleCount = 1;
 
         } catch (GuzzleException $e) {
+            $userName = "-";
             $temp[0] = "Riddle not found";
             $riddleCount = 0;
         }
@@ -87,6 +92,7 @@ class RiddleController
                 'idRiddle' => $idRiddle,
                 'riddleCount' => $riddleCount, // We indicate that there's just one riddle
                 'riddles' => $temp,
+                'user' => $userName,
                 "email" => $_SESSION['email'],
                 "team" => $_SESSION['team_id'] ?? null
             ]

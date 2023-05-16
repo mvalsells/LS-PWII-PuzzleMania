@@ -12,6 +12,7 @@ use Salle\PuzzleMania\Model\User;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+use Slim\Flash\Messages;
 use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
 
@@ -22,6 +23,7 @@ final class SignUpController
     private ValidatorService $validator;
 
     public function __construct(
+        private Messages $flash,
         private Twig $twig,
         private UserRepository $userRepository,
         private TeamRepository $teamRepository
@@ -63,21 +65,39 @@ final class SignUpController
             // Upload user to repository
             $this->userRepository->createUser($user);
 
-            // If the user has to join a team (used invite)
-            if(!empty($_SESSION["idTeam"])){
+            // Check if it has accessed this page through /invite endpoint
+            if(isset($_SESSION["idTeam"])){
+                // In order to join a team we need the user Id (which was assigned after creation)
+                $user = $this->userRepository->getUserByEmail($data['email']);
 
-                // In order to join a team we need a user with an ID associated.
-                // The ID is associated after the creation of the user (in the DB), that's why we look up the same user that we have just created.
-                $userT = $this->userRepository->getUserByEmail($user->getEmail());
+                // Login automatically since it joined through /invite endpoint
+                $_SESSION['user_id'] = $user->getId();
+                $_SESSION['email'] = $user->getEmail();
+                if ($user->hasPicture()) {
+                    $_SESSION['profilePicturePath'] = $user->getProfilePicturePath();
+                }
 
-                // Joining user to the team
-                $this->teamRepository->addUserToTeam($_SESSION["idTeam"], $userT);
+                // Check the team the user is trying to join is not already full
+                $team = $this->teamRepository->getTeamById($_SESSION["idTeam"]);
+                if ($team->getNumMembers() !== 2 and $team->isQRGenerated() !== 0) {
+                    // Joining user to the team
+                    $this->teamRepository->addUserToTeam($_SESSION["idTeam"], $user);
 
-                unset($_SESSION["idTeam"]);
+                    // Set session team_id variable
+                    $_SESSION["team_id"] = $_SESSION["idTeam"];
 
-                return $response->withHeader('Location', '/team-stats')->withStatus(302);
+                    // Unset the variable used for the /invite logic
+                    unset($_SESSION["idTeam"]);
+
+                    // Redirect to the /sign-in page
+                    return $response->withHeader('Location', '/team-stats')->withStatus(302);
+                } else {
+                    $this->flash->addMessage("notifications", "The team you're trying to join is full or has not the /invite endpoint activated.");
+                    // Unset the variable used for the /invite logic
+                    unset($_SESSION["idTeam"]);
+                    return $response->withHeader('Location', '/join')->withStatus(302);
+                }
             }
-
             // Redirect to sign-in page
             return $response->withHeader('Location', '/sign-in')->withStatus(302);
         }

@@ -170,28 +170,50 @@ class GameController
     }
     public function handleFormRiddle(Request $request, Response $response): Response
     {
-        $data = $request->getParsedBody();
-        echo $data['answer'];
-        echo $_POST['answer'];
-        foreach ($_POST as $fieldName => $fieldValue) {
-            if (!isset($fieldName) or !str_starts_with($fieldValue, 'text_')) {
-                echo "Holi";
-                $this->flash->addMessage("notifications", "Your answer needs to be a phrase or word.");
-                // Redirect to riddle page
+        // Get the riddleID and the gameID from the URL
+        $riddleID = $request->getAttribute('riddleID');
+        $gameID = $request->getAttribute('gameID');
+
+        // Check there is a game running
+        if (!isset($_SESSION['gameId'])) {
+            $this->flash->addMessage("notifications", "There isn't a current game running yet.");
+            return $response
+                ->withHeader('Location', '/game')
+                ->withStatus(200);
+        }
+
+        // Check the IDs match the current game ones
+        if ($riddleID != $_SESSION['actual_riddle'] or $gameID != $_SESSION['gameId']) {
+            // Check whether the game has already ended or not
+            if ($_SESSION['endGame'] == 0) {
+                $this->flash->addMessage("notifications", "You can't access this page of the game.");
                 return $response
                     ->withHeader('Location', '/game/' . $_SESSION['gameId'] . "/riddle/" . $_SESSION['actual_riddle'])
                     ->withStatus(200);
+            } else {
+                $this->flash->addMessage("notifications", "The game has already ended.");
+                return $response
+                    ->withHeader('Location', '/game')
+                    ->withStatus(200);
             }
         }
-        $riddle = $_SESSION['riddles'][$_SESSION['actual_riddle']-1];
 
+        $data = $request->getParsedBody();
+        $riddle = $_SESSION['riddles'][$_SESSION['actual_riddle'] - 1];
+
+        // Determine the last points got
         if ($data["answer"] !== $riddle->getAnswer()) {
-            $points = -10;
+            $_SESSION["last_points"] = -10;
         } else {
-            $points = 10;
+            $_SESSION["last_points"] = 10;
         }
-        $_SESSION["points"] += $points;
 
+        // Update session points if the game has not ended
+        if ($_SESSION['endGame'] == 0) {
+            $_SESSION["points"] += $_SESSION["last_points"];
+        }
+
+        // Determine button link and actual riddle
         if ($_SESSION['actual_riddle'] == 3 or $_SESSION["points"] <= 0) {
             $link = "/game";
             $_SESSION['endGame'] = 1;
@@ -208,11 +230,11 @@ class GameController
                 "start" => 0,
                 "guessRiddle" => 0,
                 "endGame" => 0,
-                "actualRiddle" => $_SESSION['riddles'][$_SESSION['actual_riddle']-1] ?? [],
+                "actualRiddle" => $_SESSION['riddles'][$_SESSION['actual_riddle']-2] ?? [],
                 "userAnswer" => $data["answer"],
                 "formAction" => $link,
                 "buttonName" => "Next",
-                "points" => $points,
+                "points" => $_SESSION["last_points"],
                 "totalPoints" => $_SESSION["points"]
             ]
         );

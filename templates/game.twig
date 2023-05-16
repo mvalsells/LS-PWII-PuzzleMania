@@ -41,7 +41,7 @@
             <div class = "page" style = "background: white; padding: 40px 130px; border-radius: 10px; border: 2px solid #000;">
 
                 {% if start == 1 %}
-                    <form data-cy="game" action="{{ formAction }}" method="POST" id="game" accept-charset="utf-8" style="text-align: center;">
+                    <form data-cy="game" action="{{ formAction }}" method="POST" id="game" accept-charset="utf-8" style="text-align: center;" onsubmit="myFunction()">
                         <h1 style="text-align: center;">{{ teamName }}</h1>
                         <h2><br><b>Read the instructions</b></h2>
                         <p><br><b>The game consists on 3 riddles, which you need to guess to earn points.
@@ -55,17 +55,17 @@
                         <form data-cy="game" action="{{ formAction }}" method="POST" id="game" accept-charset="utf-8" style="text-align: center;">
                             <h2><br><b>{{ actualRiddle.riddle }}</b></h2>
                             <input data-cy="game__riddle-answer" type="text" name="answer" placeholder="Enter your answer"
-                                   value="">
+                                   value="" id="answer">
                             <div class="form-group row">
                                 <input data-cy="game__btn" type="submit" value="{{ buttonName }}" class="submit-button">
                             </div>
                         </form>
                     {% else %}
-                        <h2><br><b>{{ actualRiddle.riddle }}</b></h2>
-                        <h3><br>{{ actualRiddle.answer }}</h3>
+                        <h2><br><b><u>Riddle:</u> {{ actualRiddle.riddle }}</b></h2>
+                        <h3><br><u>Expected answer:</u> {{ actualRiddle.answer }}</h3>
 
                         {% if points < 0 %}
-                            <h3 style = "color: red; "><br>Your answer was "{{ userAnswer }}"</h3>
+                            <h3 style = "color: red; "><br><u>Your answer:</u> "{{ userAnswer }}"</h3>
                             <p style="color: red; "><br><b>Your answer wasn't correct. You lost {{ points }} points.</b></p>
                         {% else %}
                             <p style="color: green; "><br><b>Good job, your answer is correct. You won {{ points }} points.</b></p>

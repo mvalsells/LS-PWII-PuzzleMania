@@ -17,7 +17,7 @@ class ValidatorService
     {
         if(empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return 'The email address is not valid.';
-        } else if (strlen($email) > self::SIZE){
+        } else if (!$this->validateStringSize($email)){
             return "[ERROR]: The email can't be longer than " . self::SIZE . " characters.";
         }else if (!strpos($email, "@salle.url.edu")) {
             return 'Only emails from the domain @salle.url.edu are accepted.';
@@ -30,7 +30,7 @@ class ValidatorService
 
         if (empty($password) || strlen($password) < 6) {
             return 'The password must contain at least 7 characters.';
-        }else if (strlen($password) > self::SIZE){
+        } else if (!$this->validateStringSize($password)) {
             return "[ERROR]: The password can't be longer than " . self::SIZE . " characters.";
         } else if (!preg_match("~[0-9]+~", $password) || !preg_match("/[a-z]/", $password) || !preg_match("/[A-Z]/", $password)) {
             return 'The password must contain both upper and lower case letters and numbers.';
@@ -51,6 +51,13 @@ class ValidatorService
         if ((date('Y') - $year) <= 18) {
             return 'Sorry, you are underage';
         }
+    }
 
+    public function validateStringSize(string $string): bool
+    {
+        if (strlen($string) > self::SIZE) {
+            return false;
+        }
+        return true;
     }
 }

@@ -113,13 +113,13 @@ function addRoutes(App $app, Container $container): void
 
         // Gets all riddles
         $group->get(
-            '/',
+            '',
             RiddlesAPIController::class . ":getAllRiddles"
         );
 
         // Adds a riddle
         $group->post(
-            '/',
+            '',
             RiddlesAPIController::class . ":addARiddle"
         );
 

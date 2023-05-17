@@ -55,9 +55,6 @@ class ValidatorService
 
     public function validateStringSize(string $string): bool
     {
-        if (strlen($string) > self::SIZE) {
-            return false;
-        }
-        return true;
+        return strlen($string) > self::SIZE;
     }
 }

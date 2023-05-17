@@ -14,8 +14,8 @@ namespace Salle\PuzzleMania\Controller\API;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Salle\PuzzleMania\Model\Riddle;
-use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
 use Salle\PuzzleMania\Repository\RiddleRepository;
+use Salle\PuzzleMania\Repository\UserRepository;
 
 class RiddlesAPIController
 {
@@ -24,6 +24,7 @@ class RiddlesAPIController
      * @param RiddleRepository $riddleRepository
      */
     public function __construct(
+        private UserRepository $userRepository,
         private RiddleRepository $riddleRepository
     ){}
 
@@ -54,10 +55,28 @@ class RiddlesAPIController
         $input = json_decode($request->getBody()->getContents(), true);
             // Check if required parameters exists before adding the riddle
             if ($input != null && array_key_exists('userId', $input) && array_key_exists('riddle', $input) && array_key_exists('answer', $input)) {
+                // Check the id is not taken for the riddle
                 $id = null;
                 if (array_key_exists('id', $input) && is_numeric($input['id'])) {
                     $id = intval($input['id']);
+                    $riddle = $this->riddleRepository->getOneRiddleById($id);
+                    if ($riddle != null) {
+                        $response->getBody()->write('{ "message": "\'id\' is already in use for another riddle"}');
+                        return $response
+                            ->withHeader("content-type", "application/json")
+                            ->withStatus(400);
+                    }
                 }
+
+                // Check the user id exists
+                $user = $this->userRepository->getUserById($input['userId']);
+                if ($user->isNullUser()) {
+                    $response->getBody()->write('{ "message": "\'user_id\' does not correspond to any registered user"}');
+                    return $response
+                        ->withHeader("content-type", "application/json")
+                        ->withStatus(400);
+                }
+
                 $addId = $this->riddleRepository->addRiddle(new Riddle($id, $input['userId'], $input['riddle'], $input['answer']));
                 $riddle = $this->riddleRepository->getOneRiddleById($addId);
                 if ($riddle != null) {
@@ -145,8 +164,18 @@ class RiddlesAPIController
                         $riddle->setId($input['id']);
                     }
 
+                    // Check the user id exists
                     if (array_key_exists('userId', $input) && is_numeric($input['userId'])) {
-                        $riddle->setUserId($input['userId']);
+                        // Check the user id exists
+                        $user = $this->userRepository->getUserById($input['userId']);
+                        if ($user->isNullUser()) {
+                            $response->getBody()->write('{ "message": "\'user_id\' does not correspond to any registered user"}');
+                            return $response
+                                ->withHeader("content-type", "application/json")
+                                ->withStatus(400);
+                        } else {
+                            $riddle->setUserId($input['userId']);
+                        }
                     }
 
                     if (array_key_exists('riddle', $input)) {

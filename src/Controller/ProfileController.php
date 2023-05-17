@@ -102,7 +102,7 @@ class ProfileController
     }
 
     private function checkNumberOfFiles(array $errors, array $uploadedFiles): array
-    {        
+    {
         if (count($uploadedFiles['files']) > 1) {
             $errors["profilePicture"] = self::EXCEEDED_MAXIMUM_FILES_ERROR;
         } elseif (!isset($uploadedFiles['files'][0]) || $uploadedFiles['files'][0]->getError() !== UPLOAD_ERR_OK){ // TODO: not working
@@ -164,12 +164,12 @@ class ProfileController
         return in_array($extension, self::ALLOWED_EXTENSIONS, true);
     }
 
-    private function checkMime(UploadedFileInterface $uploadedFile){
-        print_r($uploadedFile->getClientMediaType());
-
+    private function checkMime(UploadedFileInterface $uploadedFile): bool
+    {
         if(strcmp($uploadedFile->getClientMediaType(), "image/jpg") == 0 
-           || strcmp($uploadedFile->getClientMediaType(), "image/png") == 0) return false;
-
+           || strcmp($uploadedFile->getClientMediaType(), "image/png") == 0) {
+            return false;
+        }
         return true;
     }
 }

@@ -15,7 +15,6 @@ use Slim\Routing\RouteContext;
 class SignInController
 {
     private ValidatorService $validator;
-    private InputCheckerService $inputCheckerService;
 
     public function __construct(
         private Twig           $twig,

@@ -111,7 +111,7 @@ class GameController
         // Redirect to riddle page
         return $response
             ->withHeader('Location', '/game/' . $_SESSION['gameId'] . "/riddle/1")
-            ->withStatus(200);
+            ->withStatus(302);
 
     }
 
@@ -126,7 +126,7 @@ class GameController
             $this->flash->addMessage("notifications", "There isn't a current game running yet.");
             return $response
                 ->withHeader('Location', '/game')
-                ->withStatus(200);
+                ->withStatus(302);
         }
 
         // Check the IDs match the current game ones
@@ -136,12 +136,12 @@ class GameController
                 $this->flash->addMessage("notifications", "You can't access this page of the game.");
                 return $response
                     ->withHeader('Location', '/game/' . $_SESSION['gameId'] . "/riddle/" . $_SESSION['actual_riddle'])
-                    ->withStatus(200);
+                    ->withStatus(302);
             } else {
                 $this->flash->addMessage("notifications", "The game has already ended.");
                 return $response
                     ->withHeader('Location', '/game')
-                    ->withStatus(200);
+                    ->withStatus(302);
             }
         }
 
@@ -179,7 +179,7 @@ class GameController
             $this->flash->addMessage("notifications", "There isn't a current game running yet.");
             return $response
                 ->withHeader('Location', '/game')
-                ->withStatus(200);
+                ->withStatus(302);
         }
 
         // Check the IDs match the current game ones
@@ -189,12 +189,12 @@ class GameController
                 $this->flash->addMessage("notifications", "You can't access this page of the game.");
                 return $response
                     ->withHeader('Location', '/game/' . $_SESSION['gameId'] . "/riddle/" . $_SESSION['actual_riddle'])
-                    ->withStatus(200);
+                    ->withStatus(302);
             } else {
                 $this->flash->addMessage("notifications", "The game has already ended.");
                 return $response
                     ->withHeader('Location', '/game')
-                    ->withStatus(200);
+                    ->withStatus(302);
             }
         }
 

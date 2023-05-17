@@ -40,7 +40,6 @@ function addRoutes(App $app, Container $container): void
         ->setName('join_post')->add(TeamAuthorizationMiddleware::class)
         ->add(AuthorizationMiddleware::class);
 
-    //TODO: Mirar lo del ID.
     $app->get('/invite/join/{id}',
         TeamsController::class . ':handleInviteForm')
         ->setName('invite_get')->add(TeamAuthorizationMiddleware::class)

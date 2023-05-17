@@ -74,6 +74,13 @@ class TeamsController
             // The "Create Team" button was clicked
 
             if (isset($_POST['teamName'])) {
+
+                // Check if the input is too long
+                if(strlen($_POST['teamName']) > 100){
+                    $this->flash->addMessage("notifications", "The team name is too long.");
+                    return $response->withHeader('Location','/')->withStatus(301);
+                }
+
                 $name = $_POST['teamName'];
                 $team_aux = $this->teamRepository->getTeamByName($name);
                 if ($team_aux->isNullTeam()) {

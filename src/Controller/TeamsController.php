@@ -98,13 +98,8 @@ class TeamsController
             return $response->withHeader('Location','/join')->withStatus(301);
         }
 
-
-        return $this->twig->render(
-            $response,
-            'join.twig',
-            [
-            ]
-        );
+        // If reached here means the creation of team failed, so we must show the 'join' page again
+        return $response->withHeader('Location','/join')->withStatus(301);
     }
 
     public function handleInviteForm(Request $request, Response $response): Response

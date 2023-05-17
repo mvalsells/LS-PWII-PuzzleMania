@@ -58,6 +58,7 @@ class RiddlesAPIController
                 if (array_key_exists('id', $input) && is_numeric($input['id'])) {
                     $id = intval($input['id']);
                 }
+
                 $addId = $this->riddleRepository->addRiddle(new Riddle($id, $input['userId'], $input['riddle'], $input['answer']));
                 $riddle = $this->riddleRepository->getOneRiddleById($addId);
                 if ($riddle != null) {
@@ -219,4 +220,9 @@ class RiddlesAPIController
             ->withHeader("content-type", "application/json")
             ->withStatus(404);
     }
+
+    private function tooLong(String $input){
+        return (strlen($input) > 100);
+    }
+
 }

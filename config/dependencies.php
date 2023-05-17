@@ -146,7 +146,7 @@ function addDependencies(ContainerInterface $container): void
     $container->set(
         RiddlesAPIController::class,
         function (ContainerInterface $c) {
-            return new RiddlesAPIController($c->get('riddle_repository'));
+            return new RiddlesAPIController($c->get('user_repository'), $c->get('riddle_repository'));
         }
     );
 

@@ -94,40 +94,6 @@ function addRoutes(App $app, Container $container): void
 
     })->add(TeamAuthorizationMiddleware::class)->add(AuthorizationMiddleware::class);
 
-    // Riddles API
-    $app->group('/api', function (RouteCollectorProxy $group) {
-
-        // Gets all riddles
-        $group->get(
-            '/riddle',
-            RiddlesAPIController::class . ":getAllRiddles"
-        );
-
-        // Adds a riddle
-        $group->post(
-            '/riddle',
-            RiddlesAPIController::class . ":addARiddle"
-        );
-
-        // Get one riddle
-        $group->get(
-            '/riddle/{id}',
-            RiddlesAPIController::class . ":getOneRiddle"
-        );
-
-        // Update a riddle
-        $group->put(
-            '/riddle/{id}',
-            RiddlesAPIController::class . ":updateARiddle"
-        );
-
-        // Delete a riddle
-        $group->delete(
-            '/riddle/{id}',
-            RiddlesAPIController::class . ":deleteARiddle"
-        );
-    });
-
     $app->group('/riddle', function (RouteCollectorProxy $group) {
 
         $group->get(
@@ -142,6 +108,38 @@ function addRoutes(App $app, Container $container): void
 
     });
 
+    // Riddles API
+    $app->group('/api/riddle', function (RouteCollectorProxy $group) {
 
+        // Gets all riddles
+        $group->get(
+            '/',
+            RiddlesAPIController::class . ":getAllRiddles"
+        );
+
+        // Adds a riddle
+        $group->post(
+            '/',
+            RiddlesAPIController::class . ":addARiddle"
+        );
+
+        // Get one riddle
+        $group->get(
+            '/{id}',
+            RiddlesAPIController::class . ":getOneRiddle"
+        );
+
+        // Update a riddle
+        $group->put(
+            '/{id}',
+            RiddlesAPIController::class . ":updateARiddle"
+        );
+
+        // Delete a riddle
+        $group->delete(
+            '/{id}',
+            RiddlesAPIController::class . ":deleteARiddle"
+        );
+    });
 
 }

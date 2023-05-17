@@ -106,7 +106,7 @@ class ProfileController
             $errors["profilePicture"] = self::NO_FILES_ERROR;
         } elseif (count($uploadedFiles['files']) > 1) {
             $errors["profilePicture"] = self::EXCEEDED_MAXIMUM_FILES_ERROR;
-        } elseif (!isset($uploadedFiles['files'][0]) || $uploadedFiles['files'][0]->getError() !== UPLOAD_ERR_OK){ // TODO: not working
+        } elseif (!isset($uploadedFiles['files'][0]) || $uploadedFiles['files'][0]->getError() !== UPLOAD_ERR_OK){
             $errors["profilePicture"] = self::NO_FILES_ERROR;
         }
         return $errors;

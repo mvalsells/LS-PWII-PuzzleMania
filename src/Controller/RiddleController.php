@@ -38,20 +38,27 @@ class RiddleController
         $API_URL = "http://nginx/api/riddle";
 
         $client = new Client();
+        $notifications = [];
+        $riddles = [];
+
         try {
             $resposta = $client->request("GET", $API_URL);
             $riddles = json_decode($resposta->getBody()->getContents());
+            if (empty($riddles)) {
+                $notifications[] = "Riddles are not found.";
+            }
         } catch (GuzzleException $e) {
-            exit();
+            $notifications[] = "Unexpected error when communicating with API.";
         }
 
         return $this->twig->render(
             $response,
             'riddle.twig',
             [
+                'notifs' => $notifications,
                 'riddleCount' => 999, // It can be any value as long as it's not 1.
                 'riddles' => $riddles,
-                "email" => $_SESSION['email'],
+                "email" => $_SESSION['email'] ?? null,
                 "team" => $_SESSION['team_id'] ?? null
             ]
         );
@@ -67,6 +74,7 @@ class RiddleController
 
         $client = new Client();
         $temp = array();
+        $notifications = [];
 
         try {
             $resposta = $client->request("GET", $API_URL);
@@ -81,7 +89,7 @@ class RiddleController
 
         } catch (GuzzleException $e) {
             $userName = "-";
-            $temp[0] = "Riddle not found";
+            $notifications[] = "Riddle not found";
             $riddleCount = 0;
         }
 
@@ -89,11 +97,12 @@ class RiddleController
             $response,
             'riddle.twig',
             [
+                'notifs' => $notifications,
                 'idRiddle' => $idRiddle,
                 'riddleCount' => $riddleCount, // We indicate that there's just one riddle
                 'riddles' => $temp,
                 'user' => $userName,
-                "email" => $_SESSION['email'],
+                "email" => $_SESSION['email'] ?? null,
                 "team" => $_SESSION['team_id'] ?? null
             ]
         );

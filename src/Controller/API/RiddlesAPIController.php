@@ -59,6 +59,15 @@ class RiddlesAPIController
                     $id = intval($input['id']);
                 }
 
+                if($this->tooLong($input['riddle']) || $this->tooLong($input['answer'])){
+
+                    $response->getBody()->write('{ "message": "\'riddle\' and/or \'answer\' are too long."}');
+
+                    return $response
+                        ->withHeader("content-type", "application/json")
+                        ->withStatus(400);
+                }
+
                 $addId = $this->riddleRepository->addRiddle(new Riddle($id, $input['userId'], $input['riddle'], $input['answer']));
                 $riddle = $this->riddleRepository->getOneRiddleById($addId);
                 if ($riddle != null) {

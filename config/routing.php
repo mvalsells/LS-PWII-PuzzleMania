@@ -68,7 +68,6 @@ function addRoutes(App $app, Container $container): void
     $app->post('/profile', ProfileController::class . ':handleForm')->setName('profile_post')->add(AuthorizationMiddleware::class);
 
 
-    //TODO: Mirar lo del ID.
     $app->group('/game', function (RouteCollectorProxy $group) {
 
         $group->get(

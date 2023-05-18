@@ -43,7 +43,7 @@ final class AuthorizationMiddleware
             }
 
             // Get flash message and add it to response
-            $page = self::FLASH_MESSAGES[$route->getName()] ?? 'access unknown page.xº';
+            $page = self::FLASH_MESSAGES[$route->getName()] ?? 'access unknown page.';
             $this->flash->addMessage("notifications", $this->buildMessage($page));
             $response = new Response();
             // The user needs authorization to access this resource

@@ -48,31 +48,30 @@
             <p data-cy="team-stats__message" class="error">{{ notif }}</p>
         {% endfor %}
     {% endif %}
-
-    {% if (riddleCount == 1 or riddleCount == 0) %}
-        {% set text = "Riddle" %}
+    {% if riddles is empty %}
+        <main class="box" id="riddles-empty">
+            <div style = "background: white; margin-top: 5px; padding-left: 160px; padding-right: 160px; border-radius: 10px; border: 2px solid #000;">
+                <p style="color: red;"><b>There aren't any riddles</b></p>
+            </div>
+        </main>
     {% else %}
-        {% set text = "Riddles" %}
-    {% endif %}
-
-    {% if riddles is not empty %}
-        <div class="box" id="riddles-list">
-            {% if riddleCount != 0 %}
+        <main class="box" id="riddles-list">
+            <ul style="list-style-type: none;">
                 {% for riddle in riddles %}
-                    <div style = "background: white; margin-top: 5px; padding-left: 160px; padding-right: 160px; border-radius: 10px; border: 2px solid #000;">
-                        {% if riddleCount == 1 %}
+                    <li style = "background: white; margin-top: 5px; padding-left: 160px; padding-right: 160px; border-radius: 10px; border: 2px solid #000;">
+                        {% if oneRiddlePage %}
                             <p><b>Riddle:</b> {{ riddle.riddle }}</p>
                             <p><b>Answer:</b> {{ riddle.answer }}</p>
                             <p><b>Created by:</b> {{ user }}</p>
                         {% else %}
                             <a href="/riddle/{{ riddle.id }}">
-                                <p><b>Riddle #{{ loop.index }}:</b> {{ riddle.riddle }}</p>
+                                <p><b>Riddle #{{ riddle.id }}:</b> {{ riddle.riddle }}</p>
                             </a>
                         {% endif %}
-                    </div>
+                    </li>
                 {% endfor %}
-            {% endif %}
-        </div>
+            </ul>
+        </main>
     {% endif %}
 {% endblock %}
 

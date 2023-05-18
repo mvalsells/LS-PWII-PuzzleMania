@@ -102,9 +102,9 @@ function addRoutes(App $app, Container $container): void
         $group->get(
             '/{id}',
             RiddleController::class . ":showID"
-        )->setName('riddle_post');
+        )->setName('riddle_id_get');
 
-    });
+    })->add(AuthorizationMiddleware::class);
 
 
     // Riddles API

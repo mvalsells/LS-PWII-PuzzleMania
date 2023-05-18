@@ -49,7 +49,7 @@ final class MySQLUserRepository implements UserRepository
         $statement->execute();
     }
 
-    public function getUserByEmail(string $email): User
+    public function getUserByEmail(string $email): ?User
     {
         // Build the SQL query
         $query = <<<'QUERY'
@@ -71,8 +71,8 @@ final class MySQLUserRepository implements UserRepository
             $row = $statement->fetch(PDO::FETCH_OBJ);
             return $this->createUserVariable($row);
         }
-        // Return null User
-        return new User();
+        // Return null
+        return null;
     }
 
     public function updateProfilePicture(int $id, string $profilePicturePath): void
@@ -95,7 +95,7 @@ final class MySQLUserRepository implements UserRepository
         $statement->execute();
     }
 
-    public function getUserById(int $id): User
+    public function getUserById(int $id): ?User
     {
         // Build the SQL query
         $query = <<<'QUERY'
@@ -117,7 +117,7 @@ final class MySQLUserRepository implements UserRepository
             $row = $statement->fetch(PDO::FETCH_OBJ);
             return $this->createUserVariable($row);
         }
-        return new User();
+        return null;
     }
 
     public function getAllUsers(): array

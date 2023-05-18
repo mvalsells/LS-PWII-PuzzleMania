@@ -10,11 +10,11 @@ interface UserRepository
 {
     public function createUser(User $user): void;
 
-    public function getUserByEmail(string $email): User;
+    public function getUserByEmail(string $email): ?User;
 
     public function updateProfilePicture(int $id, string $profilePicturePath): void;
 
-    public function getUserById(int $id): User;
+    public function getUserById(int $id): ?User;
 
     public function getAllUsers(): array;
 }

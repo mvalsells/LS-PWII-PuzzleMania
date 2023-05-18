@@ -13,7 +13,7 @@
     <div class="dropdown">
         <!-- Email -->
         <button class="dropbtn">
-            {% if email is not defined %}
+            {% if email is not defined or email is null %}
                 Menu
             {% else %}
                 {{ email }}
@@ -43,6 +43,11 @@
 {% endblock %}
 
 {% block content %}
+    {% if notifs is not empty %}
+        {% for notif in notifs %}
+            <p data-cy="team-stats__message" class="error">{{ notif }}</p>
+        {% endfor %}
+    {% endif %}
     {% if riddles is empty %}
         <main class="box" id="riddles-empty">
             <div style = "background: white; margin-top: 5px; padding-left: 160px; padding-right: 160px; border-radius: 10px; border: 2px solid #000;">

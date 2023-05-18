@@ -195,14 +195,14 @@ class MySQLTeamRepository implements TeamRepository
         $team->setTeamId($row->team_id);
         $team->setTeamName($row->team_name);
         $team->setNumMembers($row->num_members);
-        if ($row->user_id_1 != null) {
+        if (isset($row->user_id_1)) {
             $team->setUserId1($row->user_id_1);
         }
-        if ($row->user_id_2 != null) {
+        if (isset($row->user_id_2)) {
             $team->setUserId2($row->user_id_2);
         }
         $team->setTotalScore($row->total_score);
-        if ($row->last_score != null) {
+        if (isset($row->last_score)) {
             $team->setLastScore($row->last_score);
         }
         $team->setQRGenerated($row->QR_generated);

@@ -32,7 +32,6 @@ final class AuthorizationMiddleware
     {
     }
 
-    //TODO: Si s'entra després d'haver borrat la BBDD peta
     public function __invoke(Request $request, RequestHandler $next): Response
     {
         if (!isset($_SESSION['user_id'])) {
@@ -47,7 +46,8 @@ final class AuthorizationMiddleware
             $page = self::FLASH_MESSAGES[$route->getName()] ?? 'access unknown page.xº';
             $this->flash->addMessage("notifications", $this->buildMessage($page));
             $response = new Response();
-            return $response->withHeader('Location','/sign-in')->withStatus(301);
+            // The user needs authorization to access this resource
+            return $response->withHeader('Location','/sign-in')->withStatus(401);
         }
         return $next->handle($request);
     }

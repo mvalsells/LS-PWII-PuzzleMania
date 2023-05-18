@@ -14,12 +14,14 @@ namespace Salle\PuzzleMania\Controller\API;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Salle\PuzzleMania\Model\Riddle;
-use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
 use Salle\PuzzleMania\Repository\RiddleRepository;
 use Salle\PuzzleMania\Repository\UserRepository;
+use Salle\PuzzleMania\Service\ValidatorService;
 
 class RiddlesAPIController
 {
+    private ValidatorService $validator;
+
     /**
      * Constructor for the RiddleAPIController
      * @param RiddleRepository $riddleRepository
@@ -27,7 +29,9 @@ class RiddlesAPIController
     public function __construct(
         private UserRepository $userRepository,
         private RiddleRepository $riddleRepository
-    ){}
+    ){
+        $this->validator = new ValidatorService();
+    }
 
     /**
      * Fetch all riddles available at the Riddle Repository and encode them in JSON.
@@ -69,7 +73,7 @@ class RiddlesAPIController
                     }
                 }
 
-                if($this->tooLong($input['riddle']) || $this->tooLong($input['answer'])){
+                if($this->validator->checkIfInputTooLong($input['riddle']) || $this->validator->checkIfInputTooLong($input['answer'])){
 
                     $response->getBody()->write('{ "message": "\'riddle\' and/or \'answer\' are too long."}');
 
@@ -194,7 +198,7 @@ class RiddlesAPIController
                     if (array_key_exists('riddle', $input)) {
 
                         // Checking length of input
-                        if($this->tooLong($input['riddle'])){
+                        if($this->validator->checkIfInputTooLong($input['riddle'])){
                             $response->getBody()->write('{ "message": "\'riddle\' is too long."}');
 
                             return $response
@@ -208,7 +212,7 @@ class RiddlesAPIController
                     if (array_key_exists('answer', $input)){
 
                         // Checking length of input
-                        if($this->tooLong($input['answer'])){
+                        if($this->validator->checkIfInputTooLong($input['answer'])){
                             $response->getBody()->write('{ "message": "\'answer\' is too long."}');
 
                             return $response
@@ -280,10 +284,6 @@ class RiddlesAPIController
         return $response
             ->withHeader("content-type", "application/json")
             ->withStatus(404);
-    }
-
-    private function tooLong(String $input){
-        return (strlen($input) > 100);
     }
 
 }

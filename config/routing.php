@@ -12,7 +12,6 @@ use Salle\PuzzleMania\Controller\TeamsController;
 use Salle\PuzzleMania\Middleware\AuthorizationMiddleware;
 use Salle\PuzzleMania\Middleware\TeamAuthorizationMiddleware;
 use Salle\PuzzleMania\Controller\API\RiddlesAPIController;
-use Salle\PuzzleMania\Controller\API\UsersAPIController;
 use Salle\PuzzleMania\Controller\SignUpController;
 use Salle\PuzzleMania\Controller\SignInController;
 use Slim\App;
@@ -69,7 +68,6 @@ function addRoutes(App $app, Container $container): void
     $app->post('/profile', ProfileController::class . ':handleForm')->setName('profile_post')->add(AuthorizationMiddleware::class);
 
 
-    //TODO: Mirar lo del ID.
     $app->group('/game', function (RouteCollectorProxy $group) {
 
         $group->get(

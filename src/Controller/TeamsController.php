@@ -9,6 +9,7 @@ use Salle\PuzzleMania\Model\Team;
 use Salle\PuzzleMania\Repository\TeamRepository;
 use Salle\PuzzleMania\Repository\UserRepository;
 use Salle\PuzzleMania\Service\BarcodeService;
+use Salle\PuzzleMania\Service\ValidatorService;
 use Slim\Flash\Messages;
 use Slim\Views\Twig;
 
@@ -17,6 +18,7 @@ class TeamsController
     private BarcodeService $barcode;
 
     private const DEFAULT_TEAM_IMAGE = 'assets/images/teamPicture.png';
+    private ValidatorService $validator;
 
     public function __construct(
         private Twig           $twig,
@@ -26,6 +28,7 @@ class TeamsController
     )
     {
         $this->barcode = new BarcodeService();
+        $this->validator = new ValidatorService();
     }
 
     public function showJoin(Request $request, Response $response): Response
@@ -77,9 +80,9 @@ class TeamsController
             if (isset($_POST['teamName'])) {
 
                 // Check if the input is too long
-                if(strlen($_POST['teamName']) > 100){
+                if($this->validator->checkIfInputTooLong($_POST['teamName'])){
                     $this->flash->addMessage("notifications", "The team name is too long.");
-                    return $response->withHeader('Location','/')->withStatus(301);
+                    return $response->withHeader('Location','/join')->withStatus(301);
                 }
 
                 $name = $_POST['teamName'];

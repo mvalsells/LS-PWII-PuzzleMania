@@ -47,7 +47,7 @@ final class AuthorizationMiddleware
             $this->flash->addMessage("notifications", $this->buildMessage($page));
             $response = new Response();
             // The user needs authorization to access this resource
-            return $response->withHeader('Location','/sign-in')->withStatus(401);
+            return $response->withHeader('Location','/sign-in')->withStatus(301);
         }
         return $next->handle($request);
     }

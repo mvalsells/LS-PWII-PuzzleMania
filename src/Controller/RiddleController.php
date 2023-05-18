@@ -63,8 +63,8 @@ class RiddleController
             $response,
             'riddle.twig',
             [
-                //TODO remove 999 with a propre code
-                'riddleCount' => 999, // It can be any value as long as it's not 1.
+                'oneRiddlePage' => false,
+                'riddleCount' => count($riddles),
                 'riddles' => $riddles,
                 "email" => $_SESSION['email'],
                 "team" => $_SESSION['team_id'] ?? null
@@ -116,6 +116,7 @@ class RiddleController
             $response,
             'riddle.twig',
             [
+                'oneRiddlePage' => true,
                 'idRiddle' => $idRiddle,
                 'riddleCount' => $riddleCount, // We indicate that there's just one riddle
                 'riddles' => $temp,

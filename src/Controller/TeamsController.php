@@ -9,6 +9,7 @@ use Salle\PuzzleMania\Model\Team;
 use Salle\PuzzleMania\Repository\TeamRepository;
 use Salle\PuzzleMania\Repository\UserRepository;
 use Salle\PuzzleMania\Service\BarcodeService;
+use Salle\PuzzleMania\Service\ValidatorService;
 use Slim\Flash\Messages;
 use Slim\Views\Twig;
 
@@ -17,6 +18,7 @@ class TeamsController
     private BarcodeService $barcode;
 
     private const DEFAULT_TEAM_IMAGE = 'assets/images/teamPicture.png';
+    private ValidatorService $validator;
 
     public function __construct(
         private Twig           $twig,
@@ -26,6 +28,7 @@ class TeamsController
     )
     {
         $this->barcode = new BarcodeService();
+        $this->validator = new ValidatorService();
     }
 
     public function showJoin(Request $request, Response $response): Response
@@ -51,12 +54,22 @@ class TeamsController
             if (isset($_POST['team'])) {
                 // Join this team in DB
                 $user = $this->userRepository->getUserById($_SESSION["user_id"]);
-                $this->teamRepository->addUserToTeam($_POST['team'], $user);
-                // Set SESSION variable
-                $_SESSION['team_id'] = $_POST['team'];
-                // Redirect to team-stats
-                $this->flash->addMessage("success", "You joined the team successfully.");
-                return $response->withHeader('Location','/team-stats')->withStatus(301);
+                $team = $this->teamRepository->getTeamById($_POST['team']);
+                // Check the team exists and is not full
+                if (!$team->isNullTeam() and $team->getNumMembers() !== 2) {
+                    $this->teamRepository->addUserToTeam($_POST['team'], $user);
+                    // Set SESSION variable
+                    $_SESSION['team_id'] = $_POST['team'];
+                    // Redirect to team-stats
+                    $this->flash->addMessage("success", "You joined the team successfully.");
+                    return $response->withHeader('Location','/team-stats')->withStatus(301);
+                } elseif ($team->isNullTeam()) {
+                    // The team selected doesn't exist
+                    $this->flash->addMessage("notifications", "The team selected doesn't exist.");
+                } elseif ($team->getNumMembers() == 2) {
+                    // The team selected is already full
+                    $this->flash->addMessage("notifications", "The team selected is already full.");
+                }
             } else {
                 // No team was selected.
                 $this->flash->addMessage("notifications", "You didn't select a team to join.");
@@ -65,6 +78,13 @@ class TeamsController
             // The "Create Team" button was clicked
 
             if (isset($_POST['teamName'])) {
+
+                // Check if the input is too long
+                if($this->validator->checkIfInputTooLong($_POST['teamName'])){
+                    $this->flash->addMessage("notifications", "The team name is too long.");
+                    return $response->withHeader('Location','/join')->withStatus(301);
+                }
+
                 $name = $_POST['teamName'];
                 $team_aux = $this->teamRepository->getTeamByName($name);
                 if ($team_aux->isNullTeam()) {
@@ -89,13 +109,8 @@ class TeamsController
             return $response->withHeader('Location','/join')->withStatus(301);
         }
 
-
-        return $this->twig->render(
-            $response,
-            'join.twig',
-            [
-            ]
-        );
+        // If reached here means the creation of team failed, so we must show the 'join' page again
+        return $response->withHeader('Location','/join')->withStatus(301);
     }
 
     public function handleInviteForm(Request $request, Response $response): Response

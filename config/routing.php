@@ -12,7 +12,6 @@ use Salle\PuzzleMania\Controller\TeamsController;
 use Salle\PuzzleMania\Middleware\AuthorizationMiddleware;
 use Salle\PuzzleMania\Middleware\TeamAuthorizationMiddleware;
 use Salle\PuzzleMania\Controller\API\RiddlesAPIController;
-use Salle\PuzzleMania\Controller\API\UsersAPIController;
 use Salle\PuzzleMania\Controller\SignUpController;
 use Salle\PuzzleMania\Controller\SignInController;
 use Slim\App;

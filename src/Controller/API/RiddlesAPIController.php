@@ -16,9 +16,12 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Salle\PuzzleMania\Model\Riddle;
 use Salle\PuzzleMania\Repository\RiddleRepository;
 use Salle\PuzzleMania\Repository\UserRepository;
+use Salle\PuzzleMania\Service\ValidatorService;
 
 class RiddlesAPIController
 {
+    private ValidatorService $validator;
+
     /**
      * Constructor for the RiddleAPIController
      * @param RiddleRepository $riddleRepository
@@ -26,7 +29,9 @@ class RiddlesAPIController
     public function __construct(
         private UserRepository $userRepository,
         private RiddleRepository $riddleRepository
-    ){}
+    ){
+        $this->validator = new ValidatorService();
+    }
 
     /**
      * Fetch all riddles available at the Riddle Repository and encode them in JSON.
@@ -68,13 +73,25 @@ class RiddlesAPIController
                     }
                 }
 
-                // Check the user id exists
-                $user = $this->userRepository->getUserById($input['userId']);
-                if ($user->isNullUser()) {
-                    $response->getBody()->write('{ "message": "\'user_id\' does not correspond to any registered user"}');
+                if($this->validator->checkIfInputTooLong($input['riddle']) || $this->validator->checkIfInputTooLong($input['answer'])){
+
+                    $response->getBody()->write('{ "message": "\'riddle\' and/or \'answer\' are too long."}');
+
                     return $response
                         ->withHeader("content-type", "application/json")
                         ->withStatus(400);
+                }
+
+
+                // If a user id was provided, check if exists
+                if (isset($input['userId'])){
+                    $user = $this->userRepository->getUserById($input['userId']);
+                    if ($user->isNullUser()) {
+                        $response->getBody()->write('{ "message": "\'user_id\' does not correspond to any registered user"}');
+                        return $response
+                            ->withHeader("content-type", "application/json")
+                            ->withStatus(400);
+                    }
                 }
 
                 $addId = $this->riddleRepository->addRiddle(new Riddle($id, $input['userId'], $input['riddle'], $input['answer']));
@@ -179,10 +196,30 @@ class RiddlesAPIController
                     }
 
                     if (array_key_exists('riddle', $input)) {
+
+                        // Checking length of input
+                        if($this->validator->checkIfInputTooLong($input['riddle'])){
+                            $response->getBody()->write('{ "message": "\'riddle\' is too long."}');
+
+                            return $response
+                                ->withHeader("content-type", "application/json")
+                                ->withStatus(400);
+                        }
+
                         $riddle->setRiddle($input['riddle']);
                     }
 
-                    if (array_key_exists('answer', $input)) {
+                    if (array_key_exists('answer', $input)){
+
+                        // Checking length of input
+                        if($this->validator->checkIfInputTooLong($input['answer'])){
+                            $response->getBody()->write('{ "message": "\'answer\' is too long."}');
+
+                            return $response
+                                ->withHeader("content-type", "application/json")
+                                ->withStatus(400);
+                        }
+
                         $riddle->setAnswer($input['answer']);
                     }
 
@@ -248,4 +285,5 @@ class RiddlesAPIController
             ->withHeader("content-type", "application/json")
             ->withStatus(404);
     }
+
 }

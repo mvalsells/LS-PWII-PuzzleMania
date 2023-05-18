@@ -44,6 +44,7 @@ class SignInController
 
         $errors['email'] = $this->validator->validateEmail($data['email']);
         $errors['password'] = $this->validator->validatePassword($data['password']);
+
         if ($errors['email'] == '') {
             unset($errors['email']);
         }

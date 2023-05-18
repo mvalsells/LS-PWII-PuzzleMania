@@ -25,6 +25,7 @@ class ProfileController
     // Constant definitions of possible errors
     private const UNEXPECTED_ERROR = "An unexpected error occurred uploading the file '%s'...";
     private const INVALID_EXTENSION_ERROR = "The received file extension '%s' is not valid";
+    private const INVALID_MIME_ERROR = "The received file is not valid";
     private const EXCEEDED_MAXIMUM_FILES_ERROR = "You can only upload one profile picture.";
     private const FILE_SIZE_ERROR = "The file '%s' uploaded can not exceed 1MB";
     private const IMAGE_DIMENSIONS_ERROR = "The file '%s' uploaded doesn't have the required dimensions (400x400)";
@@ -123,18 +124,23 @@ class ProfileController
         // Get image format
         $format = $fileInfo['extension'];
 
-        // Check if the image format is valid
-        if (!$this->isValidFormat($format)) {
-            $errors["profilePicture"] = sprintf(self::INVALID_EXTENSION_ERROR, $format);
-        } else {
-            // Check the size of the image
-            $fileSize = $uploadedFile->getSize();
-            // Check the dimensions of the image
-            $imageInfo = getimagesize($uploadedFile->getFilePath());
-            if ($fileSize > self::MAX_SIZE_IMAGE) {
-                $errors["profilePicture"] = sprintf(self::FILE_SIZE_ERROR, $uploadedFile->getClientFilename());
-            } elseif ($imageInfo[0] !== self::DIMENSION_IMAGE || $imageInfo[1] !== self::DIMENSION_IMAGE) {
-                $errors["profilePicture"] = sprintf(self::IMAGE_DIMENSIONS_ERROR, $uploadedFile->getClientFilename());
+        // Check if mimeType is correct
+        if($this->checkMime($uploadedFile)){
+            $errors["profilePicture"] = self::INVALID_MIME_ERROR;
+        }else{
+            // Check if the image format is valid
+            if (!$this->isValidFormat($format)) {
+                $errors["profilePicture"] = sprintf(self::INVALID_EXTENSION_ERROR, $format);
+            } else {
+                // Check the size of the image
+                $fileSize = $uploadedFile->getSize();
+                // Check the dimensions of the image
+                $imageInfo = getimagesize($uploadedFile->getFilePath());
+                if ($fileSize > self::MAX_SIZE_IMAGE) {
+                    $errors["profilePicture"] = sprintf(self::FILE_SIZE_ERROR, $uploadedFile->getClientFilename());
+                } elseif ($imageInfo[0] !== self::DIMENSION_IMAGE || $imageInfo[1] !== self::DIMENSION_IMAGE) {
+                    $errors["profilePicture"] = sprintf(self::IMAGE_DIMENSIONS_ERROR, $uploadedFile->getClientFilename());
+                }
             }
         }
 
@@ -165,5 +171,14 @@ class ProfileController
     private function isValidFormat(string $extension): bool
     {
         return in_array($extension, self::ALLOWED_EXTENSIONS, true);
+    }
+
+    private function checkMime(UploadedFileInterface $uploadedFile): bool
+    {
+        if(strcmp($uploadedFile->getClientMediaType(), "image/jpg") == 0 
+           || strcmp($uploadedFile->getClientMediaType(), "image/png") == 0) {
+            return false;
+        }
+        return true;
     }
 }

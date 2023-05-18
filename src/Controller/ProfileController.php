@@ -103,9 +103,11 @@ class ProfileController
 
     private function checkNumberOfFiles(array $errors, array $uploadedFiles): array
     {
-        if (count($uploadedFiles['files']) > 1) {
+        if (!isset($uploadedFiles['files'])) {
+            $errors["profilePicture"] = self::NO_FILES_ERROR;
+        } elseif (count($uploadedFiles['files']) > 1) {
             $errors["profilePicture"] = self::EXCEEDED_MAXIMUM_FILES_ERROR;
-        } elseif (!isset($uploadedFiles['files'][0]) || $uploadedFiles['files'][0]->getError() !== UPLOAD_ERR_OK){ // TODO: not working
+        } elseif (!isset($uploadedFiles['files'][0]) || $uploadedFiles['files'][0]->getError() !== UPLOAD_ERR_OK){
             $errors["profilePicture"] = self::NO_FILES_ERROR;
         }
         return $errors;
@@ -146,12 +148,19 @@ class ProfileController
         if (empty($errors)) {
             // Generate uuid for new profile picture
             $uuid = Uuid::uuid4();
-            // TODO: delete past profile picture correct
-            $past_picture = __DIR__ . '/../../public/' . $_SESSION["profilePicturePath"];
-            unlink($past_picture);
+            // Delete past profile picture if exists
+            if (isset($_SESSION["profilePicturePath"])) {
+                $past_picture = __DIR__ . '/../../public/' . $_SESSION["profilePicturePath"];
+                unlink($past_picture);
+            }
+
             $_SESSION["profilePicturePath"] = 'uploads/' . $uuid . "." . $format;
             // Upload new profile picture path to database
             $this->userRepository->updateProfilePicture($_SESSION['user_id'], $_SESSION["profilePicturePath"]);
+            // Check if the /uploads directory exists, and if not create it
+            if (!is_dir(self::UPLOADS_DIR)) {
+                mkdir(self::UPLOADS_DIR, 0777, true);
+            }
             // Save new profile picture in 'uploads/' folder
             $uploadedFile->moveTo(self::UPLOADS_DIR . DIRECTORY_SEPARATOR . $uuid . "." . $format);
         }

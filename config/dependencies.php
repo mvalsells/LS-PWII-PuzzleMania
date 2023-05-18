@@ -15,6 +15,7 @@ use Salle\PuzzleMania\Controller\SignInController;
 use Salle\PuzzleMania\Controller\TeamsController;
 use Salle\PuzzleMania\Middleware\AuthorizationMiddleware;
 use Salle\PuzzleMania\Middleware\TeamAuthorizationMiddleware;
+use Salle\PuzzleMania\Repository\MySQLGameRepository;
 use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
 use Salle\PuzzleMania\Repository\MySQLTeamRepository;
 use Salle\PuzzleMania\Repository\MySQLUserRepository;
@@ -53,19 +54,13 @@ function addDependencies(ContainerInterface $container): void
      *  Declare the AuthorizationMiddleware dependency, to show the flash message if the user access specific
      *  pages without being logged in
     */
-    $container->set(
-        'authorizationMiddleware',
-        function (ContainerInterface $c) {
-            return new AuthorizationMiddleware($c->get('flash'));
-        }
-    );
+    $container->set(AuthorizationMiddleware::class, function (ContainerInterface $container) {
+        return new AuthorizationMiddleware($container->get('flash'));
+    });
 
-    $container->set(
-        'teamAuthorizationMiddleware',
-        function (ContainerInterface $c) {
-            return new TeamAuthorizationMiddleware($c->get('flash'));
-        }
-    );
+    $container->set(TeamAuthorizationMiddleware::class, function (ContainerInterface $container) {
+        return new TeamAuthorizationMiddleware($container->get('flash'));
+    });
 
     $container->set('user_repository', function (ContainerInterface $container) {
         return new MySQLUserRepository($container->get('db'));
@@ -79,6 +74,10 @@ function addDependencies(ContainerInterface $container): void
         return new MySQLRiddleRepository($container->get('db'));
     });
 
+    $container->set('game_repository', function (ContainerInterface $container) {
+        return new MySQLGameRepository($container->get('db'));
+    });
+
     // Controller dependencies
     $container->set(
         SignInController::class,
@@ -90,7 +89,7 @@ function addDependencies(ContainerInterface $container): void
     $container->set(
         SignUpController::class,
         function (ContainerInterface $c) {
-            return new SignUpController($c->get('view'), $c->get('user_repository'));
+            return new SignUpController($c->get('flash'), $c->get('view'), $c->get('user_repository'), $c->get('team_repository'));
         }
     );
 
@@ -104,7 +103,7 @@ function addDependencies(ContainerInterface $container): void
     $container->set(
         GameController::class,
         function (ContainerInterface $c) {
-            return new GameController($c->get('view'));
+            return new GameController($c->get('view'), $c->get('team_repository'), $c->get('riddle_repository'), $c->get('game_repository'), $c->get("flash"));
         }
     );
 
@@ -125,7 +124,7 @@ function addDependencies(ContainerInterface $container): void
     $container->set(
         RiddleController::class,
         function (ContainerInterface $c) {
-            return new RiddleController($c->get('view'), $c->get('db'));
+            return new RiddleController($c->get('riddle_repository'), $c->get('user_repository'), $c->get('view'));
         }
     );
 
@@ -141,7 +140,7 @@ function addDependencies(ContainerInterface $container): void
     $container->set(
         RiddlesAPIController::class,
         function (ContainerInterface $c) {
-            return new RiddlesAPIController($c->get('riddle_repository'));
+            return new RiddlesAPIController($c->get('user_repository'), $c->get('riddle_repository'));
         }
     );
 

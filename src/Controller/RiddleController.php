@@ -9,6 +9,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Salle\PuzzleMania\Model\Riddle;
 use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
+use Salle\PuzzleMania\Repository\RiddleRepository;
+use Salle\PuzzleMania\Repository\UserRepository;
 use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
 use function DI\add;
@@ -18,14 +20,17 @@ class RiddleController
 
     private $twig;
     private $riddleRepository;
+    private $userRepository;
 
     public function __construct(
-        Twig $twig,
-        PDO $PDO,
+        RiddleRepository $riddleRepository,
+        UserRepository $userRepository,
+        Twig $twig
     )
     {
         $this->twig = $twig;
-        $this->riddleRepository = new MySQLRiddleRepository($PDO);
+        $this->riddleRepository = $riddleRepository;
+        $this->userRepository = $userRepository;
     }
     public function show(Request $request, Response $response): Response
     {
@@ -33,25 +38,27 @@ class RiddleController
         $API_URL = "http://nginx/api/riddle";
 
         $client = new Client();
+        $notifications = [];
+        $riddles = [];
+
         try {
             $resposta = $client->request("GET", $API_URL);
             $riddles = json_decode($resposta->getBody()->getContents());
-
-            $temp = array();
-            for ($i = 0; $i < count($riddles); $i++) {
-                $temp[] = $riddles[$i]->riddle;
+            if (empty($riddles)) {
+                $notifications[] = "Riddles are not found.";
             }
         } catch (GuzzleException $e) {
-            exit();
+            $notifications[] = "Unexpected error when communicating with API.";
         }
 
         return $this->twig->render(
             $response,
             'riddle.twig',
             [
+                'notifs' => $notifications,
                 'riddleCount' => 999, // It can be any value as long as it's not 1.
-                'riddles' => $temp,
-                "email" => $_SESSION['email'],
+                'riddles' => $riddles,
+                "email" => $_SESSION['email'] ?? null,
                 "team" => $_SESSION['team_id'] ?? null
             ]
         );
@@ -67,16 +74,22 @@ class RiddleController
 
         $client = new Client();
         $temp = array();
+        $notifications = [];
 
         try {
             $resposta = $client->request("GET", $API_URL);
             $riddles = json_decode($resposta->getBody()->getContents());
-
-            $temp[0] = $riddles->riddle;
+            if (isset($riddles->userId)) {
+                $userName = $this->userRepository->getUserById($riddles->userId)->getUsername();
+            } else {
+                $userName = "-";
+            }
+            $temp[0] = $riddles;
             $riddleCount = 1;
 
         } catch (GuzzleException $e) {
-            $temp[0] = "Riddle not found";
+            $userName = "-";
+            $notifications[] = "Riddle not found";
             $riddleCount = 0;
         }
 
@@ -84,10 +97,12 @@ class RiddleController
             $response,
             'riddle.twig',
             [
+                'notifs' => $notifications,
                 'idRiddle' => $idRiddle,
                 'riddleCount' => $riddleCount, // We indicate that there's just one riddle
                 'riddles' => $temp,
-                "email" => $_SESSION['email'],
+                'user' => $userName,
+                "email" => $_SESSION['email'] ?? null,
                 "team" => $_SESSION['team_id'] ?? null
             ]
         );

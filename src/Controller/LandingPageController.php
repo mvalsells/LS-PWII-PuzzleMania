@@ -28,7 +28,7 @@ class LandingPageController
             ]);
         } else {
             $user = $this->userRepository->getUserById(intval($_SESSION['user_id']));
-            $username = explode('@', $user->getEmail())[0];
+            $username = $user->getUsername();
             return $this->twig->render($response, 'home.twig', [
                 "username" => $username,
                 "email" => $_SESSION['email'],

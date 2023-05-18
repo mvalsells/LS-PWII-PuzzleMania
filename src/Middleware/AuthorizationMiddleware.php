@@ -35,11 +35,17 @@ final class AuthorizationMiddleware
         if (!isset($_SESSION['user_id'])) {
             $route = RouteContext::fromRequest($request)->getRoute();
 
+            // Get the team ID and store it in the session if it is an /invite request
+            if ($route->getName() === 'invite_get') {
+                $_SESSION["idTeam"] = (int) filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_NUMBER_INT);
+            }
+
             // Get flash message and add it to response
             $page = self::FLASH_MESSAGES[$route->getName()] ?? 'Unknown page';
             $this->flash->addMessage("notifications", $this->buildMessage($page));
             $response = new Response();
-            return $response->withHeader('Location','/sign-in')->withStatus(301);
+            // The user needs authorization to access this resource
+            return $response->withHeader('Location','/sign-in')->withStatus(401);
         }
         return $next->handle($request);
     }

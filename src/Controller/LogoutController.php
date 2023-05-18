@@ -29,6 +29,6 @@ final class LogoutController
         // Redirect to home page
         return $response
             ->withHeader('Location', $routeParser->urlFor("home"))
-            ->withStatus(200);
+            ->withStatus(301);
     }
 }

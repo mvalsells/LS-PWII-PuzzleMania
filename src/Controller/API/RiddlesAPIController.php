@@ -160,10 +160,30 @@ class RiddlesAPIController
                     }
 
                     if (array_key_exists('riddle', $input)) {
+
+                        // Checking length of input
+                        if($this->tooLong($input['riddle'])){
+                            $response->getBody()->write('{ "message": "\'riddle\' is too long."}');
+
+                            return $response
+                                ->withHeader("content-type", "application/json")
+                                ->withStatus(400);
+                        }
+
                         $riddle->setRiddle($input['riddle']);
                     }
 
-                    if (array_key_exists('answer', $input)) {
+                    if (array_key_exists('answer', $input)){
+
+                        // Checking length of input
+                        if($this->tooLong($input['answer'])){
+                            $response->getBody()->write('{ "message": "\'answer\' is too long."}');
+
+                            return $response
+                                ->withHeader("content-type", "application/json")
+                                ->withStatus(400);
+                        }
+
                         $riddle->setAnswer($input['answer']);
                     }
 

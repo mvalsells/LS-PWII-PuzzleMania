@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Psr\Container\ContainerInterface;
 use Salle\PuzzleMania\Controller\API\RiddlesAPIController;
-use Salle\PuzzleMania\Controller\API\UsersAPIController;
 use Salle\PuzzleMania\Controller\GameController;
 use Salle\PuzzleMania\Controller\LandingPageController;
 use Salle\PuzzleMania\Controller\LogoutController;
@@ -20,6 +19,7 @@ use Salle\PuzzleMania\Repository\MySQLRiddleRepository;
 use Salle\PuzzleMania\Repository\MySQLTeamRepository;
 use Salle\PuzzleMania\Repository\MySQLUserRepository;
 use Salle\PuzzleMania\Repository\PDOConnectionBuilder;
+use Salle\PuzzleMania\Service\InviteService;
 use Slim\Flash\Messages;
 use Slim\Views\Twig;
 
@@ -50,10 +50,7 @@ function addDependencies(ContainerInterface $container): void
         }
     );
 
-    /*
-     *  Declare the AuthorizationMiddleware dependency, to show the flash message if the user access specific
-     *  pages without being logged in
-    */
+    /********** MIDDLEWARES **********/
     $container->set(AuthorizationMiddleware::class, function (ContainerInterface $container) {
         return new AuthorizationMiddleware($container->get('flash'));
     });
@@ -62,6 +59,12 @@ function addDependencies(ContainerInterface $container): void
         return new TeamAuthorizationMiddleware($container->get('flash'));
     });
 
+    /********** SERVICES **********/
+    $container->set('invite_service', function (ContainerInterface $container) {
+        return new InviteService($container->get('team_repository'), $container->get('flash'));
+    });
+
+    /********** REPOSITORIES **********/
     $container->set('user_repository', function (ContainerInterface $container) {
         return new MySQLUserRepository($container->get('db'));
     });
@@ -78,18 +81,18 @@ function addDependencies(ContainerInterface $container): void
         return new MySQLGameRepository($container->get('db'));
     });
 
-    // Controller dependencies
+    /********** CONTROLLERS **********/
     $container->set(
         SignInController::class,
         function (ContainerInterface $c) {
-            return new SignInController($c->get('view'), $c->get('user_repository'), $c->get('team_repository'), $c->get("flash"));
+            return new SignInController($c->get('view'), $c->get('user_repository'), $c->get('team_repository'), $c->get("flash"), $c->get("invite_service"));
         }
     );
 
     $container->set(
         SignUpController::class,
         function (ContainerInterface $c) {
-            return new SignUpController($c->get('flash'), $c->get('view'), $c->get('user_repository'), $c->get('team_repository'));
+            return new SignUpController($c->get('view'), $c->get('user_repository'), $c->get("invite_service"));
         }
     );
 
@@ -131,23 +134,16 @@ function addDependencies(ContainerInterface $container): void
     $container->set(
         TeamsController::class,
         function (ContainerInterface $c) {
-            return new TeamsController($c->get('view'), $c->get('user_repository'), $c->get('team_repository'), $c->get("flash"));
+            return new TeamsController($c->get('view'), $c->get('user_repository'), $c->get('team_repository'), $c->get("flash"), $c->get("invite_service"));
         }
     );
 
 
-    // API dependencies
+    /********** APIs **********/
     $container->set(
         RiddlesAPIController::class,
         function (ContainerInterface $c) {
             return new RiddlesAPIController($c->get('user_repository'), $c->get('riddle_repository'));
-        }
-    );
-
-    $container->set(
-        UsersAPIController::class,
-        function (ContainerInterface $c) {
-            return new UsersAPIController($c->get('view'));
         }
     );
 

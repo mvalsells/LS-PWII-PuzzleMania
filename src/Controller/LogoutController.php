@@ -1,4 +1,10 @@
 <?php
+/**
+ * Logout page Controller: Manages the logout logic
+ * @author: Marc Valsells, Òscar de Jesus and David Larrosa
+ * @creation: 27/04/2023
+ * @updated: 19/05/2023
+ */
 declare(strict_types=1);
 
 namespace Salle\PuzzleMania\Controller;

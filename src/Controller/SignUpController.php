@@ -134,7 +134,7 @@ final class SignUpController
 
         // Check if user with this email already exists
         $savedUser = $this->userRepository->getUserByEmail($email);
-        if (!$savedUser->isNullUser()) {
+        if ($savedUser != null) {
             $errors['email'] = "User already exists!";
         }
 

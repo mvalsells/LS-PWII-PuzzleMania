@@ -40,14 +40,6 @@ class User implements JsonSerializable
         return get_object_vars($this);
     }
 
-    public function isNullUser(): bool
-    {
-        if (!isset($this->email)) {
-            return true;
-        }
-        return false;
-    }
-
     public function hasPicture(): bool
     {
         if (isset($this->profilePicturePath)) {

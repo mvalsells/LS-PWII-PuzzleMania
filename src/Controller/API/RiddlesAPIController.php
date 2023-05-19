@@ -86,7 +86,7 @@ class RiddlesAPIController
                 // If a user id was provided, check if exists
                 if (isset($input['userId'])){
                     $user = $this->userRepository->getUserById($input['userId']);
-                    if ($user->isNullUser()) {
+                    if ($user == null) {
                         $response->getBody()->write('{ "message": "\'user_id\' does not correspond to any registered user"}');
                         return $response
                             ->withHeader("content-type", "application/json")
@@ -185,7 +185,7 @@ class RiddlesAPIController
                     if (array_key_exists('userId', $input) && is_numeric($input['userId'])) {
                         // Check the user id exists
                         $user = $this->userRepository->getUserById($input['userId']);
-                        if ($user->isNullUser()) {
+                        if ($user == null) {
                             $response->getBody()->write('{ "message": "\'user_id\' does not correspond to any registered user"}');
                             return $response
                                 ->withHeader("content-type", "application/json")

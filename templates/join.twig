@@ -40,8 +40,8 @@
             {% if teams is not empty %}
                 <form action="/join" method="POST">
                     {% for team in teams %}
-                        <input type="radio" name="team-{{ team.getTeamId() }}" id="{{ team.getTeamId() }}" value="{{ team.getTeamId() }}">
-                        <label for="team-{{ team.getTeamId() }}">{{ team.getTeamName() }}</label>
+                        <input type="radio" name="team" id="{{ team.getTeamId() }}" value="{{ team.getTeamId() }}">
+                        <label for="team">{{ team.getTeamName() }}</label>
                         <br/>
                     {% endfor %}
                     <button type="submit" name="joinTeam">Join Team</button>

@@ -3,14 +3,14 @@
 {% block head %}
     <title>Sign-in | PuzzleMania</title>
     <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/navbar_styles.css"/>
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/authentication.css"/>
 {% endblock %}
 
 {% block name %}Welcome to PuzzleMania{% endblock %}
 
-
 {% block header %}
     <div class="dropdown">
-        <button class = "home-button">
+        <button class="home-button">
             <a href="/">Go to Landing Page</a>
         </button>
     </div>
@@ -22,31 +22,30 @@
             <p data-cy="sign-in__message" class="error">{{ notif }}</p>
         {% endfor %}
     {% endif %}
-    <div class = "box">
-        <div class = "page" style = "background: white; padding: 40px 60px 60px 60px; border-radius: 10px; border: 2px solid #000;">
-            <h1 style="text-align: center;">Login</h1>
-            <form data-cy="sign-in" action="{{ formAction }}" method="POST" id="login" accept-charset="utf-8" style="text-align: center;">
-                <div class="form-group row">
-                    <input data-cy="sign-in__email" type="text" name="email" placeholder="Enter your email"
-                           value="{{ formData.email }}">
-                    {% if formErrors['email'] %}
-                        <p data-cy="sign-in__wrongEmail" class="error">{{ formErrors['email'] }}</p>
-                    {% endif %}
-                </div>
-                <div class="form-group row">
-                    <input data-cy="sign-in__password" type="password" name="password" placeholder="Enter your password">
-                    {% if formErrors['password'] %}
-                        <p data-cy="sign-in__wrongPassword" class="error">{{ formErrors['password'] }}</p>
-                    {% endif %}
-                </div>
-                <div class="form-group row">
-                    <input data-cy="sign-in__btn" type="submit" value="Sign-in" class="submit-button">
-                </div>
-                <div style = "margin-top: 15px; font-size: 13px;">
-                    <a href="/sign-up">Don't have an account? Click here to register.</a>
-                </div>
-            </form>
-        </div>
+    <div class="auth-container box">
+        <h1>Login</h1>
+        <form data-cy="sign-in" action="{{ formAction }}" method="POST" id="login" accept-charset="utf-8">
+            <label for="email">Email</label>
+            <br/>
+            <input data-cy="sign-in__email" type="text" name="email" placeholder="Enter your email"
+                   value="{{ formData.email }}">
+            {% if formErrors['email'] %}
+                <p data-cy="sign-in__wrongEmail" class="error">{{ formErrors['email'] }}</p>
+            {% endif %}
+            <br/>
+            <label for="password"> Password</label>
+            <br/>
+            <input data-cy="sign-in__password" type="password" name="password" placeholder="Enter your password">
+            {% if formErrors['password'] %}
+                <p data-cy="sign-in__wrongPassword" class="error">{{ formErrors['password'] }}</p>
+            {% endif %}
+            <br/>
+            <input data-cy="sign-in__btn" type="submit" value="Sign-in" class="submit-button">
+            <br/>
+        </form>
+        <br/>
+        <a class="auth-switch" href="/sign-up">Don't have an account? Click here to register.</a>
+
     </div>
 
 {% endblock %}

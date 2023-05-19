@@ -307,7 +307,7 @@ class TeamsController
                 "success_notifs" => $success_notifications ?? [],
                 "email" => $_SESSION['email'],
                 "team" => $_SESSION['team_id'],
-                "TeamFull" => intval($team->getNumMembers()/2),
+                "TeamFull" => ($team->getNumMembers() == 2),
                 "QRGenerated" => $qrGenerated,
                 "teamPicture" => self::DEFAULT_TEAM_IMAGE,
                 "teamName" => $team->getTeamName(),

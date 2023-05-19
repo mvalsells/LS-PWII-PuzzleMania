@@ -59,10 +59,10 @@ class GameController
             [
                 "notifs" => $notifications,
                 "teamName" => $this->teamRepository->getTeamById($_SESSION['team_id'])->getTeamName(),
-                "start" => 0,
-                "endGame" => 1,
+                "start" => false,
+                "endGame" => true,
                 "formAction" => "/team-stats",
-                "guessRiddle" => 1,
+                "guessRiddle" => true,
                 "buttonName" => "Finish",
                 "points" => $points
             ]
@@ -118,7 +118,7 @@ class GameController
             [
                 "notifs" => $notifications,
                 "teamName" => $team->getTeamName(),
-                "start" => 1,
+                "start" => true,
                 "formAction" => '/game',
                 "buttonName" => "Start"
             ]
@@ -226,11 +226,11 @@ class GameController
             [
                 "notifs" => $notifications,
                 "teamName" => $this->teamRepository->getTeamById($_SESSION['team_id'])->getTeamName(),
-                "start" => 0,
-                "endGame" => 0,
+                "start" => false,
+                "endGame" => false,
                 "actualRiddle" => ($_SESSION['riddles'][$_SESSION['actual_riddle']-1]) ?? [],
                 "formAction" => $link,
-                "guessRiddle" => 1,
+                "guessRiddle" => true,
                 "buttonName" => "Submit answer",
                 "totalPoints" => $_SESSION["points"]
             ]
@@ -281,9 +281,9 @@ class GameController
             'game.twig',
             [
                 "teamName" => $this->teamRepository->getTeamById($_SESSION['team_id'])->getTeamName(),
-                "start" => 0,
-                "guessRiddle" => 0,
-                "endGame" => 0,
+                "start" => false,
+                "guessRiddle" => false,
+                "endGame" => false,
                 "actualRiddle" => $riddle,
                 "userAnswer" => $data["answer"],
                 "formAction" => $link,

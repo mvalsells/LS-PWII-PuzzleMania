@@ -3,7 +3,6 @@
 {% block head %}
     <title>Sign-up | PuzzleMania</title>
     <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/navbar_styles.css"/>
-    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/authentication.css"/>
 {% endblock %}
 
 {% block name %}Sign up here!{% endblock %}
@@ -17,7 +16,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class = "box auth-container">
+    <div class = "box main-container">
         <h1>Register</h1>
         <form data-cy="sign-up" action="{{ formAction }}" method="POST" id="register" accept-charset="utf-8">
             <label for="email">Email</label>

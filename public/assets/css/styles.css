@@ -129,3 +129,31 @@ input[type='submit']:hover {
     border: 1px lightskyblue;
     border-radius: 20px;
 }
+
+#riddles-empty {
+    background: white;
+    margin-top: 5px;
+    border-radius: 10px;
+    border: 2px solid #000;
+    color: red;
+    padding: 20px 160px;
+    font-weight: bold;
+}
+
+.no-list-style {
+    list-style-type: none !important;
+    padding-left: 0;
+}
+
+.main-container{
+    background: white !important;
+    padding: 40px 60px 60px 60px;
+    border-radius: 10px;
+    border: 2px solid #000000;
+    text-align: center;
+    min-width: 300px;
+}
+
+.auth-switch{
+    font-size: 13px;
+}

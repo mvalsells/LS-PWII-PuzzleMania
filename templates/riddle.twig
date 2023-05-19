@@ -49,14 +49,9 @@
         {% endfor %}
     {% endif %}
     {% if riddles is empty %}
-        <main class="box" id="riddles-empty">
-            <div style = "background: white; margin-top: 5px; padding-left: 160px; padding-right: 160px; border-radius: 10px; border: 2px solid #000;">
-                <p style="color: red;"><b>There aren't any riddles</b></p>
-            </div>
-        </main>
+        <p class="box" id="riddles-empty">There aren't any riddles</p>
     {% else %}
-        <main class="box" id="riddles-list">
-            <ul style="list-style-type: none;">
+            <ul class="box no-list-style" id="riddles-list">
                 {% for riddle in riddles %}
                     <li style = "background: white; margin-top: 5px; padding-left: 160px; padding-right: 160px; border-radius: 10px; border: 2px solid #000;">
                         {% if oneRiddlePage %}
@@ -71,7 +66,6 @@
                     </li>
                 {% endfor %}
             </ul>
-        </main>
     {% endif %}
 {% endblock %}
 

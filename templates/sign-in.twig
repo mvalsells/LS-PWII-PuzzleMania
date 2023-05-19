@@ -3,7 +3,6 @@
 {% block head %}
     <title>Sign-in | PuzzleMania</title>
     <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/navbar_styles.css"/>
-    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/authentication.css"/>
 {% endblock %}
 
 {% block name %}Welcome to PuzzleMania{% endblock %}
@@ -22,7 +21,7 @@
             <p data-cy="sign-in__message" class="error">{{ notif }}</p>
         {% endfor %}
     {% endif %}
-    <div class="auth-container box">
+    <div class="main-container box">
         <h1>Login</h1>
         <form data-cy="sign-in" action="{{ formAction }}" method="POST" id="login" accept-charset="utf-8">
             <label for="email">Email</label>

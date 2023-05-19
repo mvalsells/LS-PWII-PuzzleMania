@@ -118,7 +118,7 @@ class SignInController
     {
         // Check if the credentials match the user information saved in the database
         $user = $this->userRepository->getUserByEmail($email);
-        if ($user->isNullUser()) {
+        if ($user == null) {
             $errors['email'] = 'User with this email address does not exist.';
         } else if ($user->getPassword() != md5($password)) {
             $errors['password'] = 'Your email and/or password are incorrect.';

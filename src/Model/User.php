@@ -45,18 +45,7 @@ class User implements JsonSerializable
         return get_object_vars($this);
     }
 
-    /**
-     * @return bool Variable that indicates whether the user is NULL (=true) or not (=false)
-     */
-    public function isNullUser(): bool
-    {
-        if (!isset($this->email)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
+      /**
      * @return bool Variable that indicates whether the user has a profile picture (=true) or not (=false)
      */
     public function hasPicture(): bool

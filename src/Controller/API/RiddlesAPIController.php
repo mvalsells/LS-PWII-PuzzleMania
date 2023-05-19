@@ -85,16 +85,16 @@ class RiddlesAPIController
             }
 
 
-            // If a user id was provided, check if it exists
-            if (isset($input['userId'])){
-                $user = $this->userRepository->getUserById($input['userId']);
-                if ($user->isNullUser()) {
-                    $response->getBody()->write('{ "message": "\'user_id\' does not correspond to any registered user"}');
-                    return $response
-                        ->withHeader("content-type", "application/json")
-                        ->withStatus(400);
+                // If a user id was provided, check if it exists
+                if (isset($input['userId'])){
+                    $user = $this->userRepository->getUserById($input['userId']);
+                    if ($user == null) {
+                        $response->getBody()->write('{ "message": "\'user_id\' does not correspond to any registered user"}');
+                        return $response
+                            ->withHeader("content-type", "application/json")
+                            ->withStatus(400);
+                    }
                 }
-            }
 
             // If no errors have arisen, add Riddle to database and return its content in a json response
             $addId = $this->riddleRepository->addRiddle(new Riddle($id, $input['userId'], $input['riddle'], $input['answer']));
@@ -192,7 +192,7 @@ class RiddlesAPIController
                     if (array_key_exists('userId', $input) && is_numeric($input['userId'])) {
                         // Check the user id exists
                         $user = $this->userRepository->getUserById($input['userId']);
-                        if ($user->isNullUser()) {
+                        if ($user == null) {
                             $response->getBody()->write('{ "message": "\'user_id\' does not correspond to any registered user"}');
                             return $response
                                 ->withHeader("content-type", "application/json")

@@ -7,11 +7,13 @@ use PDO;
 
 final class PDOConnectionBuilder
 {
+    // Constant of the connection string
     private const CONNECTION_STRING = 'mysql:host=%s;port=%s;dbname=%s';
 
     public function __construct() {
     }
 
+    // Method to create the connection with the database
     public function build(
         string $username,
         string $password,

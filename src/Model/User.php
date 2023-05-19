@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * User: models the User structure that contains relevant info (id, email, password, timestamps and profile picture path).
+ * @author: Marc Valsells, Òscar de Jesus and David Larrosa
+ * @creation: 18/04/2023
+ * @updated: 18/05/2023
+ */
 declare(strict_types=1);
 
 namespace Salle\PuzzleMania\Model;
@@ -33,13 +38,16 @@ class User implements JsonSerializable
     //------------------------------------------------------------------------------------------
 
     /**
-     * Function called when encoded with json_encode
+     * @return array Json array of the user data
      */
     public function jsonSerialize(): array
     {
         return get_object_vars($this);
     }
 
+      /**
+     * @return bool Variable that indicates whether the user has a profile picture (=true) or not (=false)
+     */
     public function hasPicture(): bool
     {
         if (isset($this->profilePicturePath)) {
@@ -53,7 +61,7 @@ class User implements JsonSerializable
     //------------------------------------------------------------------------------------------
 
     /**
-     * @return int
+     * @return int User ID
      */
     public function getId(): int
     {
@@ -61,7 +69,7 @@ class User implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string User email
      */
     public function getEmail(): string
     {
@@ -69,15 +77,15 @@ class User implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string Username of the user
      */
     public function getUsername(): string
     {
-        return explode('@', $this->email)[0];;
+        return explode('@', $this->email)[0];
     }
 
     /**
-     * @return string
+     * @return string Password of the user
      */
     public function getPassword(): string
     {
@@ -85,7 +93,7 @@ class User implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string Path of the user's profile picture
      */
     public function getProfilePicturePath(): string
     {
@@ -93,7 +101,7 @@ class User implements JsonSerializable
     }
 
     /**
-     * @return DateTime
+     * @return DateTime Date of when the account was created
      */
     public function getCreatedAt(): DateTime
     {
@@ -101,7 +109,7 @@ class User implements JsonSerializable
     }
 
     /**
-     * @return DateTime
+     * @return DateTime Date of when the account was updated
      */
     public function getUpdatedAt(): DateTime
     {
@@ -113,7 +121,7 @@ class User implements JsonSerializable
     //------------------------------------------------------------------------------------------
 
     /**
-     * @param int $id
+     * @param int $id User ID
      */
     public function setId(int $id): void
     {
@@ -121,7 +129,7 @@ class User implements JsonSerializable
     }
 
     /**
-     * @param string $email
+     * @param string $email User email
      */
     public function setEmail(string $email): void
     {
@@ -129,7 +137,7 @@ class User implements JsonSerializable
     }
 
     /**
-     * @param string $password
+     * @param string $password Password of the user
      */
     public function setPassword(string $password): void
     {
@@ -137,7 +145,7 @@ class User implements JsonSerializable
     }
 
     /**
-     * @param string $profilePicturePath
+     * @param string $profilePicturePath Path of the user's profile picture
      */
     public function setProfilePicturePath(string $profilePicturePath): void
     {
@@ -145,7 +153,7 @@ class User implements JsonSerializable
     }
 
     /**
-     * @param DateTime $createdAt
+     * @param DateTime $createdAt Date when the account was created
      */
     public function setCreatedAt(DateTime $createdAt): void
     {
@@ -153,7 +161,7 @@ class User implements JsonSerializable
     }
 
     /**
-     * @param DateTime $updatedAt
+     * @param DateTime $updatedAt Date when the account was updated
      */
     public function setUpdatedAt(DateTime $updatedAt): void
     {

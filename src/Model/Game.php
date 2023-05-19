@@ -1,8 +1,11 @@
 <?php
-
+/**
+ * Game: models the Game structure that contains relevant info (game ID and riddles).
+ * @author: Marc Valsells, Òscar de Jesus and David Larrosa
+ * @creation: 16/05/2023
+ * @updated: 18/05/2023
+ */
 namespace Salle\PuzzleMania\Model;
-
-use Salle\PuzzleMania\Repository\RiddleRepository;
 
 class Game
 {

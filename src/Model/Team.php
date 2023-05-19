@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Team: models the Team structure where users can form groups to compete.
+ * @author: Marc Valsells, Òscar de Jesus and David Larrosa
+ * @creation: 20/04/2023
+ * @updated: 18/05/2023
+ */
 namespace Salle\PuzzleMania\Model;
 
 use JsonSerializable;
@@ -29,23 +34,34 @@ class Team implements JsonSerializable
     //------------------------------------------------------------------------------------------
     // OTHER METHODS
     //------------------------------------------------------------------------------------------
-
-    public function addMember (int $user_id)
+    /**
+     * @return void -
+     */
+    public function addMember (int $user_id): void
     {
         $this->user_id_2 = $user_id;
     }
 
-    public function addNewScore (int $score)
+    /**
+     * @return void -
+     */
+    public function addNewScore (int $score): void
     {
         $this->last_score = $score;
         $this->total_score += $score;
     }
 
+    /**
+     * @return array Json array of the team data
+     */
     public function jsonSerialize(): array
     {
         return get_object_vars($this);
     }
 
+    /**
+     * @return bool Variable that indicates whether the team is NULL (=true) or not (=false)
+     */
     public function isNullTeam(): bool
     {
         if (!isset($this->team_name)) {
@@ -54,6 +70,9 @@ class Team implements JsonSerializable
         return false;
     }
 
+    /**
+     * @return bool Variable that indicates whether the team has a last score (=true) or not (=false)
+     */
     public function isLastScoreRegistered(): bool
     {
         if (!isset($this->last_score)) {
@@ -67,7 +86,7 @@ class Team implements JsonSerializable
     //------------------------------------------------------------------------------------------
 
     /**
-     * @return int
+     * @return int Team ID
      */
     public function getTeamId(): int
     {
@@ -75,7 +94,7 @@ class Team implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string Team name
      */
     public function getTeamName(): string
     {
@@ -83,7 +102,7 @@ class Team implements JsonSerializable
     }
 
     /**
-     * @return int
+     * @return int Number of members
      */
     public function getNumMembers(): int
     {
@@ -91,7 +110,7 @@ class Team implements JsonSerializable
     }
 
     /**
-     * @return int
+     * @return int ID of the first user
      */
     public function getUserId1(): int
     {
@@ -99,7 +118,7 @@ class Team implements JsonSerializable
     }
 
     /**
-     * @return int
+     * @return int ID of the second user
      */
     public function getUserId2(): int
     {
@@ -107,7 +126,7 @@ class Team implements JsonSerializable
     }
 
     /**
-     * @return int
+     * @return int Total score of the team
      */
     public function getTotalScore(): int
     {
@@ -115,7 +134,7 @@ class Team implements JsonSerializable
     }
 
     /**
-     * @return int
+     * @return int Last score of the team
      */
     public function getLastScore(): int
     {
@@ -123,7 +142,7 @@ class Team implements JsonSerializable
     }
 
     /**
-     * @return int
+     * @return int Variable that indicates whether the QR of the team has been generated (=1) or not (=0)
      */
     public function isQRGenerated(): int
     {
@@ -135,7 +154,7 @@ class Team implements JsonSerializable
     //------------------------------------------------------------------------------------------
 
     /**
-     * @param int $team_id
+     * @param int $team_id Team ID
      */
     public function setTeamId(int $team_id): void
     {
@@ -143,7 +162,7 @@ class Team implements JsonSerializable
     }
 
     /**
-     * @param string $team_name
+     * @param string $team_name Team name
      */
     public function setTeamName(string $team_name): void
     {
@@ -151,7 +170,7 @@ class Team implements JsonSerializable
     }
 
     /**
-     * @param int $num_members
+     * @param int $num_members Number of members
      */
     public function setNumMembers(int $num_members): void
     {
@@ -159,7 +178,7 @@ class Team implements JsonSerializable
     }
 
     /**
-     * @param int $user_id_1
+     * @param int $user_id_1 ID of the first user
      */
     public function setUserId1(int $user_id_1): void
     {
@@ -167,7 +186,7 @@ class Team implements JsonSerializable
     }
 
     /**
-     * @param int $user_id_2
+     * @param int $user_id_2 ID of the second user
      */
     public function setUserId2(int $user_id_2): void
     {
@@ -175,7 +194,7 @@ class Team implements JsonSerializable
     }
 
     /**
-     * @param int $last_score
+     * @param int $last_score Last score of the team
      */
     public function setLastScore(int $last_score): void
     {
@@ -183,7 +202,7 @@ class Team implements JsonSerializable
     }
 
     /**
-     * @param int $total_score
+     * @param int $total_score Total score of the team
      */
     public function setTotalScore(int $total_score): void
     {
@@ -191,7 +210,7 @@ class Team implements JsonSerializable
     }
 
     /**
-     * @param int $QR_generated
+     * @param int $QR_generated Variable that indicates whether the QR of the team has been generated (=1) or not (=0)
      */
     public function setQRGenerated(int $QR_generated): void
     {

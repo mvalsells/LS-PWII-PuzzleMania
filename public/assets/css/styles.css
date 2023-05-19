@@ -9,6 +9,12 @@ label {
     margin-top: 10px;
 }
 
+.team-label {
+    color: forestgreen;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
 .clearfix:before, .clearfix:after{
     content: "";
     display: table;
@@ -30,6 +36,7 @@ a:hover{
 .error {
     background-color: #ff6666;
     color: #fff;
+    text-align: center;
     padding: 10px;
     border-radius: 5px;
     margin: 10px auto;
@@ -40,6 +47,7 @@ a:hover{
     background-color: #57d388;
     color: #fff;
     padding: 10px;
+    text-align: center;
     border-radius: 5px;
     margin: 10px auto;
     width: 300px;
@@ -165,13 +173,6 @@ input[type='submit']:hover {
 
 .auth-switch{
     font-size: 13px;
-}
-
-.row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 100%;
 }
 
 .column {

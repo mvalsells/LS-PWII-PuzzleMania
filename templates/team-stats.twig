@@ -2,33 +2,39 @@
 
 {% block head %}
     <title>Team Stats | PuzzleMania</title>
-    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/navbar_styles.css"/>
-    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/numericlist_styles.css"/>
-
 {% endblock %}
 
-{% block name %}Team Stats{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/navbar_styles.css"/>
+    <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/numericlist_styles.css"/>
+{% endblock %}
 
 {% block header %}
-    <!-- Dropdown -->
-    <div class="dropdown">
-        <!-- Email -->
-        <button class="dropbtn">
-            {% if email is not defined %}
-                Menu
-            {% else %}
-                {{ email }}
-            {% endif %}
-        </button>
-        <!-- Logout suboption -->
-        <div class="dropdown-content">
-            <a href="/">Home</a>
-            <a href="/profile">Your Profile</a>
-            <a href="/game">Start a game</a>
-            <a href="/riddle">List riddles</a>
-            <a href="/log-out">Logout</a>
+    <nav class="navbar">
+        <!-- Logo and text -->
+        <div class="navbar-logo">
+            <img src="{{ full_url_for('home') }}assets/images/logo.png" alt="Logo" style="width: 60px; height: 60px; border-radius: 50%; margin-right: 10px;">
+            Team Stats
         </div>
-    </div>
+        <!-- Dropdown -->
+        <div class="dropdown">
+            <button class="dropbtn">
+                {% if email is not defined %}
+                    Menu
+                {% else %}
+                    {{ email }}
+                {% endif %}
+            </button>
+            <div class="dropdown-content">
+                <a href="/">Home</a>
+                <a href="/profile">Your Profile</a>
+                <a href="/game">Start a game</a>
+                <a href="/riddle">List riddles</a>
+                <a href="/log-out">Logout</a>
+            </div>
+        </div>
+    </nav>
+
 {% endblock %}
 
 {% block content %}
@@ -62,14 +68,14 @@
                     <button class = "create-button">
                         <a href="/team-stats/QR_create">Create QR code</a>
                     </button>
-                {% elseif not TeamFull%}
+                {% elseif not TeamFull and QRFound %}
                     <p><b>Share this QR code so<br>others can join your team</b></p>
                     <img src="{{ full_url_for('home') }}QR_codes/{{ team }}.jpeg" alt="QR Team" style="width: 150px; height: 150px; ">
                     <br/>
                     <button class = "create-button">
                         <a href="/team-stats/QR_download">Download QR code</a>
                     </button>
-                {% else %}
+                {% elseif TeamFull %}
                     <p style="color: darkred;"><br><b>The team is full</b></p>
                 {% endif %}
             </div>

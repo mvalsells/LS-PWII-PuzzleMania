@@ -2,30 +2,37 @@
 
 {% block head %}
     <title>Join Team | PuzzleMania</title>
+{% endblock %}
+
+{% block styles %}
     <link rel="stylesheet" href="{{ full_url_for('home') }}assets/css/navbar_styles.css"/>
 {% endblock %}
 
-{% block name %}Join a Team{% endblock %}
-
 {% block header %}
-    <!-- Dropdown -->
-    <div class="dropdown">
-        <!-- Email -->
-        <button class="dropbtn">
-            {% if email is not defined %}
-                Menu
-            {% else %}
-                {{ email }}
-            {% endif %}
-        </button>
-        <!-- Logout suboption -->
-        <div class="dropdown-content">
-            <a href="/">Home</a>
-            <a href="/profile">Your Profile</a>
-            <a href="/riddle">List riddles</a>
-            <a href="/log-out">Logout</a>
+    <nav class="navbar">
+        <!-- Logo and text -->
+        <div class="navbar-logo">
+            <img src="{{ full_url_for('home') }}assets/images/logo.png" alt="Logo" style="width: 60px; height: 60px; border-radius: 50%; margin-right: 10px;">
+            Join a Team
         </div>
-    </div>
+        <!-- Dropdown -->
+        <div class="dropdown">
+            <button class="dropbtn">
+                {% if email is not defined %}
+                    Menu
+                {% else %}
+                    {{ email }}
+                {% endif %}
+            </button>
+            <div class="dropdown-content">
+                <a href="/">Home</a>
+                <a href="/profile">Your Profile</a>
+                <a href="/riddle">List riddles</a>
+                <a href="/log-out">Logout</a>
+            </div>
+        </div>
+    </nav>
+
 {% endblock %}
 
 {% block content %}
@@ -41,10 +48,10 @@
                 <form action="/join" method="POST">
                     {% for team in teams %}
                         <input type="radio" name="team" id="{{ team.getTeamId() }}" value="{{ team.getTeamId() }}">
-                        <label for="team">{{ team.getTeamName() }}</label>
+                        <label for="team" class="team-label">{{ team.getTeamName() }}</label>
                         <br/>
                     {% endfor %}
-                    <button type="submit" name="joinTeam">Join Team</button>
+                    <input type="submit" name="joinTeam" class="submit-button" value="Join Team">
                 </form>
             {% else %}
                 <p>No incomplete teams. You can only create your own team.</p>
@@ -60,9 +67,9 @@
             <form action="/join" method="POST">
                 <label for="teamName">Team Name</label>
                 <br/>
-                <input type="text" name="teamName" id="teamName" class="form-control">
+                <input type="text" name="teamName" id="teamName" placeholder="Enter team name" class="form-control">
                 <br/>
-                <button type="submit" name="createTeam">Create Team</button>
+                <input type="submit" name="joinTeam" class="submit-button" value="Create Team">
             </form>
             {% if notifs_create is not empty %}
                 {% for notif in notifs_create %}

@@ -1,21 +1,15 @@
 <?php
 declare(strict_types=1);
-
+/**
+ * MySQLGameRepository: Class that implements RiddleRepository interface, to access a database with Riddle instances
+ * @author: Marc Valsells, Òscar de Jesus and David Larrosa
+ * @creation: 20/04/2023
+ * @updated: 18/05/2023
+ */
 namespace Salle\PuzzleMania\Repository;
 
 use PDO;
 use Salle\PuzzleMania\Model\Riddle;
-
-/**
- *  TODO: Coses que cal fer a la BBDD (✔✖)
- *
- *      Riddles:
- *      · Llegir tots els riddles --> ✔
- *      · Afegir riddles --> ✔
- *
- *
- *  TODO: FLASH MESSAGES
- */
 
 class MySQLRiddleRepository implements RiddleRepository
 {
@@ -33,24 +27,23 @@ class MySQLRiddleRepository implements RiddleRepository
     //==========================================================================================
 
     /**
-     * Returns an array of Model/Riddle objects with all the available riddles in the 'riddles' table of the database.
-     * @return array
+     * Returns an array of Model/Riddle objects with all the available riddles.
+     * @return array Array of Riddle instances
      */
     public function getAllRiddles(): array
     {
-
-        // Fem la query
+        // Build the SQL query
         $query = <<<'QUERY'
             SELECT * FROM riddles;
         QUERY;
 
-        // Preparem la query
+        // Prepare query
         $statement = $this->databaseConnection->prepare($query);
 
-        // Executem la query
+        // Execute query
         $statement->execute();
 
-        // Retornem els resultats de la query
+        // Fetch query results and create array with Riddle instances
         $rawData =  $statement->fetchAll(PDO::FETCH_ASSOC);
         $riddles = [];
         foreach ($rawData as $row) {
@@ -60,108 +53,110 @@ class MySQLRiddleRepository implements RiddleRepository
     }
 
     /**
-     * Adds the $r object to the 'riddles' table in the database, the ID of the added riddle is returned.
-     * @param Riddle $r The 'id' and 'userId' attributes can be null.
-     * @return int
+     * Adds the Riddle object to the repository, and return the 'ID' of the added riddle.
+     * @param Riddle $r Riddle object to persist, where the 'id' and 'userId' attributes can be null.
+     * @return int The ID associated to the added riddle
      */
     public function addRiddle(Riddle $r): int
     {
         // Check if optional ID field is set
         if ($r->getId() == null) {
-            // Fem la query
+            // Build SQL query
             $query = <<<'QUERY'
                 INSERT INTO riddles (user_id, riddle, answer) VALUES (:user_id, :riddle, :answer);
             QUERY;
 
-            // Preparem la query
+            // Prepare query
             $statement = $this->databaseConnection->prepare($query);
         } else {
-            // Fem la query
+            // Build SQL query
             $query = <<<'QUERY'
                 INSERT INTO riddles (riddle_id, user_id, riddle, answer) VALUES (:id, :user_id, :riddle, :answer);
             QUERY;
-            // Preparem la query
+
+            // Prepare query and bind 'id' parameter
             $statement = $this->databaseConnection->prepare($query);
             $id = $r->getId();
             $statement->bindParam('id', $id, PDO::PARAM_INT);
         }
 
-
-
-        // Inserim els paràmetres que volem a la query
+        // Extract the variables we want to upload to database
         $idUser = $r->getUserId();
         $riddle = $r->getRiddle();
         $answer = $r->getAnswer();
 
+        // Introduce variables in statement query
         $statement->bindParam('user_id', $idUser, PDO::PARAM_INT);
         $statement->bindParam('riddle', $riddle, PDO::PARAM_STR);
         $statement->bindParam('answer', $answer, PDO::PARAM_STR);
 
-        // Executem la query
+        // Execute query
         $statement->execute();
 
+        // Get the ID of the riddle in the Riddle table and return it
         return intval($this->databaseConnection->lastInsertId());
-
     }
+
     /**
      * Given an id of a riddle, a Model/Riddle object with all the information is returned. If the riddle is not found
-     * in the 'riddles' table of the database null is returned.
-     * @param int $id
-     * @return Riddle|null
+     * in the repository null is returned.
+     * @param int $id id of the riddle to get from repository
+     * @return Riddle|null The riddle associated to the 'id' provided, or null if no riddle is associated to the 'id'
      */
     public function getOneRiddleById(int $id): ?Riddle
     {
-        // Fem la query
+        // Build the SQL query
         $query = <<<'QUERY'
             SELECT * FROM riddles WHERE riddle_id = :riddleId LIMIT 1;
         QUERY;
 
-        // Preparem la query
+        // Prepare query and bind 'riddleId' parameter
         $statement = $this->databaseConnection->prepare($query);
         $statement->bindParam(':riddleId', $id, PDO::PARAM_INT);
 
-        // Executem la query
+        // Execute query
         $statement->execute();
 
-        // Retornem els resultats de la query
+        // Fetch query results
         $rawData =  $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        // Check if at least one row has been returned
+        // Check if at least one row has been returned. If not, return null
         if ( count($rawData) <= 0) {
             return null;
         }
 
-        // Check if the returned row has all the expected columns
+        // Check if the returned row has all the expected columns. If so, create Riddle object and return it
         if (array_key_exists('riddle_id', $rawData[0]) && array_key_exists('user_id', $rawData[0]) && array_key_exists('riddle', $rawData[0]) && array_key_exists('answer', $rawData[0]) ){
             return new Riddle($rawData[0]['riddle_id'], $rawData[0]['user_id'], $rawData[0]['riddle'], $rawData[0]['answer']);
         } else {
             return null;
         }
     }
+
     /**
-     * Updates the riddle with ID $originalId in the 'riddles' table of the database with the $newRiddle data
-     * @param int $originalId
-     * @param Riddle $newRiddle 'id' attribute CANNOT be null, 'userId' can be null. The unchanged fields must have the
-     *                          original information.
-     * @return void
+     * Updates the riddle with ID 'originalId' in the repository with the 'newRiddle' data
+     * @param int $originalId 'id' of the riddle to update
+     * @param Riddle $newRiddle Riddle instance where info to update is contained: 'id' attribute CANNOT be null, while
+     *                          'userId' can be null. The unchanged fields must have the original information.
+     * @return void -
      */
     public function updateRiddle(int $originalId, Riddle $newRiddle): void
     {
 
-        // Create query
+        // Build the SQL query
         $query = <<<'QUERY'
             UPDATE riddles SET riddle_id = :id, user_id = :userId, riddle = :riddle, answer = :answer  WHERE riddle_id = :originalId;
         QUERY;
 
         $statement = $this->databaseConnection->prepare($query);
 
-        // Add parameters to the query
-
+        // Extract the variables we want to upload to database
         $id = $newRiddle->getId();
         $userId = $newRiddle->getUserId();
         $riddle = $newRiddle->getRiddle();
         $answer = $newRiddle->getAnswer();
 
+        // Introduce variables in statement query
         $statement->bindParam('id', $id, PDO::PARAM_INT);
         $statement->bindParam('userId', $userId, PDO::PARAM_INT);
         $statement->bindParam('riddle', $riddle, PDO::PARAM_STR);
@@ -171,20 +166,21 @@ class MySQLRiddleRepository implements RiddleRepository
         // Execute query
         $statement->execute();
     }
+
     /**
-     * Given an id of a riddle this one is deleted from the 'riddles' table fo the database.
-     * @param int $id
-     * @return void
+     * Given an 'id' of a riddle this one is deleted from the repository
+     * @param int $id 'id' of the riddle to delete from the repository
+     * @return void -
      */
     public function deleteRiddle(int $id): void {
-        // Create query
+        // Build the SQL query
         $query = <<<'QUERY'
             DELETE FROM riddles WHERE riddle_id = :id;
         QUERY;
 
         $statement = $this->databaseConnection->prepare($query);
 
-        // Add parameters to the query
+        // Add 'id' parameter to the query
         $statement->bindParam('id', $id, PDO::PARAM_INT);
 
         // Execute query

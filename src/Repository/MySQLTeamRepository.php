@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * MySQLTeamRepository: Class that implements TeamRepository interface, to access a database with Team instances
+ * @author: Marc Valsells, Òscar de Jesus and David Larrosa
+ * @creation: 28/04/2023
+ * @updated: 18/05/2023
+ */
 namespace Salle\PuzzleMania\Repository;
 
 use PDO;
@@ -20,6 +25,11 @@ class MySQLTeamRepository implements TeamRepository
     // TEAM RELATED QUERIES
     //==========================================================================================
 
+    /**
+     * Searches the team in the database by a user ID, and returns the team if found
+     * @param int $user_id ID of the user whose team wants to be returned
+     * @return Team The Team where the user forms part (if it doesn't form part in any, returns a null team)
+     */
     public function getTeamByUserId(int $user_id): Team
     {
         // Build the SQL query
@@ -30,7 +40,11 @@ class MySQLTeamRepository implements TeamRepository
         return $this->getTeam($query, $user_id);
     }
 
-
+    /**
+     * Searches the team in the database by its ID, and returns the team if found
+     * @param int $id ID of the team that wants to be returned
+     * @return Team The team with the queried ID (if not found, returns a null team)
+     */
     public function getTeamById(int $id): Team
     {
         // Build the SQL query
@@ -41,6 +55,11 @@ class MySQLTeamRepository implements TeamRepository
         return $this->getTeam($query, $id);
     }
 
+    /**
+     * Searches the team in the database by its name, and returns the team if found
+     * @param string $name Name of the team that wants to be returned
+     * @return Team The team with the queried name (if not found, returns a null team)
+     */
     public function getTeamByName(string $name): Team
     {
         // Build the SQL query
@@ -67,6 +86,11 @@ class MySQLTeamRepository implements TeamRepository
         return new Team();
     }
 
+    /**
+     * Persist in database that a team has generated its QR
+     * @param int $id ID of the team that has generated its QR
+     * @return void -
+     */
     public function setQRToTeam(int $id): void
     {
         // Build the SQL query
@@ -85,6 +109,11 @@ class MySQLTeamRepository implements TeamRepository
         $statement->execute();
     }
 
+    /**
+     * Saves the Team passed as parameter to the database
+     * @param Team $team Team that wants to be created in database
+     * @return void -
+     */
     public function createTeam(Team $team): void
     {
         // Build the SQL query
@@ -107,6 +136,12 @@ class MySQLTeamRepository implements TeamRepository
         $statement->execute();
     }
 
+    /**
+     * Adds a user ID to a Team, meaning this user has joined the team
+     * @param int $team_id ID of the team the user is trying to join
+     * @param User $user User that is trying to join the team
+     * @return void -
+     */
     public function addUserToTeam(int $team_id, User $user): void
     {
         // Build the SQL query
@@ -129,6 +164,10 @@ class MySQLTeamRepository implements TeamRepository
         $statement->execute();
     }
 
+    /**
+     * Function that returns all the incomplete Teams of the database (the one that has less than 2 members)
+     * @return array Array containing Team instances that have less than two members
+     */
     public function getIncompleteTeams(): array
     {
         // Build the SQL query
@@ -155,6 +194,12 @@ class MySQLTeamRepository implements TeamRepository
         return $teams;
     }
 
+    /**
+     * Function that adds a new score to a team
+     * @param int $team_id ID of the team where the new score has to be set
+     * @param int $score The new score of the team
+     * @return void -
+     */
     public function addScoreToTeam(int $team_id, int $score): void
     {
         // We get the team data
@@ -180,7 +225,7 @@ class MySQLTeamRepository implements TeamRepository
         $statement->bindParam('last_score', $score, PDO::PARAM_INT);
         $statement->bindParam('team_id', $team_id, PDO::PARAM_INT);
 
-        // Executem la query
+        // Execute query
         $statement->execute();
     }
 
@@ -188,27 +233,43 @@ class MySQLTeamRepository implements TeamRepository
     // OTHER FUNCTIONS
     //==========================================================================================
 
-    private function createTeamVariable($row): Team
+    /**
+     * Converts a row fetched from the database into a Team
+     * @param mixed $row fetched from the database
+     * @return Team The Team created from the data contained in the $row
+     */
+    private function createTeamVariable(mixed $row): Team
     {
         // Create team variable
         $team = new Team();
+
+        // Set the variables that always appear
         $team->setTeamId($row->team_id);
         $team->setTeamName($row->team_name);
         $team->setNumMembers($row->num_members);
+        $team->setTotalScore($row->total_score);
+        $team->setQRGenerated($row->QR_generated);
+
+        // Check the variables that can be NULL
         if (isset($row->user_id_1)) {
             $team->setUserId1($row->user_id_1);
         }
         if (isset($row->user_id_2)) {
             $team->setUserId2($row->user_id_2);
         }
-        $team->setTotalScore($row->total_score);
         if (isset($row->last_score)) {
             $team->setLastScore($row->last_score);
         }
-        $team->setQRGenerated($row->QR_generated);
+
         return $team;
     }
 
+    /**
+     * General function that gets a Team from the database
+     * @param string $query Query built that has to be executed
+     * @param int $id ID that needs to be included in the query statement
+     * @return Team The Team that has been got from the database (if not found, returns a null team)
+     */
     private function getTeam(string $query, int $id): Team
     {
         $statement = $this->databaseConnection->prepare($query);

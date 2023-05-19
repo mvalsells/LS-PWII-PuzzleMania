@@ -1,15 +1,14 @@
 <?php
 /**
- * Riddles API Controllers: Manages all the petitions to the Riddle API
+ * Riddles API Controller: Manages all the petitions to the Riddle API
  * @author: Marc Valsells, Òscar de Jesus and David Larrosa
  * @creation: 27/04/2023
- * @updated: 02/05/2023
+ * @updated: 19/05/2023
  */
 
 declare(strict_types=1);
 
 namespace Salle\PuzzleMania\Controller\API;
-
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -24,7 +23,8 @@ class RiddlesAPIController
 
     /**
      * Constructor for the RiddleAPIController
-     * @param RiddleRepository $riddleRepository
+     * @param UserRepository $userRepository Interface to access Users database
+     * @param RiddleRepository $riddleRepository Interface to access Riddles database
      */
     public function __construct(
         private UserRepository $userRepository,
@@ -54,57 +54,60 @@ class RiddlesAPIController
      *                           the repository which is added to the body of the response.
      * @return Response The received by arguments response with updated header and body content.
      */
-    public function addARiddle(Request $request, Response $response): Response{
+    public function addARiddle(Request $request, Response $response): Response {
 
         // Get request body as associative array
         $input = json_decode($request->getBody()->getContents(), true);
-            // Check if required parameters exists before adding the riddle
-            if ($input != null && array_key_exists('userId', $input) && array_key_exists('riddle', $input) && array_key_exists('answer', $input)) {
-                // Check the id is not taken for the riddle
-                $id = null;
-                if (array_key_exists('id', $input) && is_numeric($input['id'])) {
-                    $id = intval($input['id']);
-                    $riddle = $this->riddleRepository->getOneRiddleById($id);
-                    if ($riddle != null) {
-                        $response->getBody()->write('{ "message": "\'id\' is already in use for another riddle"}');
-                        return $response
-                            ->withHeader("content-type", "application/json")
-                            ->withStatus(400);
-                    }
-                }
 
-                if($this->validator->checkIfInputTooLong($input['riddle']) || $this->validator->checkIfInputTooLong($input['answer'])){
-
-                    $response->getBody()->write('{ "message": "\'riddle\' and/or \'answer\' are too long."}');
-
+        // Check if required parameters exist before adding the riddle
+        if ($input != null && array_key_exists('userId', $input) && array_key_exists('riddle', $input) && array_key_exists('answer', $input)) {
+            // Check if the body contains a riddle id
+            $id = null;
+            if (array_key_exists('id', $input) && is_numeric($input['id'])) {
+                // Check the id is not taken by another riddle
+                $id = intval($input['id']);
+                $riddle = $this->riddleRepository->getOneRiddleById($id);
+                if ($riddle != null) {
+                    $response->getBody()->write('{ "message": "\'id\' is already in use for another riddle"}');
                     return $response
                         ->withHeader("content-type", "application/json")
                         ->withStatus(400);
                 }
+            }
 
+            // Check the 'riddle' or 'answer' fields aren't too long
+            if($this->validator->checkIfInputTooLong($input['riddle']) || $this->validator->checkIfInputTooLong($input['answer'])){
+                $response->getBody()->write('{ "message": "\'riddle\' and/or \'answer\' are too long."}');
 
-                // If a user id was provided, check if exists
-                if (isset($input['userId'])){
-                    $user = $this->userRepository->getUserById($input['userId']);
-                    if ($user->isNullUser()) {
-                        $response->getBody()->write('{ "message": "\'user_id\' does not correspond to any registered user"}');
-                        return $response
-                            ->withHeader("content-type", "application/json")
-                            ->withStatus(400);
-                    }
-                }
-
-                $addId = $this->riddleRepository->addRiddle(new Riddle($id, $input['userId'], $input['riddle'], $input['answer']));
-                $riddle = $this->riddleRepository->getOneRiddleById($addId);
-                if ($riddle != null) {
-                    $response->getBody()->write(json_encode($riddle));
-                    return $response
-                        ->withHeader("content-type", "application/json")
-                        ->withStatus(201);
-                }
+                return $response
+                    ->withHeader("content-type", "application/json")
+                    ->withStatus(400);
             }
 
 
+            // If a user id was provided, check if it exists
+            if (isset($input['userId'])){
+                $user = $this->userRepository->getUserById($input['userId']);
+                if ($user->isNullUser()) {
+                    $response->getBody()->write('{ "message": "\'user_id\' does not correspond to any registered user"}');
+                    return $response
+                        ->withHeader("content-type", "application/json")
+                        ->withStatus(400);
+                }
+            }
+
+            // If no errors have arisen, add Riddle to database and return its content in a json response
+            $addId = $this->riddleRepository->addRiddle(new Riddle($id, $input['userId'], $input['riddle'], $input['answer']));
+            $riddle = $this->riddleRepository->getOneRiddleById($addId);
+            if ($riddle != null) {
+                $response->getBody()->write(json_encode($riddle));
+                return $response
+                    ->withHeader("content-type", "application/json")
+                    ->withStatus(201);
+            }
+        }
+
+        // Inform the user that some field is missing
         $response->getBody()->write('{ "message": "\'riddle\' and/or \'answer\' and/or \'userId\' key missing"}');
         return $response
             ->withHeader("content-type", "application/json")
@@ -119,7 +122,6 @@ class RiddlesAPIController
      * @return Response The received by arguments response with updated header and body content.
      */
     public function getOneRiddle(Request $request, Response $response, array $args): Response {
-
         // Check if argument 'id' was provided
         if (!array_key_exists('id', $args)) {
             $args['id'] = '<not provided>';
@@ -137,12 +139,11 @@ class RiddlesAPIController
             }
         }
 
-        // If id is incorrect return error message
+        // If id is incorrect or there is no riddle in database with that id, return error message
         $response->getBody()->write('{"message": "Riddle with id '.$args['id'].' does not exist"}');
         return $response
             ->withHeader("content-type", "application/json")
             ->withStatus(404);
-
     }
 
     /**
@@ -156,8 +157,7 @@ class RiddlesAPIController
      */
     public function updateARiddle(Request $request, Response $response, array $args): Response
     {
-
-        // Check if argument 'id' was provided
+        // Check if field 'id' was provided
         if (!array_key_exists('id', $args)) {
             $args['id'] = '<not provided>';
         }
@@ -172,13 +172,20 @@ class RiddlesAPIController
             // Check if riddle is in the DB
             $riddle = $this->riddleRepository->getOneRiddleById($id);
             if (!is_null($riddle)) {
-
-                // Check if required parameters exists before adding the riddle
+                // Check if required parameters exist before adding the riddle
                 if (array_key_exists('riddle', $input) || array_key_exists('answer', $input)) {
-
                     // Update riddle object with the new values
                     if (array_key_exists('id', $input) && is_numeric($input['id'])) {
-                        $riddle->setId($input['id']);
+                        // Check the riddle id doesn't exist
+                        $riddle_aux = $this->riddleRepository->getOneRiddleById($input['id']);
+                        if (!is_null($riddle_aux)) {
+                            $response->getBody()->write('{ "message": "The new riddle \'id\' does already correspond to another riddle"}');
+                            return $response
+                                ->withHeader("content-type", "application/json")
+                                ->withStatus(400);
+                        } else {
+                            $riddle->setId($input['id']);
+                        }
                     }
 
                     // Check the user id exists
@@ -195,12 +202,16 @@ class RiddlesAPIController
                         }
                     }
 
+                    // Check the riddle is not empty and is not too long
                     if (array_key_exists('riddle', $input)) {
-
                         // Checking length of input
-                        if($this->validator->checkIfInputTooLong($input['riddle'])){
+                        if ($this->validator->checkIfInputTooLong($input['riddle'])){
                             $response->getBody()->write('{ "message": "\'riddle\' is too long."}');
-
+                            return $response
+                                ->withHeader("content-type", "application/json")
+                                ->withStatus(400);
+                        } elseif ($input['riddle'] === "") {
+                            $response->getBody()->write('{ "message": "The riddle and/or answer cannot be empty"}');
                             return $response
                                 ->withHeader("content-type", "application/json")
                                 ->withStatus(400);
@@ -209,12 +220,16 @@ class RiddlesAPIController
                         $riddle->setRiddle($input['riddle']);
                     }
 
+                    // Check the answer is not empty and is not too long
                     if (array_key_exists('answer', $input)){
-
                         // Checking length of input
-                        if($this->validator->checkIfInputTooLong($input['answer'])){
+                        if ($this->validator->checkIfInputTooLong($input['answer'])){
                             $response->getBody()->write('{ "message": "\'answer\' is too long."}');
-
+                            return $response
+                                ->withHeader("content-type", "application/json")
+                                ->withStatus(400);
+                        } elseif ($input['answer'] === "") {
+                            $response->getBody()->write('{ "message": "The riddle and/or answer cannot be empty"}');
                             return $response
                                 ->withHeader("content-type", "application/json")
                                 ->withStatus(400);
@@ -241,10 +256,9 @@ class RiddlesAPIController
                         ->withStatus(400);
                 }
             }
-
         }
 
-        // If id is incorrect return error message
+        // If id is incorrect or no riddle register has that id, return error message
         $response->getBody()->write('{"message": "Riddle with id '.$args['id'].' does not exist"}');
         return $response
             ->withHeader("content-type", "application/json")
@@ -279,7 +293,7 @@ class RiddlesAPIController
             }
         }
 
-        // If id is incorrect return error message
+        // If id is incorrect or no riddle has that id, return error message
         $response->getBody()->write('{"message": "Riddle with id '.$args['id'].' does not exist"}');
         return $response
             ->withHeader("content-type", "application/json")

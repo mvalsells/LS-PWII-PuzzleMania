@@ -40,7 +40,7 @@
         <div class = "content">
             <div class = "page" style = "background: white; padding: 40px 130px; border-radius: 10px; border: 2px solid #000;">
 
-                {% if start == 1 %}
+                {% if start %}
                     <form data-cy="game" action="{{ formAction }}" method="POST" id="game" accept-charset="utf-8" style="text-align: center;" onsubmit="myFunction()">
                         <h1 style="text-align: center;">{{ teamName }}</h1>
                         <h2><br><b>Read the instructions</b></h2>
@@ -50,8 +50,8 @@
                             <input data-cy="game__btn" type="submit" value="{{ buttonName }}" class="submit-button">
                         </div>
                     </form>
-                {% elseif endGame == 0 %}
-                    {% if guessRiddle == 1 %}
+                {% elseif not endGame %}
+                    {% if guessRiddle %}
                         <form data-cy="game" action="{{ formAction }}" method="POST" id="game" accept-charset="utf-8" style="text-align: center;">
                             <h2><br><b>{{ actualRiddle.riddle }}</b></h2>
                             <input data-cy="game__riddle-answer" type="text" name="answer" placeholder="Enter your answer"
@@ -88,9 +88,9 @@
                 {% endif %}
 
             </div>
-            {% if start == 0 and endGame == 0 %}
+            {% if not start and not endGame %}
                 <h2 style="text-align: center;">You currently have {{ totalPoints }} points.</h2>
-                {% if guessRiddle == 1 %}
+                {% if guessRiddle %}
                     <p style="text-align: center;">Guess this riddle and earn 10 points.</p>
                 {% endif %}
             {% endif %}

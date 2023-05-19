@@ -48,16 +48,17 @@ class RiddleController
      */
     public function show(Request $request, Response $response): Response
     {
-        
+        // Define API URL to query
         $API_URL = "http://nginx/api/riddle";
 
         $client = new Client();
         $notifications = [];
         $riddles = [];
 
+        // Tries to get the riddles from the database through the Riddles API
         try {
-            $resposta = $client->request("GET", $API_URL);
-            $riddles = json_decode($resposta->getBody()->getContents());
+            $answer = $client->request("GET", $API_URL);
+            $riddles = json_decode($answer->getBody()->getContents());
             if (empty($riddles)) {
                 $notifications[] = "Riddles are not found.";
             }
@@ -65,6 +66,7 @@ class RiddleController
             $notifications[] = "Unexpected error when communicating with API.";
         }
 
+        // Render twig view with all the parameters
         return $this->twig->render(
             $response,
             'riddle.twig',
@@ -93,33 +95,38 @@ class RiddleController
     public function showID(Request $request, Response $response, array $args): Response
     {
 
-        // Guardem el id de la riddle que ens passen per paràmetre
+        // Save the Riddle ID passed as a parameter of the URL
         $idRiddle = (int) filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
 
+        // Define API URL to query
         $API_URL = "http://nginx/api/riddle/{$idRiddle}";
 
         $client = new Client();
         $temp = array();
         $notifications = [];
 
+        // Tries to get the requested riddle from the database through the Riddles API
         try {
-            $resposta = $client->request("GET", $API_URL);
-            $riddles = json_decode($resposta->getBody()->getContents());
+            $answer = $client->request("GET", $API_URL);
+            $riddles = json_decode($answer->getBody()->getContents());
+            // Check the user ID exists and a user is linked to that id in the database
             if (isset($riddles->userId)) {
                 $user = $this->userRepository->getUserById($riddles->userId);
                 $userName = isset($user) ? $user->getUsername() : "-";
             } else {
                 $userName = "-";
             }
+            // Set the riddle and the number of riddles to 1
             $temp[0] = $riddles;
             $riddleCount = 1;
-
         } catch (GuzzleException $e) {
+            // Set error variables
             $userName = "-";
             $notifications[] = "Riddle not found";
             $riddleCount = 0;
         }
 
+        // Render twig view with all the parameters
         return $this->twig->render(
             $response,
             'riddle.twig',

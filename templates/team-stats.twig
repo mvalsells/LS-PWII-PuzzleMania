@@ -41,7 +41,11 @@
         <div class="content">
             <img src="{{ full_url_for('home') }}{{ teamPicture }}" alt="Profile picture" style="width: 150px; height: 150px; border-radius: 50%; margin-right: 10px;">
             <div class="main-container">
-
+                {% if success_notifs is not empty %}
+                    {% for notif in success_notifs %}
+                        <p class="success">{{ notif }}</p>
+                    {% endfor %}
+                {% endif %}
                 <h1>{{ teamName }}</h1>
                 <p><b>Team members:</b> {{ teamMembers }}</p>
                 <p><b>Last score:</b> {{ lastScore }}</p>

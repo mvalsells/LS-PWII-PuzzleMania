@@ -49,6 +49,11 @@
             {% else %}
                 <p>No incomplete teams. You can only create your own team.</p>
             {% endif %}
+            {% if notifs_join is not empty %}
+                {% for notif in notifs_join %}
+                    <p class="error">{{ notif }}</p>
+                {% endfor %}
+            {% endif %}
         </div>
         <div class="column main-container">
             <h2>Create a Team</h2>
@@ -59,6 +64,11 @@
                 <br/>
                 <button type="submit" name="createTeam">Create Team</button>
             </form>
+            {% if notifs_create is not empty %}
+                {% for notif in notifs_create %}
+                    <p class="error">{{ notif }}</p>
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
 

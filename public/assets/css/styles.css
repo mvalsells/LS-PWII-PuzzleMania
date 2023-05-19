@@ -36,6 +36,15 @@ a:hover{
     width: 300px;
 }
 
+.success {
+    background-color: #57d388;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px auto;
+    width: 300px;
+}
+
 .box {
     position: absolute;
     margin-top: 20px;

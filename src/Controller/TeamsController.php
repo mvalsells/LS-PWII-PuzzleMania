@@ -256,8 +256,6 @@ class TeamsController
                 header('Content-Length: ' . filesize($filePath));
                 flush();
                 readfile($filePath);
-            } else {
-                $this->flash->addMessage("notifications", "The QR code of the team wasn't found in the server.");
             }
         } else {
             $this->flash->addMessage("notifications", "Unexpected error while downloading QR code.");
@@ -293,9 +291,10 @@ class TeamsController
         }
 
         // Check if the QR code is located in server (in case it exists)
-        $qrGenerated = $team->isQRGenerated();
+        $found = true;
         if ($team->isQRGenerated() === 1 and !file_exists($this->barcode->getQRFilePath($_SESSION['team_id']))) {
-            $qrGenerated = 0;
+            $notifications[] = "The QR code of the team was previously generated but is not found in the server.";
+            $found = false;
         }
 
         // Render team stats view with the necessary parameters
@@ -308,7 +307,8 @@ class TeamsController
                 "email" => $_SESSION['email'],
                 "team" => $_SESSION['team_id'],
                 "TeamFull" => ($team->getNumMembers() == 2),
-                "QRGenerated" => $qrGenerated,
+                "QRGenerated" => $team->isQRGenerated(),
+                "QRFound" => $found,
                 "teamPicture" => self::DEFAULT_TEAM_IMAGE,
                 "teamName" => $team->getTeamName(),
                 "teamMembers" => $team->getNumMembers(),

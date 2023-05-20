@@ -133,7 +133,7 @@ class ProfileController
                 'formErrors' => $errors ?? [],
                 'email' => $_SESSION["email"],
                 "team" => $_SESSION['team_id'] ?? null,
-                'profilePicture' => $picturePath,
+                'profilePicture' => $picturePath ?? self::DEFAULT_PROFILE_IMAGE,
                 'formAction' => $routeParser->urlFor('profile_post')
             ]
         );

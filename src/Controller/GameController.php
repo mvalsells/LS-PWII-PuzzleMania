@@ -79,7 +79,7 @@ class GameController
     {
         // If a previous game wasn't finished, set a notification error and unset game variables
         if (isset($_SESSION['gameId'])) {
-            $notifications = "The last game wasn't finished and has been erased from memory";
+            $notifications[] = "The last game wasn't finished and has been erased from memory";
             unset($_SESSION['actual_riddle']);
             unset($_SESSION['riddles']);
             unset($_SESSION['gameId']);

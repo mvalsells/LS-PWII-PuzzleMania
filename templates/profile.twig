@@ -42,6 +42,11 @@
 {% endblock %}
 
 {% block content %}
+    {% if notifs is not empty %}
+        {% for notif in notifs %}
+            <p data-cy="profile__message" class="error">{{ notif }}</p>
+        {% endfor %}
+    {% endif %}
     <div class = "parent-content">
         <div class = "content">
             <div class = "page" style = "background: white; padding: 40px 130px; border-radius: 10px; border: 2px solid #000;">

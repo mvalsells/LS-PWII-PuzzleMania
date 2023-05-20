@@ -90,6 +90,13 @@ class GameController
         // Get riddles from repository and randomly choose 3
         $riddles = $this->riddleRepository->getAllRiddles();
         shuffle($riddles);
+
+        // Check that we have at least 3 riddles to begin the game
+        if(count($riddles) < 3){
+            $this->flash->addMessage("notifications", "There aren't enough riddles in database to begin a game.");
+            return $response->withHeader('Location','/')->withStatus(301);
+        }
+
         $chosenRiddles = array_slice($riddles, 0, 3);
 
         // Randomly generate game ID by uploading it to database

@@ -250,7 +250,7 @@ class ProfileController
      */
     private function checkMime(UploadedFileInterface $uploadedFile): bool
     {
-        if(strcmp($uploadedFile->getClientMediaType(), "image/jpg") == 0 
+        if(strcmp($uploadedFile->getClientMediaType(), "image/jpeg") == 0
            || strcmp($uploadedFile->getClientMediaType(), "image/png") == 0) {
             return true;
         }

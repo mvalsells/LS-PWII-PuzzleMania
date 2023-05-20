@@ -58,14 +58,24 @@ class ProfileController
     {
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
 
+        $notifications = [];
+        // Check if profile picture is located in server (in case it exists)
+        if (isset($_SESSION["profilePicturePath"]) and file_exists($_SESSION["profilePicturePath"])) {
+            $picturePath = $_SESSION["profilePicturePath"];
+        } elseif (isset($_SESSION["profilePicturePath"])) {
+            $picturePath = self::DEFAULT_PROFILE_IMAGE;
+            $notifications[] = "There has been an error with your profile picture, and it hasn't been found on the server.";
+        }
+
         return $this->twig->render(
             $response,
             'profile.twig',
             [
+                'notifs' => $notifications ?? [],
                 'formAction' => $routeParser->urlFor('profile_post'),
                 'email' => $_SESSION["email"],
                 "team" => $_SESSION['team_id'] ?? null,
-                'profilePicture' => $_SESSION["profilePicturePath"] ?? self::DEFAULT_PROFILE_IMAGE
+                'profilePicture' => $picturePath ?? self::DEFAULT_PROFILE_IMAGE
             ]
         );
     }
@@ -107,10 +117,12 @@ class ProfileController
             }
         }
         $notifications = [];
-
         // Check if profile picture is located in server (in case it exists)
         if (isset($_SESSION["profilePicturePath"]) and file_exists($_SESSION["profilePicturePath"])) {
             $picturePath = $_SESSION["profilePicturePath"];
+        } elseif (isset($_SESSION["profilePicturePath"])) {
+            $picturePath = self::DEFAULT_PROFILE_IMAGE;
+            $notifications[] = "There has been an error with your profile picture, and it hasn't been found on the server.";
         }
 
         return $this->twig->render(
@@ -121,7 +133,7 @@ class ProfileController
                 'formErrors' => $errors ?? [],
                 'email' => $_SESSION["email"],
                 "team" => $_SESSION['team_id'] ?? null,
-                'profilePicture' => $picturePath ?? self::DEFAULT_PROFILE_IMAGE,
+                'profilePicture' => $picturePath,
                 'formAction' => $routeParser->urlFor('profile_post')
             ]
         );

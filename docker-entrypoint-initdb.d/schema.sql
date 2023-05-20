@@ -90,7 +90,12 @@ INSERT INTO riddles (user_id, riddle, answer)
 VALUES
     (1, 'It brings back the lost as though never gone, shines laughter and tears with light long since shone; a moment to make, a lifetime to shed; valued then but lost when your dead. What Is It?', 'Memory'),
     (NULL, 'What do you get when you cross a fish with an elephant?', 'Swimming trunks'),
-    (2, 'I can be long, or I can be short.\nI can be grown, and I can be bought.\nI can be painted, or left bare.\nI can be round, or I can be square.\nWhat am I?', 'Fingernails');
+    (2, 'I can be long, or I can be short.\nI can be grown, and I can be bought.\nI can be painted, or left bare.\nI can be round, or I can be square.\nWhat am I?', 'Fingernails'),
+    (NULL, 'I am lighter than a feather yet no man can hold me for long.', 'Breath'),
+    (NULL, 'What occurs once in every minute, twice in every moment and yet never in a thousand years?', 'The letter M'),
+    (NULL, 'What nationality is Santa Claus?', 'North Polish'),
+    (NULL, 'What animal is best at hitting a baseball?', 'A bat'),
+    (NULL, 'What do you call a cow that twitches?', 'Beef jerky');
 
 
 

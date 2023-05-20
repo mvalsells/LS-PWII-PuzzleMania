@@ -50,21 +50,18 @@
                 <form action="{{ formAction }}"
                       enctype="multipart/form-data"
                       method="POST" id="profile" accept-charset="utf-8">
-                    <div class="form-group row">
-                        <input type="email" name="email" value="{{ email }}" disabled>
-                        {% if formErrors["email"] %}
-                            <p class = "error">{{ formErrors["email"] }}</p>
-                        {% endif %}
-                    </div>
-                    <div class="form-group row">
-                        <input type="file" name="files[]">
-                        {% if formErrors["profilePicture"] %}
-                            <p class = "error">{{ formErrors["profilePicture"] }}</p>
-                        {% endif %}
-                    </div>
-                    <div class="form-group row">
-                        <input type="submit" value="Update profile picture" class="submit-button">
-                    </div>
+                    <input type="email" name="email" value="{{ email }}" disabled>
+                    {% if formErrors["email"] %}
+                        <p class = "error">{{ formErrors["email"] }}</p>
+                    {% endif %}
+                    <br/>
+                    <input type="file" name="files[]">
+                    <br/>
+                    {% if formErrors["profilePicture"] %}
+                        <p class = "error">{{ formErrors["profilePicture"] }}</p>
+                    {% endif %}
+                    <input type="submit" value="Update profile picture">
+
                 </form>
             </div>
         </div>

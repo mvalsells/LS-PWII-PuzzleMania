@@ -179,6 +179,12 @@ input[type='submit']:hover {
     display: flex;
     flex-direction: column;
     flex: 1;
-    margin-right: 40px;
-    margin-left: 40px;
+    margin: 35px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
 }

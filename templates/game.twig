@@ -63,9 +63,8 @@
                             <h2><br><b>{{ actualRiddle.riddle }}</b></h2>
                             <input data-cy="game__riddle-answer" type="text" name="answer" placeholder="Enter your answer"
                                    value="" id="answer">
-                            <div class="form-group row">
-                                <input data-cy="game__btn" type="submit" value="{{ buttonName }}" class="submit-button">
-                            </div>
+                            <br/>
+                            <input data-cy="game__btn" type="submit" value="{{ buttonName }}" class="submit-button">
                         </form>
                     {% else %}
                         <h2><br><b><u>Riddle:</u> {{ actualRiddle.riddle }}</b></h2>

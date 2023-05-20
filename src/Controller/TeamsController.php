@@ -292,7 +292,7 @@ class TeamsController
 
         // Check if the QR code is located in server (in case it exists)
         $found = true;
-        if ($team->isQRGenerated() === 1 and !file_exists($this->barcode->getQRFilePath($_SESSION['team_id']))) {
+        if ($team->isQRGenerated() === 1 and !file_exists($this->barcode->getQRFilePath($_SESSION['team_id'])) and $team->getNumMembers() !== 2) {
             $notifications[] = "The QR code of the team was previously generated but is not found in the server.";
             $found = false;
         }

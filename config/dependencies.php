@@ -92,7 +92,7 @@ function addDependencies(ContainerInterface $container): void
     $container->set(
         SignUpController::class,
         function (ContainerInterface $c) {
-            return new SignUpController($c->get('view'), $c->get('user_repository'), $c->get("invite_service"));
+            return new SignUpController($c->get('view'), $c->get('user_repository'), $c->get("invite_service"), $c->get("flash"));
         }
     );
 
@@ -113,7 +113,7 @@ function addDependencies(ContainerInterface $container): void
     $container->set(
         LandingPageController::class,
         function (ContainerInterface $c) {
-            return new LandingPageController($c->get('view'), $c->get('user_repository'));
+            return new LandingPageController($c->get('view'), $c->get('user_repository'), $c->get("flash"));
         }
     );
 

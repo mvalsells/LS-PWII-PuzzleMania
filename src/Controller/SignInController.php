@@ -43,9 +43,14 @@ class SignInController
     public function show(Request $request, Response $response): Response
     {
         // Get possible flash messages and rend the view with them
-        $messages = $this->flash->getMessages();
-        $notifications = $messages['notifications'] ?? [];
-        return $this->twig->render($response, 'sign-in.twig', ["notifs" => $notifications]);
+        if (!isset($_SESSION['user_id'])) {
+            $messages = $this->flash->getMessages();
+            $notifications = $messages['notifications'] ?? [];
+            return $this->twig->render($response, 'sign-in.twig', ["notifs" => $notifications]);
+        } else {
+            $this->flash->addMessage("notifications", "You are already logged in an account. Log out first to sign into an another account.");
+            return $response->withHeader('Location', '/')->withStatus(302);
+        }
     }
 
     /**

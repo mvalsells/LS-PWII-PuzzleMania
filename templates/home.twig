@@ -47,6 +47,11 @@
 {% endblock %}
 
 {% block content %}
+    {% if notifs is not empty %}
+        {% for notif in notifs %}
+            <p data-cy="home__message" class="error">{{ notif }}</p>
+        {% endfor %}
+    {% endif %}
     <div class = "parent-content">
         <div class = "content">
             <h1 data-cy="home__welcomeMsg" style = "text-align: center; ">Hello {{ username }}!</h1>
